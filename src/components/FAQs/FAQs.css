@@ -1,0 +1,45 @@
+/* src/components/FAQs/FAQs.css */
+.faqs-section {
+  margin: 40px 200px;
+}
+
+.faqs-title {
+  font-size: 2.5rem;
+  margin-bottom: 100px;
+  display: block;
+  font-weight: bold;
+  justify-content: center;
+}
+
+.faq-item {
+  margin-bottom: 20px;
+}
+
+.faq-question {
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+}
+
+.faq-answer {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #555;
+}
+
+.arrow {
+  transition: transform 0.3s;
+  color: #F8A02F;
+}
+
+.arrow.open {
+  transform: rotate(180deg);
+}
+
+.faq-divider {
+  margin-top: 10px;
+  border: none;
+  border-bottom: 1px solid #ddd;
+}

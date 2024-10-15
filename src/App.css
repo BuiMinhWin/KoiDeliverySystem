@@ -1,0 +1,35 @@
+
+html, body {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  font-family: Arial, sans-serif;
+}
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.header, .footer {
+  background-color: #2b3a4d;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.header {
+  background-color: #2b3a4d;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.footer {
+  background-color: #2b3a4d;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
