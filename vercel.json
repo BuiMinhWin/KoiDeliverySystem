@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/accounts/:path*",
+      "destination": "http://koideliverysystem.id.vn:8080/api/accounts/:path*"
+    },
+    {
+      "source": "/api/Google/loginGG",
+      "destination": "http://koideliverysystem.id.vn:8080/api/Google/loginGG"
+    },
+    {
+      "source": "/api/auth/:path*",
+      "destination": "http://koideliverysystem.id.vn:8080/api/auth/:path*"
+    }
+  ]
+}
