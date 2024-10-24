@@ -8,7 +8,6 @@ import {
 } from "@mui/material";
 import { useField, useFormikContext } from "formik";
 
-
 const CheckboxWrapper = ({ name, label, legend, ...otherProps }) => {
   const { setFieldValue } = useFormikContext();
   const [field, meta] = useField(name);
@@ -34,7 +33,7 @@ const CheckboxWrapper = ({ name, label, legend, ...otherProps }) => {
       <FormGroup>
         <FormControlLabel
           control={<Checkbox {...configCheckbox} />}
-          label={label}
+          label={<span style={{ color: "black" }}>{label}</span>} // Set label color to black
         />
       </FormGroup>
     </FormControl>

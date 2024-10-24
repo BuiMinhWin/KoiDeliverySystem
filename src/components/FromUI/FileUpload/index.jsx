@@ -1,56 +1,50 @@
-import React from "react";
-import { useField, useFormikContext } from "formik";
-import { Box, Typography } from "@mui/material";
-import { useDropzone } from "react-dropzone";
+import React, { useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { Box, Typography } from '@mui/material';
+import { useFormikContext, useField } from 'formik';
 
-// Custom FileUpload component
-const FileUpload = ({ name }) => {
-  const { setFieldValue } = useFormikContext();
-  const [field, meta] = useField(name);
+const FileUpload = ({ name, ...otherProps }) => {
+  const { setFieldValue } = useFormikContext(); // Get Formik's setFieldValue function
+  const [field, meta] = useField(name); // Get field and meta info from Formik
 
-  const onDrop = (acceptedFiles) => {
-    if (acceptedFiles.length > 0) {
-      const file = acceptedFiles[0];
-
-      // Limit the file size to 8MB
-      if (file.size > 8 * 1024 * 1024) {
-        setFieldValue(name, ""); // Clear the value if too large
-        return alert("File size must be less than 8MB");
-      }
-
-      setFieldValue(name, file); // Store the file in Formik's state
-    }
-  };
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: {
-      "application/pdf": [".pdf"],
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      setFieldValue(name, acceptedFiles[0]); // Set the file in Formik's state
     },
+    [setFieldValue, name]
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: 'application/pdf',
+    onDrop,
   });
+
+  const errorText = meta.touched && meta.error ? meta.error : '';
 
   return (
     <Box
       {...getRootProps()}
-      sx={{ border: "2px dashed #3f51b5", padding: 2, borderRadius: 1, textAlign: "center" }}
+      sx={{
+        border: '2px dashed #1976d2',
+        padding: '20px',
+        textAlign: 'center',
+        cursor: 'pointer',
+      }}
     >
-      <input {...getInputProps()} />
-      <Typography variant="body1" color="textSecondary">
-        Drag 'n' drop your fish PDF document here, or click to select one
-      </Typography>
+      <input {...getInputProps()} {...otherProps} />
+      {isDragActive ? (
+        <Typography>Drop the file here...</Typography>
+      ) : (
+        <Typography>Drag 'n' drop a PDF file here, or click to select</Typography>
+      )}
       {field.value && (
-        <Typography variant="body2" sx={{ marginTop: 1 }}>
-          Selected file: {field.value.name}
+        <Typography variant="body2" sx={{ mt: 2 }}>
+          Uploaded file: {field.value.name} 
         </Typography>
       )}
-      {meta.touched && meta.error && (
-        <Typography variant="body2" color="error">
-          {meta.error}
-        </Typography>
-      )}
+      {errorText && <Typography color="error">{errorText}</Typography>} {/* Show error */}
     </Box>
   );
 };
 
 export default FileUpload;
-

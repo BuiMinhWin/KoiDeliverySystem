@@ -1,27 +1,17 @@
-import React from "react";
-import {
-  Box,
-  Divider,
-  Grid,
-  InputAdornment,
-  Paper,
-  Typography,
-} from "@mui/material";
+import React, { useState,useEffect } from 'react';
+import { Box, Grid, InputAdornment, Paper, Typography,FormControl, InputLabel, Select,MenuItem } from "@mui/material";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import TextFieldWrapper from "../FromUI/Textfield";
 import SelectWrapper from "../FromUI/Select";
-import countries from "../../data/countries.json";
+// import countries from "../../data/countries.json";
 import ButtonWrapper from "../FromUI/Button";
 import koi_type from "../../data/koiTypes.json";
 import koi_name from "../../data/koiVarieties.json";
-import { createOrder } from "../../services/CustomerService";
-import {
-  createDocument,
-  createOrderDetail,
-} from "../../services/CustomerService";
-import SideBar from "../SideBar/SideBar";
-import HeaderBar from "../Header/Header/Nguyen";
+import { createOrder, order, uploadDocument } from "../../services/CustomerService";
+import { createOrderDetail } from "../../services/CustomerService";
+// import SideBar from "../SideBar/SideBar";
+// import HeaderBar from "../Header/Header/Nguyen";
 import RadioGroupWrapper from "../FromUI/RadioGroup";
 import CustomRadioGroup from "../FromUI/CustomRadioGroup";
 import AccessibleIcon from "@mui/icons-material/Accessible";
@@ -29,21 +19,24 @@ import AccessibleForwardIcon from "@mui/icons-material/AccessibleForward";
 import FileUpload from "../FromUI/FileUpload";
 import CheckboxWrapper from "../FromUI/Checkbox";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 
 // Initial Form State
 const INITIAL_FORM_STATE = {
   origin: "",
-  cityS: "", //
-  cityR: "", //
+  cityS: "",
+  cityR: "",
   destination: "",
+  distance: "",
   receiverName: "",
   senderName: "",
   receiverAddress: "",
   senderAddress: "",
   receiverPhone: "",
   senderPhone: "",
-  postalCodeS: "", // Use string for postal codes
-  postalCodeR: "", // Use string for postal codes
+  postalCodeS: "",
+  postalCodeR: "",
   receiverNote: "",
   senderNote: "",
   orderNote: "",
@@ -56,6 +49,7 @@ const INITIAL_FORM_STATE = {
   weight: 0.0,
   freight: "",
   additional_service: "",
+  
 };
 
 // Validation Schema with Yup
@@ -92,37 +86,129 @@ const FORM_VALIDATION = Yup.object().shape({
     .required("Vui lòng nhập cân nặng"),
   freight: Yup.string().required("Vui lòng chọn phương thức vận chuyển"),
   additional_service: Yup.string().nullable(),
-  document_file: Yup.mixed()
-    .required("A PDF file is required")
-    .test("fileType", "Only PDF files are allowed", (value) => {
-      return value && value.type === "application/pdf";
-    })
-    .test("fileSize", "File size is too large", (value) => {
-      return value && value.size <= 8 * 1024 * 1024; // 8 MB limit
-    }),
   termsOfService: Yup.boolean()
     .oneOf([true], "The terms and conditions must be accepted.")
     .required("The terms and conditions must be accepted."),
+  document_file: Yup.mixed()
+    .required("A file is required")
+    .test(
+      "fileSize",
+      "File size must be less than 8MB",
+      (value) => value && value.size <= 8 * 1024 * 1024
+    )
+    .test(
+      "fileFormat",
+      "Only PDF file are allowed",
+      (value) => value && value.type === "application/pdf"
+    ),
 });
 
+
+
 const OrderForm = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate();  
+  const [provinces, setProvinces] = useState([]);
+  const [selectedProvinceS, setSelectedProvinceS] = useState(''); // Tỉnh người gửi
+  const [selectedProvinceR, setSelectedProvinceR] = useState('');
+
+  // const [distanceData, setDistanceData] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  
+  const API_KEY =import.meta.env.VITE_GOONG_API_KEY; // Thay bằng API Key của bạn
+
+  const geocodeAddress = async (address) => {
+    console.log(address);
+    try {
+      const response = await axios.get(
+        `https://rsapi.goong.io/geocode?address=${encodeURIComponent(address)}&api_key=${API_KEY}`
+      );
+      const data = response.data;
+  
+      if (data.results && data.results.length > 0) {
+        const location = data.results[0].geometry.location;
+        return { lat: location.lat, lng: location.lng };
+      } else {
+        throw new Error('No results found for the address.');
+      }
+    } catch (error) {
+      console.error('Error fetching geocode:', error);
+      throw new Error('Failed to fetch geocode.');
+    }
+  };
+
+  const GHN_API_KEY=import.meta.env.VITE_GHN_API_KEY
+  useEffect(() => {
+      
+    const fetchProvinces = async () => {
+      try {
+        const response = await fetch('https://online-gateway.ghn.vn/shiip/public-api/master-data/province', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Token': GHN_API_KEY,
+          },
+        });
+        const data = await response.json();
+        console.log(data); 
+        const provinceOptions = data.data.map((province) => ({
+          label: province.ProvinceName,
+          value: province.ProvinceID,
+        }));
+        setProvinces(provinceOptions);
+      } catch (error) {
+        console.error('Error fetching provinces:', error);
+      }
+    };
+
+    fetchProvinces();
+    
+  }, []);
+
+  const fetchDistanceData = async (origins, destinations) => {
+    try {
+      console.log(origins);
+      console.log(destinations);
+      const response = await axios.get(
+        `https://rsapi.goong.io/distancematrix?origins=${origins}&destinations=${destinations}&vehicle=car&api_key=${API_KEY}`
+      );
+      
+      const data = response.data;
+      if (data?.rows[0]?.elements[0]?.distance) {
+        
+        const distanceInKm = data.rows[0].elements[0].distance.value / 1000;
+        return distanceInKm; 
+      } else {
+        throw new Error('Invalid distance data');
+      }
+    } catch (error) {
+      console.error('Error fetching distance matrix:', error);
+      setErrorMessage('Có lỗi xảy ra khi lấy dữ liệu.');
+      return null;
+    }
+  };
+
   return (
     <Formik
-      initialValues={INITIAL_FORM_STATE}
+      initialValues={{INITIAL_FORM_STATE, cityS: selectedProvinceS, cityR: selectedProvinceR}}
       validationSchema={FORM_VALIDATION}
       onSubmit={async (values, { setSubmitting, setErrors }) => {
-        console.log("Form values before submission:", values); // Debugging log
-
-        const accountId = localStorage.getItem("accountId");
-        console.log("Account ID:", accountId);
-
         try {
+          const accountId = localStorage.getItem("accountId");
+          
+          const originCoordinates = await geocodeAddress(`${values.origin}`);
+          const destinationCoordinates = await geocodeAddress(`${values.destination}`);
+
+          const origins = `${originCoordinates.lat},${originCoordinates.lng}`;
+          const destinations = `${destinationCoordinates.lat},${destinationCoordinates.lng}`;
+
+          const distance = await fetchDistanceData(origins, destinations);
+          console.log(distance);
+
           const orderData = {
             ...values,
             accountId,
             origin: `${values.origin}, ${values.cityS}, ${values.postalCodeS}`,
-            destination: `${values.destinations}, ${values.cityR}, ${values.postalCodeR}`,
+            destination: `${values.destination}, ${values.cityR}, ${values.postalCodeR}`,
             freight: values.freight,
             receiverName: values.receiverName,
             senderName: values.senderName,
@@ -131,20 +217,24 @@ const OrderForm = () => {
             receiverNote: values.receiverNote,
             senderNote: values.senderNote,
             orderNote: values.orderNote,
+            distance: distance,
           };
+          console.log(orderData);
+          
+          const orderResponse = await createOrder(orderData);
+          if (!orderResponse?.orderId) {
+            throw new Error("Order ID not found in the response");
+          }
 
-          console.log("Order data ready for submission:", orderData); // Debugging log
-          const response = await createOrder(orderData);
-          const newOrderId = response.orderId;
+          const newOrderId = orderResponse.orderId;
+          console.log("Order created with ID:", newOrderId);
 
-          // document
-          const documentData = {
-            orderId: newOrderId,
-            document_file: [values.document_file],
-          };
-          const documentResponse = await createDocument(documentData);
+          const uploadResponse = await uploadDocument(values.document_file, newOrderId);
+          console.log('File uploaded successfully:', uploadResponse);
 
-          //order detail
+          const orderDetails = await order(newOrderId);
+          console.log("Order Details:", orderDetails);
+
           const orderDetailData = {
             orderId: newOrderId,
             quantity: Number(values.quantity),
@@ -154,14 +244,15 @@ const OrderForm = () => {
             koiType: values.koi_type,
           };
           const orderDetailResponse = await createOrderDetail(orderDetailData);
+          console.log(
+            "Order detail created successfully:",
+            orderDetailResponse
+          );
 
-          //check log
           console.log("Order created successfully with ID:", newOrderId);
-          console.log("Order created successfully");
-
           navigate("/checkout", { state: { orderId: newOrderId } });
-          // Navigate on success
         } catch (error) {
+          alert("Upload failed, please try again");
           console.error("Error creating order:", error);
           setErrors({ submit: error.message });
         } finally {
@@ -170,35 +261,26 @@ const OrderForm = () => {
       }}
       validateOnMount={true}
     >
-      {({ handleSubmit, isValid, errors }) => {
+      {({ handleSubmit, errors,setFieldValue }) => {
         console.log("Validation errors:", errors); // Log validation errors
+        const handleSenderProvinceChange = (event) => {
+          const value = event.target.value;
+          setSelectedProvinceS(value); // Cập nhật state địa phương người gửi
+          setFieldValue('cityS', value);
+        };
+      
+        // Hàm thay đổi giá trị tỉnh của người nhận
+        const handleReceiverProvinceChange = (event) => {
+          const value = event.target.value;
+            setSelectedProvinceR(value); // Cập nhật state địa phương người nhận
+            setFieldValue('cityR', value);
+        };
 
         return (
           <Form onSubmit={handleSubmit}>
-            <Box
-              sx={{ display: "flex", flexDirection: "column", height: "100vh" }}
-              component={"body"}
-            >
-              <Box
-                sx={{
-                  height: "64px",
-                  bgcolor: "primary.main",
-                  display: "flex",
-                  alignItems: "center",
-                  p: 2,
-                }}
-              >
-                <HeaderBar />
-              </Box>
-
-              {/* Sidebar + Content Container */}
-              <Box sx={{ display: "flex", flex: 1 }}>
-                <Box>
-                  <SideBar />
-                </Box>
-
                 {/* Content */}
-                <Box sx={{ flex: 1, p: 3, bgcolor: "#eeeeee" }}>
+                <>
+                <Box sx={{ p: 4, bgcolor: "#eeeeee" }}>
                   {/* Paper 1: Receiver Information */}
                   <Paper elevation={4} sx={{ padding: "20px" }}>
                     <Typography variant="h6" gutterBottom>
@@ -218,13 +300,23 @@ const OrderForm = () => {
                         />
                       </Grid>
                       <Grid item xs={6}>
-                        <SelectWrapper
+                      <FormControl fullWidth>
+                        <InputLabel>Thành phố người gửi</InputLabel>
+                        <Select
                           name="cityS"
-                          label="Thành phố"
-                          options={countries}
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
+                          value={selectedProvinceS}
+                          onChange={handleSenderProvinceChange}
+                          label="Tỉnh"
+                        >
+                          {provinces.map((province) => (
+                            <MenuItem key={province.value} value={province.value}>
+                              {province.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                                    <Grid item xs={6}>
                         <TextFieldWrapper
                           name="postalCodeS"
                           label="Postal Code"
@@ -266,12 +358,22 @@ const OrderForm = () => {
                         />
                       </Grid>
                       <Grid item xs={6}>
-                        <SelectWrapper
+                      <FormControl fullWidth>
+                        <InputLabel>Thành phố người nhận</InputLabel>
+                        <Select
                           name="cityR"
-                          label="Thành phố"
-                          options={countries}
-                        />
-                      </Grid>
+                          value={selectedProvinceR}
+                          onChange={handleReceiverProvinceChange}
+                          label="Tỉnh"
+                        >
+                          {provinces.map((province) => (
+                            <MenuItem key={province.value} value={province.value}>
+                              {province.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
                       <Grid item xs={6}>
                         <TextFieldWrapper
                           name="postalCodeR"
@@ -415,12 +517,11 @@ const OrderForm = () => {
                     legend="Terms Of Service"
                     label="I agree"
                   />
-                  <ButtonWrapper disabled={!isValid}>
-                    Submit Order
-                  </ButtonWrapper>
+
+                  <ButtonWrapper>Submit Order</ButtonWrapper>
+               
                 </Box>
-              </Box>
-            </Box>
+                </>
           </Form>
         );
       }}

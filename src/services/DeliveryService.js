@@ -14,10 +14,14 @@ export const trackingOrder = (orderId) => {
   return axios.post(`${REST_API_BASE_URL}/update`, orderId);
 } 
 
-export const getOrderDetail = (orderId) => {
+export const getOrderDetail =(orderId) => {
   return axios.get(`${REST_API_BASE_URL2}/${orderId}`);
 };
 
 export const updateStatus = (orderId, newStatus) => {
   return axios.patch(`${REST_API_BASE_URL}/updateStatus/${orderId}`, { newStatus });
+};
+
+export const getOrderByProvince = (province) => {
+  return axios.get(`${REST_API_BASE_URL2}/orders/province/${province}`);
 };

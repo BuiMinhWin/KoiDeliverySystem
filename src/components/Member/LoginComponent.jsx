@@ -5,11 +5,11 @@
   import { loginAccount, googleLogin } from '../../services/EmployeeService';  
   import * as jwtJsDecode from 'jwt-js-decode';
 
-  const LoginComponent = ({ handleLogin }) => {
+  const LoginComponent = () => {
     const [userName, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [phone, setPhone] = useState('');
-    const [roleId, setRoleId] = useState('');
+    // const [roleId, setRoleId] = useState('');
     
     const navigate = useNavigate();
 
@@ -21,12 +21,13 @@
         const response = await loginAccount(loginData);
         console.log("API Response:", response);
         
-
         const result = response.data;
-        localStorage.setItem('accountId', result.accountId);
-        console.log("Account ID: ", localStorage.getItem('accountId'));
         localStorage.setItem('roleId', result.roleId);
         console.log("Role ID:", result.roleId);
+        localStorage.setItem('accountId', result.accountId);
+        console.log("accountId:", result.accountId);
+        localStorage.setItem('province', result.province);
+        console.log("province:", result.province);
 
       if (result.roleId === 'Manager') {
         navigate('/manager');
@@ -84,11 +85,11 @@
             createAt = result.createAt || new Date().toISOString();
             localStorage.setItem('createAt', createAt);
           }
-    
+          
+          localStorage.setItem('roleId', result.roleId);
           console.log("Role ID:", result.roleId);
-          localStorage.setItem('accountId', result.accountId);
-          console.log("Account ID: ", localStorage.getItem('accountId'));
-          localStorage.setItem('userRole', result.roleId);
+        
+          
           if (result.roleId === 'Customer') {
             navigate('/customer');
           } else {
@@ -146,7 +147,7 @@
                     <input type="checkbox" id="remember" />
                     <label htmlFor="remember">Remember me</label>
                   </div>
-                  <a href="#">Forgot password?</a>
+                  <a href="/reset">Forgot password?</a>
                 </div>
                 <button type="submit">Sign In</button>
               </form>

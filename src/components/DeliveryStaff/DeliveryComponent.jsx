@@ -1,21 +1,39 @@
   import React, { useState, useEffect } from 'react';
   import { Line } from 'react-chartjs-2';
   import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler  } from 'chart.js';
-  import { Dropdown } from 'react-bootstrap';
   import 'bootstrap/dist/css/bootstrap.min.css';
   import './DeliveryStaff.css';
   import { useNavigate } from 'react-router-dom';
   import { listOrder,getOrderDetail } from '../../services/DeliveryService';
   import { logout } from '../Member/auth'; 
-
+  import { FaSearch } from "react-icons/fa";
+  import { FaRegCalendarAlt } from "react-icons/fa";
+  import { FiHome } from "react-icons/fi";
+  import { IoSettingsOutline } from "react-icons/io5";
+  import { MdSupportAgent} from "react-icons/md";
+  import { IoIosNotificationsOutline } from "react-icons/io";
+  import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
+  import { FaRegMessage } from "react-icons/fa6";
+  import { CgProfile } from "react-icons/cg";
+  import { CiLogout } from "react-icons/ci";
+  import { FaTruckFast } from "react-icons/fa6";
+  import { FiAlertTriangle } from "react-icons/fi";
+  import { FaRegRectangleList } from "react-icons/fa6";
+  import { FaBoxesStacked } from "react-icons/fa6";
+  
   ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler );
 
-
+  
   const DeliveryComponent = () => {
     const handleLogout = () => {
       logout(); 
       navigate('/'); 
     };
+
+    
+  const toggleDropdown = () => {
+    setDropdownOpen(!isDropdownOpen);
+  }
 
     const handleViewOrder = (orderId) => {
       navigate(`/order/${orderId}`);
@@ -23,15 +41,25 @@
     const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
 
-    const [hoveredOrder, setHoveredOrder] = useState(null); 
+    // const [hoveredOrder, setHoveredOrder] = useState(null); 
     const [searchQuery, setSearchQuery] = useState('');
     const [orderDetail, setOrderDetail] = useState(null);
 
-    const [selectedDelivery, setSelectedDelivery] = useState(null);
+    // const [selectedDelivery, setSelectedDelivery] = useState(null);
     const [monthFilter, setMonthFilter] = useState('');
-    const [regionFilter, setRegionFilter] = useState('');
+    const [provinceFilter, setProvinceFilter] = useState('');
+    const [provinces, setProvinces] = useState([]);
     const [statusFilter, setStatusFilter] = useState('');
     const [transportationFilter, setTransportationFilter] = useState('');
+
+    const [currentPage, setCurrentPage] = useState(1);  // Trang hiện tại
+    const ordersPerPage = 10; 
+  
+    const [isDropdownOpen, setDropdownOpen] = useState(true); //drop down
+
+    const accountId = localStorage.getItem("accountId");
+        console.log("accountId:", accountId);
+  
     
     const getOrderCounts = () => {
       const totalOrders = orders.length;
@@ -47,24 +75,29 @@
       };
     };
 
-    const { totalOrders, delivering, delivered, fail } = getOrderCounts();
+    const { totalOrders, delivering, approving, fail } = getOrderCounts();
     
-
+    const GHN_API_KEY=import.meta.env.VVITE_GHN_API_KEY;
     useEffect(() => {
-  
-      const fetchDeliveries = async () => {
+      
+      const fetchProvinces = async () => {
         try {
-          const response = await fetch('http://koideliverysystem.id.vn:8080/api/orders'); 
+          const response = await fetch('https://online-gateway.ghn.vn/shiip/public-api/master-data/province', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Token': GHN_API_KEY,
+            },
+          });
           const data = await response.json();
-          
-          setSelectedDelivery(data[0]); 
+          // console.log(data); 
+          setProvinces(data.data); 
         } catch (error) {
-          console.error('Error fetching deliveries:', error);
+          console.error('Error fetching provinces:', error);
         }
       };
-
-      
-      fetchDeliveries();
+  
+      fetchProvinces();
       getAllOrders();
     }, []);
 
@@ -83,13 +116,13 @@
         });
     };
     
-    const handleMouseEnter = (order) => {
-      setHoveredOrder(order); 
-    };
+    // const handleMouseEnter = (order) => {
+    //   setHoveredOrder(order); 
+    // };
 
-    const handleMouseLeave = () => {
-      setHoveredOrder(null); 
-    };
+    // const handleMouseLeave = () => {
+    //   setHoveredOrder(null); 
+    // };
 
     const handleSearch = async (event) => {
       const orderId = event.target.value;
@@ -113,153 +146,191 @@
         setOrderDetail(null);  
       }
     };
-    const getStatusCounts = () => {
-      const statusCounts = orders.reduce((acc, order) => {
-        const status = order.status;
-        if (!acc[status]) {
-          acc[status] = 0;
-        }
-        acc[status]++;
-        return acc;
-      }, {});
+
+    // const getStatusCounts = () => {
+    //   const statusCounts = orders.reduce((acc, order) => {
+    //     const status = order.status;
+    //     if (!acc[status]) {
+    //       acc[status] = 0;
+    //     }
+    //     acc[status]++;
+    //     return acc;
+    //   }, {});
 
     
-      return [
-        // statusCounts[0] || 0,
-        statusCounts[1] || 0,
-        statusCounts[2] || 0,
-        statusCounts[3] || 0,
-        statusCounts[4] || 0,
-        // statusCounts[5] || 0,
-      ];
-    };
+    //   return [
+    //     // statusCounts[0] || 0,
+    //     statusCounts[1] || 0,
+    //     statusCounts[2] || 0,
+    //     statusCounts[3] || 0,
+    //     statusCounts[4] || 0,
+    //     // statusCounts[5] || 0,
+    //   ];
+    // };
     
-    const ordersByStatusChartData = {
-      labels: ['Status 1', 'Status 2', 'Status 3', 'Status 4'], 
-      datasets: [
-        {
-          label: 'Number of Orders by Status', 
-          data: getStatusCounts(), 
-          backgroundColor: 'rgba(75, 192, 192, 0.2)', 
-          borderColor: 'rgba(75, 192, 192, 1)', 
-          borderWidth: 2, 
-          fill: true, 
-        },
-      ],
-    };
-    const chartOptions = {
-      scales: {
-        y: {
-          ticks: {
-            stepSize: 1, 
-            beginAtZero: true, 
-          },
-          min: 0, 
-          max: 6, 
-        },
-      },
-    };
+    // const ordersByStatusChartData = {
+    //   labels: ['Status 1', 'Status 2', 'Status 3', 'Status 4'], 
+    //   datasets: [
+    //     {
+    //       label: 'Number of Orders by Status', 
+    //       data: getStatusCounts(), 
+    //       backgroundColor: 'rgba(75, 192, 192, 0.2)', 
+    //       borderColor: 'rgba(75, 192, 192, 1)', 
+    //       borderWidth: 2, 
+    //       fill: true, 
+    //     },
+    //   ],
+    // };
+    // const chartOptions = {
+    //   scales: {
+    //     y: {
+    //       ticks: {
+    //         stepSize: 1,
+    //         beginAtZero: true,
+    //       },
+    //       min: 0,
+    //       max: Math.max(...getStatusCounts()) + 1, // Dynamically adjust max
+    //     },
+    //   },
+    // };
 
-    const handleFilterChange = () => {
-      getAllOrders();  
-    };
-
+    // const handleFilterChange = () => {
+    //   getAllOrders();  
+    // };
+   
     const filteredOrders = orders.filter(order => {
-      const matchesMonth = monthFilter ? order.orderDate.includes(monthFilter) : true;
-      const matchesRegion = regionFilter ? order.destination.includes(regionFilter) : true;
+      const orderMonth = new Date(order.orderDate).getMonth() + 1;
+      const matchesMonth = monthFilter ? orderMonth === parseInt(monthFilter) : true;
+      const matchesProvince = provinceFilter ? order.destination.includes(provinceFilter) : true;
       const matchesStatus = statusFilter ? order.status === parseInt(statusFilter) : true;
-      const matchesTransportation = transportationFilter ? order.transportation === transportationFilter : true;
-      return matchesMonth && matchesRegion && matchesStatus && matchesTransportation ;
+      const matchesTransportation = transportationFilter ? order.orderNote === transportationFilter : true;
+  
+      return matchesMonth && matchesProvince && matchesStatus && matchesTransportation;
     });
+  
+    const indexOfLastOrder = currentPage * ordersPerPage;
+    const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+    const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+    const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+  
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
       <div className="container-fluid">
         <div className="row">
-          <aside className="sidebar col-2 p-3 border-end">
+          <aside className="sidebar col- p-3 ">
+            <div className='side-bar'>
             <div className="profile-container text-center mb-4">
               <div className="SideKoi d-flex align-items-center justify-content-between">
-                <img src="/Logo-Koi/Order.png" alt="Profile " className="profile-img rounded-circle me-3" />
-                <div className="text-start KoiLogo">
-                  <p className="KoiDeli mb-0">Koi Deli</p>
+                <img src="/Logo-Koi/Order.png" alt="Profile "className="profile-img rounded-circle " />
+                <div className=" KoiLogo">
+                  <p className="KoiDeli ">Koi Deli</p>
                 </div>
               </div>
-              <hr className="logo-separator" />
+              {/* <hr className="logo-separator" />  */}
+              {/* border */}
               
             </div>
             <nav>
         <ul className="list-unstyled">
-          <li>
-            <a href="#"><i className="bi bi-speedometer2 me-2"></i> Dashboard</a>
-          </li>
-          <li>
-            <a href="#"><i className="bi bi-chat-dots me-2"></i> Messages</a>
-          </li>
-          <li>
-            <a href="/orders"><i className="bi bi-bag me-2"></i> Orders</a>
-          </li>
-          <li>
-            <a href="#"><i className="bi bi-life-preserver me-2"></i> Help & Support</a>
-          </li>
-          <li>
-            <a href="#"><i className="bi bi-gear me-2"></i> Settings</a>
-          </li>
-        </ul>
-      </nav>
 
+          {/* <li>
+            <a href="#"><i className="bi bi-speedometer2 me-2"></i> Dashboard</a>
+            
+          </li> */}
+          
+            <li>
+              <a href="/"><i className="bi bi-speedometer2 me-2"> <FiHome /> </i>  Homepage</a>
+          </li>
+
+          
+
+          <li>
+            <a href="/orders"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Orders</a>
+          </li>
+
+          <li>
+            <a href="#"><i className="bi bi-chat-dots me-2"><FaRegCalendarAlt /></i> Calendar</a>
+           </li>
+
+          <li>
+            <a href="#"><i className="bi bi-life-preserver me-2"><MdSupportAgent /></i> Help & Support</a>
+          </li>
+
+          <li>
+            <a href="#"><i className="bi bi-chat-dots me-2"> <FaRegMessage/> </i>  Messages</a>
+          </li>
+
+          <li>
+            <a href="#"><i className="bi bi-gear me-2"><IoSettingsOutline /></i> Settings</a>
+           </li>
+         
+        </ul>
+        </nav>
+        </div>
           </aside>
 
-          <main className="dashboard col-10 p-4">
-          <header className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-              <h1>Dashboard</h1>
-              <header className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-              <div className="d-flex align-items-center search-container" style={{ flex: 1 }}>
+          <main className="dashboard ">
+          <header className="d-flex justify-content-between align-items-center mb-4 border-bottom ">
+              <h1>Delivery Orders</h1> 
+              {/* <h6>Delivery Orders</h6>          */}
+              <header className="d-flex justify-content-between align-items-center mb-4 ">
+              <div className="header-content" style={{ width: '%' }}> 
+              <div className="d-flex align-items-center justify-content-center search-container">
               <input
+                  className="search-bar"
                   type="text"
-                  className="form-control me-2"
-                  placeholder="Search by Order ID..."
                   value={searchQuery}
                   onChange={handleSearch}
-                  style={{ width:    '100%' }}
-                />
+                  placeholder="Search Order"
+              />
+             </div>
+
+                <div className="navbar-cus-right">
+                  <div className="dropdown" onClick={toggleDropdown}>
+                    <img src="/Delivery/User.png" alt="Avatar" className="avatar" />
+                    {isDropdownOpen && ( 
+                      <div className="dropdown-content">
+                        <a  href="user-page"><CgProfile /> View Profile</a>
+                        <a  onClick={handleLogout}><CiLogout /> Logout</a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              
+
               </div>
-              <div className="d-flex align-items-center">
-                <select className="form-select me-2">
-                  <option>ENG</option>
-                  <option>FR</option>
-                  <option>ES</option>
-                </select>
-                <Dropdown>
-                  <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="profile-dropdown">
-                    <img src="/Delivery/User.png" alt="Profile" className="profile-img rounded-circle" style={{ width: '40px', height: '40px' }} />
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item href="user-page">View Profile</Dropdown.Item>
-                    <Dropdown.Item href="#">Update Profile</Dropdown.Item>
-                    <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
-            </header>
+
+              <div className="notification-icon m-4">
+                  <IoIosNotificationsOutline />
+                  {/* <span className="notification-text">somethinghere</span> */}
+                </div>
             </header>
 
-            <section className="overview">
-              <div className="card total-orders">
-                <h3>Total Orders</h3>
+            </header>
+               
+            <section className="delivery-overview">
+              <div className="card delivery-total-orders">
+                <h3>Total Orders <FaBoxesStacked /></h3>
+                
                 <p>{totalOrders}</p>
               </div>
 
-              <div className="card delivering">
-                <h3>Delivering</h3>
+              <div className="card delivery-delivering">
+                <h3>Delivering  <FaTruckFast /> </h3>
+                
                 <p>{delivering}</p>
               </div>
 
-              <div className="card approving">
-                <h3>Approving</h3>
-                <p>{delivered}</p>
+              <div className="card delivery-approving">
+                <h3>Approving <FaRegRectangleList /> </h3>
+                
+                <p>{approving}</p>
               </div>
                 
-              <div className="card fail">
-                <h3>Fail</h3>
+              <div className="card delivery-fail">
+                <h3>Delivery Issue <FiAlertTriangle /></h3>
                 <p>{fail}</p>
               </div>
             </section>
@@ -301,119 +372,121 @@
             </section>
   )}
 
-            <section className="ongoing-delivery mt-4 d-flex border-top pt-3">
-            <div className="delivery-list col-12">
-                <h2>List of Orders</h2>
+            <section className="delivery-ongoing-delivery mt-4 d-flex border-top pt-3">
+            <div className="delivery-list col-12 " >
+                <h2>Delivery Report</h2>
 
                 <div className="filter-bar d-flex mb-3">
                   <select className="form-select me-2" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)}>
                     <option value="">All Months</option>
-                    <option value="01">January</option>
-                    <option value="02">February</option>
-                    <option value="03">March</option>
-                    {/* Add other months */}
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
                   </select>
-                  {/* <select className="form-select me-2" value={regionFilter} onChange={(e) => setRegionFilter(e.target.value)}>
-                    <option value="">All Regions</option>
-                    <option value="North">North</option>
-                    <option value="South">South</option>
-                    {/* Add other regions */}
-                  {/* </select>  */}
-
+                
                   <select className="form-select me-2" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
                     <option value="">All Statuses</option>
-                    <option value="0">Pending</option>
+                    <option value="0">Waiting for approval</option>
                     <option value="1">In Progress</option>
-                    <option value="2">Delivered</option>
-                    {/* Add other statuses */}
+                    <option value="2">Delivering</option>
+                    <option value="3">Delivered</option>
+                   
                   </select>
                   <select className="form-select me-2" value={transportationFilter} onChange={(e) => setTransportationFilter(e.target.value)}>
-                    <option value="">All Transport</option>
+                    {/* <option value="">All Transport</option>
                     <option value="Truck">Truck</option>
                     <option value="Van">Van</option>
-                    {/* Add other transportation methods */}
+                    <option value="car">Car</option>
+                     */}
+                    <option value= "">Method Transport</option>
+                    <option value= "Giao hàng khẩn cấp">Express Delivery</option>
+                    <option value= "Giao hàng tiêu chuẩn">Regular Delivery</option>
                   </select>
 
                   
-                  {/* <select class="form-select form-select-sm mb-3" id="city" aria-label=".form-select-sm">
-                    <option value="" selected>Chọn tỉnh thành</option>           
-                  </select>
-                            
-                  <select class="form-select form-select-sm mb-3" id="district" aria-label=".form-select-sm">
-                    <option value="" selected>Chọn quận huyện</option>
-                  </select>
-
-                  <select class="form-select form-select-sm" id="ward" aria-label=".form-select-sm">
-                    <option value="" selected>Chọn phường xã</option>
-                  </select> */}
-                
-                  <button className="btn btn-primary" onClick={handleFilterChange}>Apply Filters</button>
+                  <select className="form-select me-2" value={provinceFilter} onChange={(e) => setProvinceFilter(e.target.value)}>
+                  <option value="">All Provinces</option>
+                  {provinces?.map((province) => (
+                    <option key={province.ProvinceID} value={province.ProvinceName}>
+                      {province.ProvinceName}
+                    </option>
+                  ))}
+                </select>
                 </div>
                 
-                <table className="table table-striped table-bordered">
+                <table className="table table-striped table-bordered ">
                   <thead>
                     <tr>
                     <th>OrderId</th>
-                    <th>Destination</th>
-                    <th>Freight</th>
                     <th>OrderDate</th>
+                    <th>Destination</th>
                     <th>ShipDate</th>
-                    <th>TotalPrice</th>
+                    <th>Province</th>
                     <th>Origin</th>
+                    <th>Freight</th>
                     <th>Status</th>
                     <th></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {orders.length > 0 ? (
-                      orders.map((order) => (
-                        <tr
-                          key={order.orderId}
-                          onMouseEnter={() => handleMouseEnter(order)} 
-                          onMouseLeave={handleMouseLeave} 
-                        >
-                          <td>{order.orderId}</td>
-                          <td>{order.destination}</td>
-                          <td>{order.freight}</td>
-                          <td>{order.orderDate}</td>
-                          <td>{order.shippedDate}</td>
-                          <td>{order.totalPrice}</td>
-                          <td>{order.origin}</td>
-                          <td>{order.status}</td>
-                          <td>
+                  {currentOrders.length > 0 ? (
+                    currentOrders
+                    .filter(order => order.deliver ===accountId) 
+                    .map((order) => (
+                      <tr key={order.orderId}>
+                        <td>{order.orderId}</td>
+                        <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                        <td>{order.destination}</td>
+                        <td>{new Date(order.shippedDate).toLocaleDateString() }</td>
+                        <td>{order.province}</td>
+                        <td>{order.origin}</td>
+                        <td>{order.freight}</td>
+                        <td>{order.status}</td>
+                        <td>
                           <button onClick={() => handleViewOrder(order.orderId)}>View</button>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="12" className="text-center">No Orders Found</td>
+                        </td>
                       </tr>
-                    )}
-                  </tbody>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="12" className="text-center">No Orders Found</td>
+                    </tr>
+                  )}
+                </tbody>
                 </table>
 
-                {/* {hoveredOrder && (
-                  <div className="hovered-order-details mt-3 p-3 bg-light border rounded">
-                  <h4>Order Details</h4>
-                  <p><strong>Destination:</strong> {hoveredOrder.destination}</p>
-                  <p><strong>Freight:</strong> {hoveredOrder.freight}</p>
-                  <p><strong>OrderDate:</strong> {hoveredOrder.orderDate}</p>
-                  <p><strong>ShipDate:</strong> {hoveredOrder.shippedDate}</p>
-                  <p><strong>Origin:</strong> {hoveredOrder.origin}</p>
-                </div>
-                )} */}
+                <nav>
+                <ul className="pagination">
+                {Array.from({ length: totalPages }).map((_, index) => (
+                  <li key={index} className="page-item">
+                    <button onClick={() => paginate(index + 1)} className="page-link">
+                      {index + 1}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              </nav>
+
               </div>
             
             </section>
 
-            <section className="statistics mt-4 d-flex justify-content-between border-top pt-3">
+            {/* <section className="statistics mt-4 d-flex justify-content-between border-top pt-3">
               
               <div className="container">
                 <h2>Orders by Status</h2>
                 <Line data={ordersByStatusChartData} options={chartOptions} />
               </div>
-            </section>
+            </section> */}
           </main>
         </div>
       </div>

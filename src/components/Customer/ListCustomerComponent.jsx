@@ -58,6 +58,7 @@ const ListCustomerComponent = () => {
             <th>Last Name</th>
             <th>Email</th>
             <th>CreateAt</th>
+            <th>Province</th>
             <th>Avatar</th>
             <th>Actions</th>
           </tr>
@@ -76,6 +77,7 @@ const ListCustomerComponent = () => {
                 <td>{account.lastName}</td>
                 <td>{account.email}</td>
                 <td>{account.createAt}</td>
+                <td>{account.province}</td>
                 <td><img src={account.avatar} alt="Avatar" width="50" height="50" /></td>
                 <td>
                   <button className="btn btn-info" onClick={() => updateAccount(account.accountId)}>Update</button>

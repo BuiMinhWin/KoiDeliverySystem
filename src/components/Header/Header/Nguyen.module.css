@@ -1,0 +1,111 @@
+/* Nguyen.css
+
+/* General Container */
+.nguyen-sale-staff-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full height */
+  overflow: hidden; /* Prevent default scrollbar */
+}
+
+/* Navbar */
+.nguyen-navbar-order {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #171b36;
+  padding: 10px 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 100px;
+}
+
+/* Navbar Elements */
+.nguyen-navbar-order-left {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.nguyen-navbar-order-right {
+  display: flex;
+  align-items: center;
+}
+
+.nguyen-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Navigation Links */
+.nguyen-nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.nguyen-nav-link:hover {
+  color: #4caf50;
+}
+
+/* Dropdown */
+.nguyen-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.nguyen-dropdown-content-avatar {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 220px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  right: 0;
+}
+
+.nguyen-dropdown-content-avatar a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.nguyen-dropdown-content-avatar a:hover {
+  background-color: #f1f1f1;
+}
+
+.nguyen-dropdown:hover .nguyen-dropdown-content-avatar {
+  display: block;
+}
+
+.nguyen-avatar-order {
+  margin-top: 60px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Checkbox Styles */
+.nguyen-checkbox-wrapper {
+  margin: 10px 0;
+}
+
+.nguyen-checkbox-label {
+  color: #171b36;
+}
+
+.nguyen-checkbox-wrapper.error {
+  color: red; /* Error indication */
+  border: 1px solid red; /* Example style for error */
+  background-color: #ffe6e6; /* Light red background */
+} */

@@ -17,8 +17,8 @@ const Homepage = () => {
 
   const roleId = localStorage.getItem('roleId'); 
   console.log('Role ID:', roleId);
-  const accountId = localStorage.getItem('accountId');
-  console.log("Stored Account ID:", accountId);
+  // const accountId = localStorage.getItem('accountId');
+  // console.log("Stored Account ID:", accountId);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -43,10 +43,6 @@ const Homepage = () => {
       setTrackingCode(''); // Xóa mã đơn hàng
       setTrackingResult(null); // Xóa kết quả tra cứu
     }
-    // const roleId = localStorage.getItem('roleId'); 
-    // console.log('Role ID:', roleId);
-    // const accountId = localStorage.getItem('accountId');
-    // console.log("Stored Account ID:", accountId);
   }, [activeTab]);
 
 
@@ -72,6 +68,9 @@ const Homepage = () => {
         </div>
         
         <div className="navbar-right">
+        <a href="#" className="nav-link support-link">
+            <i className="fas fa-question-circle"></i>Hỗ Trợ
+          </a>
           {!roleId ? (
             <>
               <button className="register-btn" onClick={() => navigate('/register')}>Đăng Ký</button>
@@ -85,13 +84,20 @@ const Homepage = () => {
                 <button onClick={() => navigate('/delivery')}>Back</button>
               ) : roleId === 'Sales' ? (
                 <button onClick={() => navigate('/salestaff')}>Back</button>
-              ) : null}
+              ) : roleId === 'Customer' ?(
+                <button onClick={() => navigate('/customer')}>Back</button>
+              ):null
+              }
             </>
           )}
-          <a href="#" className="nav-link support-link">
-            <i className="fas fa-question-circle"></i>Hỗ Trợ
-          </a>
+        
       </div>
+
+        {/* <div className="navbar-right">
+          <a href="#" className="nav-link support-link"><i className="fas fa-question-circle"></i>Hỗ Trợ</a>
+          <button className="register-btn" onClick={() => navigate('/register')}>Đăng Ký</button>
+          <button className="login-btn" onClick={() => navigate('/login')}>Đăng Nhập</button>  
+        </div> */}
               
         
       </nav>

@@ -1,30 +1,26 @@
-import React from 'react';
-import { useFormikContext } from 'formik';
-import { Button } from '@mui/material';
+import React from "react";
+import { useFormikContext } from "formik";
+import { Button } from "@mui/material";
 
-const ButtonWrapper = ({
-  children,
-  ...otherProps
-}) => {
-  const { submitForm } = useFormikContext();
-  console.log('Formik Context:', useFormikContext());
+const ButtonWrapper = ({ children , ...otherProps }) => {
+  const { submitForm, isSubmitting, isValid } = useFormikContext();
 
   const handleSubmit = () => {
     submitForm();
-  }
+  };
 
   const configButton = {
-    variant: 'contained',
-    color: 'primary',
+    variant: "contained",
+    color: "primary",
     fullWidth: true,
-    onClick: handleSubmit
-  }
+    onClick: handleSubmit,
+    disabled: !isValid || isSubmitting, // Disable if invalid or submitting
+    ...otherProps, // Spread other props
+  };
 
   return (
-    <Button
-      {...configButton}
-    >
-      {children}
+    <Button {...configButton}>
+      {isSubmitting ? "Submitting..." : children}
     </Button>
   );
 };

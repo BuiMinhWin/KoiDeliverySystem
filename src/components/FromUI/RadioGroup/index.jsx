@@ -8,7 +8,14 @@ import {
 } from "@mui/material";
 import { useField, useFormikContext } from "formik";
 
-const RadioGroupWrapper = ({ name, label, legend, defaultValue, options, ...otherProps }) => {
+const RadioGroupWrapper = ({
+  name,
+  label,
+  legend,
+  defaultValue,
+  options,
+  ...otherProps
+}) => {
   const { setFieldValue } = useFormikContext();
   const [field, meta] = useField(name);
 
@@ -35,6 +42,7 @@ const RadioGroupWrapper = ({ name, label, legend, defaultValue, options, ...othe
             value={option.value}
             control={<Radio />}
             label={option.label}
+            sx={{ color: "black" }} // Set label color to black
           />
         ))}
       </RadioGroup>

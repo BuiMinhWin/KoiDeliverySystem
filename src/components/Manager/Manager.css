@@ -6,7 +6,11 @@
   background-color: #343a40;
   color: white;
   padding-top: 20px;
+  margin-left:5px
   
+}
+.manager-sidebar{
+  margin-left: 60px;
 }
 
 .sidebar.logo{
@@ -121,6 +125,10 @@ ul.list-unstyled li a:hover {
   margin-right: 10px;
 }
 
+.avatar{
+  margin-top: 15px;
+}
+
 .overview {
   display: flex;
   justify-content: space-between;
@@ -144,7 +152,7 @@ ul.list-unstyled li a:hover {
   font-size: 16px;
 }
 
-.card.total-shipments {
+.card.total-employee {
   background-color: #EEE8AA;
 }
 
@@ -152,20 +160,20 @@ ul.list-unstyled li a:hover {
   background-color: #A1A7FF;
 }
 
-.card.ongoing-shipments {
+.card.total-customers {
   background-color: #C4D0BA;
 }
 
-.card.delivered {
+.card.revenue {
   background-color: #A1A7FF;
 }
 
-.ongoing-delivery {
+.ongoing-employee {
   display: flex;
   gap: 20px;
 }
 
-.ongoing-delivery h2 {
+.ongoing-employee h2 {
   font-size: 20px;
   margin-bottom: 20px;
 }
@@ -189,21 +197,10 @@ ul.list-unstyled li a:hover {
   font-size: 14px;
 }
 
-.delivery-map {
+.sales-list {
   padding: 20px;
   background-color: #f8f9fa;
   border-radius: 10px;
-}
-
-.delivery-map img {
-  width: 100%;
-  max-height: 300px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.delivery-map p {
-  margin: 10px 0;
 }
 
 .statistics {

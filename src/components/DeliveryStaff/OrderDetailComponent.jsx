@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { getOrderDetail } from '../../services/DeliveryService';
+import { useParams } from 'react-router-dom';
 
 const OrderDetailComponent = () => {
-  const [orderId, setOrderId] = useState(1); // có thể thay đổi được 
+  const { orderId } = useParams();
   //const {orderId,setOrderId } = useState([]); chuỗi rỗng 
   const [orderDetail, setOrderDetail] = useState([]); // Dùng để lưu danh sách orderDetail
 

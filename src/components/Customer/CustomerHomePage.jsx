@@ -7,6 +7,7 @@ import blog from '../../assets/Blog.jpg';
 import avatar from '../../assets/Avatar.jpg';
 import { useNavigate } from 'react-router-dom';
 import { getOrder } from '../../services/CustomerService';
+import { logout } from '../Member/auth'; 
 
 
 
@@ -44,6 +45,10 @@ const Homepage = () => {
 
   const [isDropdownOpen, setDropdownOpen] = useState(false); // Quản lý trạng thái mở dropdown
 
+  const handleLogout = () => {
+    logout(); 
+    navigate('/'); 
+  };
 
   return (
     <div className="homepage-container">
@@ -75,7 +80,7 @@ const Homepage = () => {
           <img src={avatar} alt="Avatar" className="avatar" />
             <div className="dropdown-content-avatar ">
               <a href="#">Tài khoản của tôi</a>
-              <a href="#">Đăng xuất</a>
+              <a  onClick={handleLogout}>Đăng xuất</a>
             </div>  
       </div>
     </div>

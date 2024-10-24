@@ -1,4 +1,13 @@
 /* ListOrderComponent.css */
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+
 .container {
   margin-top: 30px;
 }
@@ -182,12 +191,11 @@ h1 {
 }
 
 /* Navbar styling */
-.navbar-cus {
+.navbar-sale {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #171B36;
-  padding: 10px 20px;
   position: fixed;
   top: 0;
   left: 0;
@@ -197,17 +205,17 @@ h1 {
   height: 60px;
 }
 
-.navbar-cus-left {
+/* .navbar-cus-left {
   display: flex;
   align-items: center;
   gap: 30px; /* Adjust this to control the spacing between items */
-}
 
-.navbar-cus-right {
+
+.navbar-sale-right {
 
   display: flex;
   align-items: center;
-
+  padding-right: 350px;
 }
 
 .logo {
@@ -241,29 +249,176 @@ h1 {
     display: inline-block;
   }
   
-  .dropdown-content {
+  .dropdown-content-salestaff {
     display: none;
     position: absolute;
     background-color: #f9f9f9;
     min-width: 220px;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     z-index: 1;
+    right: 0; /* Căn dropdown về phía bên phải của container */
+    transform: translateX(0); /* Điều chỉnh nếu cần thêm khoảng cách */
   }
   
-  .dropdown-content a {
+  .dropdown-content-salestaff a {
     color: black;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
   }
   
-  .dropdown-content a:hover {
+  .dropdown-content-salestaff a:hover {
     background-color: #f1f1f1;
   }
   
   /* Show the dropdown on hover */
-  .dropdown:hover .dropdown-content {
+  .dropdown:hover .dropdown-content-salestaff {
     display: block;
     text-align: left;
   }
+  
+
+  
+  .header-content {
+    gap: 20px; 
+    display: flex;
+    align-items: center;
+    width: 250%;
+  }
+  
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -70px;
+    height: 100vh;
+    width: 200px; 
+  
+  }
+  
+  .side-bar{
+    margin-left:60px;
+  }
+  
+  .KoiDeli{
+    margin-left: -100px;
+    color: white;
+  }
+  
+  .dashboard-sale {
+    margin-left: 290px; 
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #ffffff;
+    z-index: 1000; 
+  
+  }
+  
+  .dashboard-sale header input.form-control {
+    margin-right: 10px;
+  }
+  
+  
+  .overview {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .overview .card {
+    padding: 20px;
+    width: 23%;
+    text-align: center;
+    border-radius: 10px;
+  }
+  
+  .overview .card h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .overview .card p {
+    font-size: 16px;
+  }
+  
+  .card.fail {
+    background-color: #EEE8AA;
+  }
+  
+  .card.total-orders{
+    background-color: #A1A7FF;
+  }
+  
+  .card.delivering {
+    background-color: #C4D0BA;
+  }
+  
+  .card.approving {
+    background-color: #A1A7FF;
+  }
+  
+  .ongoing-delivery {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .ongoing-delivery h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .delivery-list {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+  }
+  
+  .delivery-item {
+    padding: 10px;
+  }
+  
+  .delivery-item:last-child {
+    border-bottom: none;
+  }
+  
+  .search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    margin-top: 20px; /* Nếu cần */
+   
+  }
+  
+  .search-bar {
+    flex-grow: 1; 
+    margin: 0 20px; 
+    min-width: 300px; 
+    max-width: 100%; 
+   
+  }
+  
+  .notification-icon {
+      
+      position: relative;
+      cursor: pointer;
+      font-size: 1.9rem; 
+  
+  }
+    
+  .notification-icon .notification-text {
+      display: none;
+      position: absolute;
+      top: 50%;
+      right: -80px;
+      transform: translateY(-50%);
+      background-color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+    
+  .notification-icon:hover .notification-text {
+      display: block; 
+  }
+    
   
