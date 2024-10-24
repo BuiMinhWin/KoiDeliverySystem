@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = "http://koideliverysystem.id.vn:8080/api/feedbacks";
+const API_BASE_URL = "/api/feedbacks";
 
 // Gửi feedback của người dùng
 export const createFeedback = (orderId, content) => {

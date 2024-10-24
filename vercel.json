@@ -8,9 +8,39 @@
       "source": "/api/Google/loginGG",
       "destination": "http://koideliverysystem.id.vn:8080/api/Google/loginGG"
     },
+  
     {
       "source": "/api/auth/:path*",
       "destination": "http://koideliverysystem.id.vn:8080/api/auth/:path*"
+    },
+
+    {
+      "source": "/api/orders/:path*",
+      "destination": "http://koideliverysystem.id.vn:8080/api/orders/:path*"
+    },
+    {
+      "source": "/api/ordersDetail/:path*",
+      "destination": "http://koideliverysystem.id.vn:8080/api/ordersDetail/:path*"
+    },
+    {
+      "source": "/api/ordersDetail/order/:path*",
+      "destination": "http://koideliverysystem.id.vn:8080/api/ordersDetail/order/:path*"
+    },
+    {
+      "source": "/api/documents/:path*",
+      "destination": "http://koideliverysystem.id.vn:8080/api/documents/:path*"
+    },
+
+    {
+      "source": "/api/feedbacks/:path*",
+      "destination": "http://koideliverysystem.id.vn:8080/api/feedbacks/:path*"
+    },
+
+    
+    {
+      "source": "/api/documents/download/order/{orderId}/:path*",
+      "destination": "http://koideliverysystem.id.vn:8080/api/documents/download/order/{orderId}/:path*"
     }
+
   ]
 }

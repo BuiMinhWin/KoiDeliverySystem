@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const REST_API_ORDER_URL = "http://koideliverysystem.id.vn:8080/api/orders";
-const REST_API_ORDER_DETAIL_URL = "http://koideliverysystem.id.vn:8080/api/ordersDetail";
-const REST_API_DOCUMENT_URL = "http://koideliverysystem.id.vn:8080/api/documents";
-const REST_API_ACCOUNT_URL = "http://koideliverysystem.id.vn:8080/api/accounts";
+const REST_API_ORDER_URL = "/api/orders";
+const REST_API_ORDER_DETAIL_URL = "/api/ordersDetail";
+const REST_API_DOCUMENT_URL = "/api/documents";
+const REST_API_ACCOUNT_URL = "/api/accounts";
 
 export const createOrder = async (orderData) => {
   try {
