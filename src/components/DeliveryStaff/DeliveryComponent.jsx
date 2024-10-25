@@ -77,7 +77,7 @@
 
     const { totalOrders, delivering, approving, fail } = getOrderCounts();
     
-    const GHN_API_KEY=import.meta.env.VVITE_GHN_API_KEY;
+    const GHN_API_KEY=import.meta.env.VITE_GHN_API_KEY;
     useEffect(() => {
       
       const fetchProvinces = async () => {

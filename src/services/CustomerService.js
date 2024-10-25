@@ -101,7 +101,7 @@ export const updateAccount = async (accountId, values) => {
 };
 
 
-const REST_API_BASE_URL3 = "http://koideliverysystem.id.vn:8080/api/orders";
+const REST_API_BASE_URL3 = "/api/orders";
 
 export const getOrder = (orderId) => {
   return axios.get(REST_API_BASE_URL3 + "/" + orderId);
