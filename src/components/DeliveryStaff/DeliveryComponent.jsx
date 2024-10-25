@@ -58,7 +58,7 @@
     const [isDropdownOpen, setDropdownOpen] = useState(true); //drop down
 
     const accountId = localStorage.getItem("accountId");
-        console.log("accountId:", accountId);
+    console.log("accountId:", accountId);
   
     
     const getOrderCounts = () => {
