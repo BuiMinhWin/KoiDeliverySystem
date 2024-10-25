@@ -14,12 +14,15 @@
       "destination": "http://koideliverysystem.id.vn:8080/api/auth/:path*"
     },
 
+    
+    {
+      "source": "/api/delivery",
+      "destination": "http://koideliverysystem.id.vn:8080/api/delivery"
+    },
     {
       "source": "/api/orders",
       "destination": "http://koideliverysystem.id.vn:8080/api/orders"
     },
-    
-
     {
       "source": "/api/orders/:path*",
       "destination": "http://koideliverysystem.id.vn:8080/api/orders/:path*"
