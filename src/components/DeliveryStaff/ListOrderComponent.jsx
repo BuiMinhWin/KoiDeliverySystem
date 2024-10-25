@@ -113,7 +113,7 @@ const ListOrderComponent = () => {
         <tbody>
           {orders.length > 0 ? (
             orders
-            .filter(order => order.province === province) // Lọc các đơn hàng có tỉnh trùng với localStorage
+            .filter(order => order.accountId === accountId) // Lọc các đơn hàng có tỉnh trùng với localStorage
             .map(order => (
               <tr key={order.orderId}>
                 <td>{order.orderId}</td>
