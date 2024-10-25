@@ -15,14 +15,7 @@
     },
 
     
-    {
-      "source": "/delivery",
-      "destination": "/"
-    },
-    {
-      "source": "/:path*",
-      "destination": "/"
-    },
+    
     {
       "source": "/api/orders",
       "destination": "http://koideliverysystem.id.vn:8080/api/orders"
@@ -39,6 +32,14 @@
     {
       "source": "/api/documents/:path*",
       "destination": "http://koideliverysystem.id.vn:8080/api/documents/:path*"
+    },
+    {
+      "source": "/delivery",
+      "destination": "/"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/"
     },
 
     {
