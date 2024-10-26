@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { forgotPassword, verifyPassword } from '../../services/EmployeeService';
-// import { Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 const ResetPasswordComponent = () => {
   const [newPassword, setNewPassword] = useState('');
@@ -9,17 +9,20 @@ const ResetPasswordComponent = () => {
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const [showPasswordFields, setShowPasswordFields] = useState(false); // Trạng thái để ẩn/hiện các trường nhập mật khẩu và code
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const navigate = useNavigate();
   
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      console.log(email);
+      // console.log(email);
       const response = await forgotPassword(email); 
       console.log(response.data);
+      const errorMessage = "Code for reset password had bean send to your mail" ;
+        enqueueSnackbar(errorMessage, { variant: 'success', autoHideDuration: 1000 });
+      
 
-      // Nếu nhận được phản hồi hợp lệ, ẩn nút submit và hiển thị form nhập code và mật khẩu mới
       if (response.data) {
         setShowPasswordFields(true);
       }
@@ -36,9 +39,9 @@ const ResetPasswordComponent = () => {
     console.log(response.data);
     
     if (newPassword !== confirmPassword) {
-      console.log('Passwords do not match');
+      enqueueSnackbar('Passwords do not match!', { variant: 'error', autoHideDuration: 1000 });
     } else {
-      console.log('Password reset successful');
+      enqueueSnackbar('Passwords reset successful!', { variant: 'success', autoHideDuration: 1000 });
       navigate('/login');
     }
   };

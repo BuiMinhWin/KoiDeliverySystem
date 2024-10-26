@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Register.css';
 import { createAccount } from '../../services/EmployeeService';
+import { useSnackbar } from 'notistack';
 
 const RegisterComponent = () => {
   const [firstName, setFirstName] = useState('');
@@ -13,16 +14,18 @@ const RegisterComponent = () => {
   const [phone, setPhone] = useState('');
   const [gender, setGender] = useState('');
   const [avatar, setAvatar] = useState('');
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if (password !== confirmPassword) {
-      alert('Passwords do not match!');
+      enqueueSnackbar('Passwords do not match!', { variant: 'error', autoHideDuration: 1000 });
       return;
     }
-
+  
     const account = { 
       firstName, 
       lastName, 
@@ -30,16 +33,20 @@ const RegisterComponent = () => {
       password, 
       email, 
       phone, 
-      gender, 
       roleId: 'Customer', 
       avatar, 
-      createAt: new Date().toISOString 
+      createAt: new Date().toISOString() 
     };
-    
+  
     createAccount(account)
       .then((response) => {
-        console.log('Account created:', response.data);
+        console.log('Account created:', response.data.message);
+        enqueueSnackbar('Register success.', { variant: 'success', autoHideDuration: 1000 });
         navigate('/login');
+      })
+      .catch((error) => {
+        const errorMessage = error.response?.data?.message ;
+        enqueueSnackbar(errorMessage, { variant: 'error', autoHideDuration: 1000 });
       });
   };
 
@@ -126,7 +133,7 @@ const RegisterComponent = () => {
                     placeholder="Phone Number"
                   />
                 </div>
-                <div className="input-group">
+                {/* <div className="input-group">
                   <label>Gender</label>
                   <select 
                     value={gender} 
@@ -138,8 +145,8 @@ const RegisterComponent = () => {
                     <option value="female">Female</option>
                     <option value="other">Other</option>
                   </select>
-                </div>
-                <button type="button" className="google-login">Sign Up with Google</button>
+                </div> */}
+                {/* <button type="button" className="google-login">Sign Up with Google</button> */}
               </div>
             </form>
           </div>
