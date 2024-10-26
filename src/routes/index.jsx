@@ -26,7 +26,7 @@ import Authenticate from "../components/Member/Authenticate";
 import ResetPasswordComponent from "../components/Member/ResetPasswordComponent";
 import Map from "../components/Map";
 import { SnackbarProvider } from 'notistack';
-import PaymentOutcome from "../pages/CheckoutPage/PaymentOutCome";
+import PaymentOutcome from "../pages/CheckoutPage/PaymentOutcome";
 // import DistanceCalculator from "../components/DistanceCalculator";
 
 function index() {
