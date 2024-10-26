@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { listOrder, updateStatus } from '../../services/DeliveryService';
+import { listOrder, updateStatus} from '../../services/DeliveryService';
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import axios from "axios";
+
+
 
 const ListOrderComponent = () => {
   const [orders, setOrders] = useState([]);
   const [editedStatuses, setEditedStatuses] = useState({});
   // const [orderDetail, setOrderDetail] = useState(null); // Lưu chi tiết đơn hàng ở đây
   const navigate = useNavigate();
-  const province = localStorage.getItem('province'); 
-  console.log(province);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   useEffect(() => {
     getAllOrders();
+    
   }, []);
 
   const getAllOrders = () => {
@@ -38,18 +42,68 @@ const ListOrderComponent = () => {
     setEditedStatuses(updatedStatuses);
   };
 
-  const updateOrderStatus = (orderId) => {
+  const API_KEY =import.meta.env.VITE_GOONG_API_KEY; 
+  const reverseGeocodeAddress = async (lat, long) => {
+    try {
+      const response = await axios.get(
+        `https://rsapi.goong.io/Geocode?latlng=${lat},${long}&api_key=${API_KEY}`
+      );
+      const data = response.data;
+      if (data.results && data.results.length > 0) {
+        const address = data.results[0].formatted_address; 
+        return address;
+      } else {
+        throw new Error('No results found for the address.');
+      }
+    } catch (error) {
+      console.error('Error fetching geocode:', error);
+      throw new Error('Failed to fetch geocode.');
+    }
+  };
+
+  const updateOrderStatus = async (orderId) => {
     const newStatus = editedStatuses[orderId] ?? orders.find(order => order.orderId === orderId)?.status;
+    
     if (newStatus) {
-      console.log('New status to update:', newStatus);
-      updateStatus(orderId, newStatus)
-        .then((response) => {
-          console.log('Status updated successfully:', response);
-          getAllOrders();
-        })
-        .catch((error) => {
-          console.error('Error updating status:', error);
+      updateStatus(orderId, newStatus);
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          const currentLocate = await reverseGeocodeAddress(latitude, longitude);
+          console.log(currentLocate);
+          // const currentLocate = `${latitude},${longitude}`;
+          const data = {
+            orderId: orderId,
+            timeTracking: new Date().toISOString(),
+            currentLocate: currentLocate,
+            status: newStatus, 
+          };
+          console.log(data.status);
+
+          fetch("http://koideliverysystem.id.vn:8080/api/deliveryStatus/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => response.json())
+            .then(() => {
+              enqueueSnackbar("Cập nhật trạng thái thành công", { variant: "success", autoHideDuration: 1000 });
+              getAllOrders(); 
+            })
+            .catch(() => {
+              
+              enqueueSnackbar("Cập nhật thất bại. Vui lòng thử lại.", { variant: "error", autoHideDuration: 1000 });
+            });
+        }, () => {
+          
+          enqueueSnackbar("Không thể lấy vị trí hiện tại.", { variant: "error", autoHideDuration: 1000 });
         });
+      } else {
+        alert("Geolocation fail.");
+      }
     }
   };
 
@@ -59,7 +113,7 @@ const ListOrderComponent = () => {
 
   const roleId = localStorage.getItem('roleId'); 
   const accountId = localStorage.getItem("accountId");
-  console.log("accountId:", accountId);
+  // console.log("accountId:", accountId);
 
   const handleBackClick = () => {
     if (roleId === 'Manager') {
@@ -70,7 +124,9 @@ const ListOrderComponent = () => {
       navigate('/'); // Điều hướng về homepage
     }
   };
-  
+
+
+
 
   return (
     <div className="container">
@@ -113,7 +169,7 @@ const ListOrderComponent = () => {
         <tbody>
           {orders.length > 0 ? (
             orders
-            .filter(order => order.deliver === accountId) // Lọc các đơn hàng có tỉnh trùng với localStorage
+            .filter(order => order.deliver ===accountId) 
             .map(order => (
               <tr key={order.orderId}>
                 <td>{order.orderId}</td>
