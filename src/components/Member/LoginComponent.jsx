@@ -110,17 +110,6 @@ const LoginComponent = () => {
     enqueueSnackbar('Google login failed, please try again.', { variant: 'error', autoHideDuration: 1000 });
   };
 
-  // async function convertAvatarUrlToBytes(avatarUrl) {
-  //   try {
-  //     const response = await fetch(avatarUrl);
-  //     const blob = await response.blob();
-  //     const arrayBuffer = await blob.arrayBuffer();
-  //     return new Uint8Array(arrayBuffer);
-  //   } catch (error) {
-  //     console.error("Error fetching and converting avatar:", error);
-  //     return null;
-  //   }
-  // }
 
   return (
     <div className="login-container">
