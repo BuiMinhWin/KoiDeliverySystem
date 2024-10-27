@@ -17,7 +17,7 @@ const OrderReport = () => {
         const response = await axios.get(
           "/api/orders"
         );
-        console.log(respone.data);
+        console.log("danh sach order cua accountID nay",respone.data);
         const accountId = localStorage.getItem("accountId");
 
         // Filter orders by accountId
