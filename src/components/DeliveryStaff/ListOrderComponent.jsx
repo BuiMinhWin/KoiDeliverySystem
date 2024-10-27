@@ -95,7 +95,6 @@ const ListOrderComponent = () => {
               getAllOrders(); 
             })
             .catch(() => {
-              
               enqueueSnackbar("Cập nhật thất bại. Vui lòng thử lại.", { variant: "error", autoHideDuration: 1000 });
             });
         }, () => {

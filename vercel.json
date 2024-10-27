@@ -53,7 +53,7 @@
     {
       "source": "/api/deliveryStatus/:path*",
       "destination": "http://koideliverysystem.id.vn:8080/api/deliveryStatus/:path*",
-      "methods": ["POST"]
+      
     }
 
   ]
