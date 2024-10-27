@@ -43,3 +43,9 @@ export const listAccount = () => {
   return axios.get(REST_API_BASE_URL4);
 };
 
+
+export const assignDriver = (orderId, deliver) => {
+  return axios.patch(`${REST_API_BASE_URL}/update/${orderId}`, { deliver });
+};
+
+
