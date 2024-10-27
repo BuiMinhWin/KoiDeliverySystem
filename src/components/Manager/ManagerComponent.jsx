@@ -27,8 +27,8 @@ const ManagerComponent = () => {
   const [avatar, setAvatar] = useState(null); 
   const accountId = localStorage.getItem("accountId");
 
-  const [deliveryOrderCounts, setDeliveryOrderCounts] = useState({});
-  const [salesOrderCounts, setSalesOrderCounts] = useState({});
+  // const [deliveryOrderCounts, setDeliveryOrderCounts] = useState({});
+  // const [salesOrderCounts, setSalesOrderCounts] = useState({});
 
   const [stats, setStats] = useState({
     
@@ -50,8 +50,8 @@ const ManagerComponent = () => {
     const fetchData = async () => {
       try {
         // Gọi hàm getAllOrders và getAllAccounts để lấy dữ liệu
-        const orders = await getAllOrders();
-        const accounts = await getAllAccounts();
+        // const orders = await getAllOrders();
+        // const accounts = await getAllAccounts();
   
         // Tính toán các thống kê dựa trên dữ liệu lấy được
         const totalOrders = orders.length;
@@ -66,24 +66,24 @@ const ManagerComponent = () => {
           totalErrors,
         });
   
-        const deliveryStaff = accounts.filter(account => account.roleId === 'Delivery');
-        const salesStaff = accounts.filter(account => account.roleId === 'Sales');
+        // const deliveryStaff = accounts.filter(account => account.roleId === 'Delivery');
+        // const salesStaff = accounts.filter(account => account.roleId === 'Sales');
   
-        // Tính số lượng đơn hàng cho delivery staff
-        const deliveryCounts = {};
-        deliveryStaff.forEach((account) => {
-          const totalDO = orders.filter(order => order.deliver === account.accountId).length;
-          deliveryCounts[account.accountId] = totalDO;
-        });
-        setDeliveryOrderCounts(deliveryCounts);
+        // // Tính số lượng đơn hàng cho delivery staff
+        // const deliveryCounts = {};
+        // deliveryStaff.forEach((account) => {
+        //   const totalDO = orders.filter(order => order.deliver === account.accountId).length;
+        //   deliveryCounts[account.accountId] = totalDO;
+        // });
+        // setDeliveryOrderCounts(deliveryCounts);
   
-        // Tính số lượng đơn hàng cho sales staff
-        const salesCounts = {};
-        salesStaff.forEach((account) => {
-          const totalSO = orders.filter(order => order.salesperson === account.accountId).length;
-          salesCounts[account.accountId] = totalSO;
-        });
-        setSalesOrderCounts(salesCounts);
+        // // Tính số lượng đơn hàng cho sales staff
+        // const salesCounts = {};
+        // salesStaff.forEach((account) => {
+        //   const totalSO = orders.filter(order => order.salesperson === account.accountId).length;
+        //   salesCounts[account.accountId] = totalSO;
+        // });
+        // setSalesOrderCounts(salesCounts);
   
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -120,22 +120,22 @@ const ManagerComponent = () => {
     }
   };
   
-  const getAllAccounts = async () => {
-    try {
-      const response = await listAccount();
-      if (Array.isArray(response.data)) {
-        setOrders(response.data);
-        return response.data;  // Trả về dữ liệu để sử dụng sau
-      } else {
-        console.error("API response is not an array", response.data);
-        setOrders([]);
-        return [];
-      }
-    } catch (error) {
-      console.error("Error fetching accounts:", error);
-      return [];
-    }
-  };
+  // const getAllAccounts = async () => {
+  //   try {
+  //     const response = await listAccount();
+  //     if (Array.isArray(response.data)) {
+  //       setOrders(response.data);
+  //       return response.data;  // Trả về dữ liệu để sử dụng sau
+  //     } else {
+  //       console.error("API response is not an array", response.data);
+  //       setOrders([]);
+  //       return [];
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching accounts:", error);
+  //     return [];
+  //   }
+  // };
   const getStatusCounts = () => {
     const statusCounts = orders.reduce((acc, order) => {
       const status = order.status;
@@ -338,7 +338,7 @@ const ordersByStatusChartData = {
             </div>
           </section>
 
-          <section className="ongoing-employee mt-4 d-flex border-top pt-3">
+          {/* <section className="ongoing-employee mt-4 d-flex border-top pt-3">
           <div className="delivery-list col-6">
           <h2>Top Delivery Staff</h2>
           <ul>
@@ -367,7 +367,7 @@ const ordersByStatusChartData = {
               ))}
           </ul>
           </div>
-        </section>
+        </section> */}
 
           <section className="statistics mt-4 d-flex justify-content-between border-top pt-3">
             <div className="container">
