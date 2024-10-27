@@ -123,22 +123,23 @@ const ManagerComponent = () => {
     }
   };
   
-  // const getAllAccounts = async () => {
-  //   try {
-  //     const response = await listAccount();
-  //     if (Array.isArray(response.data)) {
-  //       setOrders(response.data);
-  //       return response.data;  // Trả về dữ liệu để sử dụng sau
-  //     } else {
-  //       console.error("API response is not an array", response.data);
-  //       setOrders([]);
-  //       return [];
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching accounts:", error);
-  //     return [];
-  //   }
-  // };
+  const getAllAccounts = async () => {
+    try {
+      const response = await listAccount();
+      if (Array.isArray(response.data)) {
+        setOrders(response.data);
+        return response.data;  // Trả về dữ liệu để sử dụng sau
+      } else {
+        console.error("API response is not an array", response.data);
+        setOrders([]);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching accounts:", error);
+      return [];
+    }
+  };
+  
   const getStatusCounts = () => {
     const statusCounts = orders.reduce((acc, order) => {
       const status = order.status;
