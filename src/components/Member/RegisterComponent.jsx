@@ -12,7 +12,6 @@ const RegisterComponent = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [gender, setGender] = useState('');
   const [avatar, setAvatar] = useState('');
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -34,7 +33,6 @@ const RegisterComponent = () => {
       email, 
       phone, 
       roleId: 'Customer', 
-      avatar, 
       createAt: new Date().toISOString() 
     };
   
@@ -133,20 +131,7 @@ const RegisterComponent = () => {
                     placeholder="Phone Number"
                   />
                 </div>
-                {/* <div className="input-group">
-                  <label>Gender</label>
-                  <select 
-                    value={gender} 
-                    onChange={(e) => setGender(e.target.value)} 
-                    required
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div> */}
-                {/* <button type="button" className="google-login">Sign Up with Google</button> */}
+              
               </div>
             </form>
           </div>
