@@ -74,13 +74,8 @@ const ListOrderComponent = () => {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
           const currentLocate = await reverseGeocodeAddress(latitude, longitude);
-  
-          trackingOrder({
-            orderId,
-            timeTracking: new Date().toISOString(),
-            currentLocate,
-            status: newStatus,
-          })
+          const trackingData = {orderId,currentLocate,status: newStatus};
+          const response = await trackingOrder(trackingData);
             .then(() => {
               enqueueSnackbar("Cập nhật trạng thái thành công", { variant: "success", autoHideDuration: 1000 });
               getAllOrders();
