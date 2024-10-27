@@ -67,16 +67,16 @@ const LoginComponent = () => {
 
       const account = {
         firstName,
-        lastName,
-        userName: userName || email,  // Kiểm tra nếu userName bị trống
+        lastName: lastName || 'Unknown',  // Giá trị mặc định nếu lastName trống
+        userName,
         password,
         email,
         roleId: "Customer",
         createAt: localStorage.getItem('createAt') || new Date().toISOString(),
       };
       
-      if (!account.userName || !account.email) {
-        enqueueSnackbar('Thiếu userName hoặc email, vui lòng thử lại.', { variant: 'error' });
+      if (!account.lastName) {
+        enqueueSnackbar('Thiếu lastName, vui lòng thử lại.', { variant: 'error' });
         return;
       }
 
