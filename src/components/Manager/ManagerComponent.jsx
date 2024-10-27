@@ -24,6 +24,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcEleme
 
 const ManagerComponent = () => {
   const [orders, setOrders] = useState([]);
+  const [acounts, setAccounts] = useState([]);
   const [avatar, setAvatar] = useState(null); 
   const accountId = localStorage.getItem("accountId");
 
@@ -55,6 +56,7 @@ const ManagerComponent = () => {
         const orders = await getAllOrders();
         setOrders(orders);
         const accounts = await getAllAccounts();
+        setAccounts(accounts);
   
         // Tính toán các thống kê dựa trên dữ liệu lấy được
         const totalOrders = orders.length;
@@ -127,11 +129,11 @@ const ManagerComponent = () => {
     try {
       const response = await listAccount();
       if (Array.isArray(response.data)) {
-        setOrders(response.data);
+        setAccounts(response.data);
         return response.data;  // Trả về dữ liệu để sử dụng sau
       } else {
         console.error("API response is not an array", response.data);
-        setOrders([]);
+        setAccounts([]);
         return [];
       }
     } catch (error) {
@@ -139,7 +141,7 @@ const ManagerComponent = () => {
       return [];
     }
   };
-  
+
   const getStatusCounts = () => {
     const statusCounts = orders.reduce((acc, order) => {
       const status = order.status;
