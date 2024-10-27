@@ -26,6 +26,10 @@ const ManagerComponent = () => {
   const [orders, setOrders] = useState([]);
   const [avatar, setAvatar] = useState(null); 
   const accountId = localStorage.getItem("accountId");
+
+  const [deliveryOrderCounts, setDeliveryOrderCounts] = useState({});
+  const [salesOrderCounts, setSalesOrderCounts] = useState({});
+
   const [stats, setStats] = useState({
     
     totalCustomers: 0,
@@ -41,7 +45,7 @@ const ManagerComponent = () => {
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
   }
- 
+  
 
 
   useEffect(() => {
@@ -55,12 +59,37 @@ const ManagerComponent = () => {
 
         const totalCustomers = accounts.filter(account => account.roleId === 'Customer').length;
         const totalEmployees = accounts.filter(account => ['Sales', 'Delivery'].includes(account.roleId)).length;
+        const totalErrors = ordersResponse.data.some(order => order.status === 6) 
+        ? ordersResponse.data.filter(order => order.status === 6).length 
+        : 0;
+
 
         setStats({
           totalCustomers,
           totalEmployees,
           totalOrders,
+          totalErrors,
         });
+
+        const deliveryStaff = accounts.filter(account => account.roleId === 'Delivery');
+        const salesStaff = accounts.filter(account => account.roleId === 'Sales');
+        
+
+        const deliveryCounts = {};
+        deliveryStaff.forEach((account) => {
+          const totalDO = ordersResponse.data.filter(order => order.deliver === account.accountId).length;
+          deliveryCounts[account.accountId] = totalDO;
+        });
+        setDeliveryOrderCounts(deliveryCounts);
+
+        // Tính số lượng đơn hàng cho sales staff
+        const salesCounts = {};
+        salesStaff.forEach((account) => {
+          const totalSO = ordersResponse.data.filter(order => order.salesperson === account.accountId).length;
+          salesCounts[account.accountId] = totalSO;
+        });
+        setSalesOrderCounts(salesCounts);
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -68,7 +97,7 @@ const ManagerComponent = () => {
 
     const fetchAccount = async () => {
       try {
-       
+      
         const avatarUrl = await getAvatar(accountId);
         setAvatar(avatarUrl);
       } catch (error) {
@@ -95,6 +124,7 @@ const ManagerComponent = () => {
         console.error("Error fetching : ", error);
       });
   };
+  
 
   const getStatusCounts = () => {
     const statusCounts = orders.reduce((acc, order) => {
@@ -117,7 +147,7 @@ const ManagerComponent = () => {
     ];
   };
 
- const ordersByStatusChartData = {
+const ordersByStatusChartData = {
       labels: ['Status 1', 'Status 2', 'Status 3', 'Status 4','Status 5'], 
       datasets: [
         {
@@ -171,13 +201,13 @@ const ManagerComponent = () => {
   return (
     <div className="container-fluid">
       <div className="row">
-         <aside className="sidebar col-2 p-3">
+        <aside className="sidebar col-2 p-3">
           <div className='manager-sidebar'>
           <div className="profile-container text-center mb-4">
             <div className="SideKoi d-flex align-items-center justify-content-between">
               <img src="/Logo-Koi/Order.png" alt="Profile " className="profile-img rounded-circle me-3" />
               <div className=" KoiLogo">
-                <p className="KoiDeli mb-0">Koi Deli</p>
+                <p className="KoiDeli ">Koi Deli</p>
               </div>
             </div>
           
@@ -193,7 +223,7 @@ const ManagerComponent = () => {
           <li>
             <a href="/user-page"><i className="bi bi-speedometer2 me-2"> <CgProfile /> </i> Profile</a>
           </li>
-         
+        
         </div>
 
         <div>
@@ -207,7 +237,7 @@ const ManagerComponent = () => {
           </li>
 
           <li>
-            <a href="/orders"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Orders</a>
+            <a href="/ordersM"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Orders</a>
           </li>
 
         </div>
@@ -217,11 +247,11 @@ const ManagerComponent = () => {
 
           <li>
             <a href="#"><i className="bi bi-chat-dots me-2"><FaRegCalendarAlt /></i> Calendar</a>
-           </li>
+          </li>
 
           <li>
             <a href="#"><i className="bi bi-chat-dots me-2"><MdOutlineMessage /></i> Notification</a>
-           </li>
+          </li>
 
         </div>
 
@@ -279,7 +309,7 @@ const ManagerComponent = () => {
               <h3>Total Employee</h3>
               <p>{stats.totalEmployees}</p>
               
-             
+            
             </div>
             <div className="card total-customers">
               <h3>Total Customers</h3>
@@ -290,24 +320,44 @@ const ManagerComponent = () => {
               <h3>Total Orders</h3>
               <p>{stats.totalOrders}</p>
               
-             
+            
             </div>
             <div className="card revenue">
               <h3>Orders Issue</h3>
-              <p>Not available yet</p> 
+              <p>{stats.totalErrors}</p> 
             </div>
           </section>
 
           <section className="ongoing-employee mt-4 d-flex border-top pt-3">
-            <div className="delivery-list col-6">
-              <h2>Top Delivery Staff</h2>
-           
-            </div>
-            <div className="sales-list col-6">
+          <div className="delivery-list col-6">
+          <h2>Top Delivery Staff</h2>
+          <ul>
+            {Object.entries(deliveryOrderCounts)
+              .map(([accountId, count]) => ({ accountId, count }))
+              .sort((a, b) => b.count - a.count) // Sắp xếp theo count giảm dần
+              .slice(0, 10) // Giới hạn 10 người
+              .map(({ accountId, count }) => (
+                <li key={accountId}>
+                  Staff ID: {accountId}, Orders Delivered: {count}
+                </li>
+              ))}
+          </ul>
+        </div>
+          <div className="sales-list col-6">
             <h2>Top Sales Staff</h2>
-              
-            </div>
-          </section>
+            <ul>
+            {Object.entries(salesOrderCounts)
+              .map(([accountId, count]) => ({ accountId, count }))
+              .sort((a, b) => b.count - a.count) // Sắp xếp theo count giảm dần
+              .slice(0, 10) // Giới hạn 10 người
+              .map(({ accountId, count }) => (
+                <li key={accountId}>
+                  Staff ID: {accountId}, Orders Delivered: {count}
+                </li>
+              ))}
+          </ul>
+          </div>
+        </section>
 
           <section className="statistics mt-4 d-flex justify-content-between border-top pt-3">
             <div className="container">

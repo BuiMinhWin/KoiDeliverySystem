@@ -1,0 +1,161 @@
+  
+.header-content {
+  gap: 20px; 
+  display: flex;
+  align-items: center;
+  width: 250%;
+}
+
+
+
+.side-bar{
+  margin-left:60px;
+}
+
+.KoiDeli{
+  margin-top:20px;
+  margin-left: -100px;
+  color: white;
+}
+
+.dashboard {
+  margin-left: 300px; 
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  z-index: 1000; 
+
+}
+
+.dashboard header input.form-control {
+  margin-right: 10px;
+}
+
+.delivery-overview {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.delivery-overview .card {
+  padding: 20px;
+  width: 23%;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.delivery-overview .card h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.delivery-overview .card p {
+  font-size: 16px;
+}
+
+.card.delivery-fail {
+  background-color: #f8f9fa;
+  padding: 20px;
+  flex: 1;
+  text-align: center;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.card.delivery-total-orders{
+  background-color: #f8f9fa;
+  padding: 20px;
+  flex: 1;
+  text-align: center;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.card.delivery-delivering {
+  background-color: #f8f9fa;
+  padding: 20px;
+  flex: 1;
+  text-align: center;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.card.delivery-approving {
+  background-color: #f8f9fa;
+  padding: 20px;
+  flex: 1;
+  text-align: center;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.delivery-ongoing-delivery {
+  display: flex;
+  gap: 20px;
+}
+
+.delivery-ongoing-delivery h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  margin-left:-910px;
+}
+
+.delivery-list {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+}
+
+.delivery-item {
+  padding: 10px;
+}
+
+.delivery-item:last-child {
+  border-bottom: none;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  margin-top: 20px; /* Nếu cần */
+ 
+}
+
+.search-bar {
+  flex-grow: 1; 
+  margin: 0 20px; 
+  min-width: 300px; 
+  max-width: 100%; 
+ 
+}
+
+.notification-icon {
+    
+    position: relative;
+    cursor: pointer;
+    font-size: 1.9rem; 
+
+}
+  
+.notification-icon .notification-text {
+    display: none;
+    position: absolute;
+    top: 50%;
+    right: -80px;
+    transform: translateY(-50%);
+    background-color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+  
+.notification-icon:hover .notification-text {
+    display: block; 
+}
+  

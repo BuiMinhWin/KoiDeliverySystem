@@ -14,11 +14,7 @@ import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { FaRegMessage } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
 import { CiLogout } from "react-icons/ci";
-import { FaTruckFast } from "react-icons/fa6";
-import { FiAlertTriangle } from "react-icons/fi";
-import { FaRegRectangleList } from "react-icons/fa6";
-import { FaBoxesStacked } from "react-icons/fa6";
-import {  getAvatar} from "../../services/CustomerService";
+import { getAvatar} from "../../services/CustomerService";
 import { trackingOrderState } from '../../services/DeliveryStatusService';
 import { useSnackbar } from 'notistack';
 import axios from "axios";
@@ -275,7 +271,7 @@ const toggleDropdown = () => {
         
 
         <li>
-          <a href="/delivery"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Ordering</a>
+          <a href="/manager"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i>Manage</a>
         </li>
 
         <li>
@@ -360,9 +356,12 @@ const toggleDropdown = () => {
               
                 <select className="form-select me-2" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
                   <option value="">All Statuses</option>
+                  <option value="1">Paying</option>
+                  <option value="2">Approving</option>
                   <option value="3">Waiting for get order</option>
                   <option value="4">Deliverin</option>
                   <option value="5">Delivered</option>
+                  <option value="6">Special</option>
                   
                  
                 </select>
@@ -400,7 +399,7 @@ const toggleDropdown = () => {
                 <tbody>
                 {currentOrders.length > 0 ? (
                   currentOrders
-                  .filter(order => order.deliver ===accountId&& order.status > 1 ) 
+                  
                   .map((order) => (
                     <tr key={order.orderId}>
                       <td>{order.orderId}</td>
@@ -412,10 +411,11 @@ const toggleDropdown = () => {
                       </td>
                       <td>{order.freight}</td>
                       <td>
-                        {order.status === 2 && "Đang lấy hàng"}
+                        {order.status === 2 && "Đang   duyệt"}
                         {order.status === 3 && "Đã lấy hàng"}
                         {order.status === 4 && "Đang giao"}
                         {order.status === 5 && "Đã hoàn thành"}  
+                        {order.status === 6 && "Đơn khẩn"}  
                       </td>
                       <td>
                         <button onClick={() => handleViewOrder(order.orderId)}>View</button>
