@@ -4,7 +4,7 @@ import { FaLongArrowAltLeft } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import axios from "axios";
-import { trackingOrder } from '../../services/DeliveryStatusService';
+import { trackingOrderState } from '../../services/DeliveryStatusService';
 
 
 
@@ -76,7 +76,7 @@ const ListOrderComponent = () => {
             const longitude = position.coords.longitude;
             const currentLocate = await reverseGeocodeAddress(latitude, longitude);
             const trackingData = { orderId, currentLocate, status: newStatus };
-            const response = await trackingOrder(trackingData);
+            const response = await trackingOrderState(trackingData);
             const result = response?.data;
     
             if (result) {
