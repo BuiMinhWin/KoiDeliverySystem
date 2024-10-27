@@ -50,9 +50,7 @@ const ManagerComponent = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Gọi hàm getAllOrders và getAllAccounts để lấy dữ liệu
-        // const orders = await getAllOrders();
-        // const accounts = await getAllAccounts();
+    
         const orders = await getAllOrders();
         setOrders(orders);
         const accounts = await getAllAccounts();
@@ -71,24 +69,24 @@ const ManagerComponent = () => {
           totalErrors,
         });
   
-        // const deliveryStaff = accounts.filter(account => account.roleId === 'Delivery');
-        // const salesStaff = accounts.filter(account => account.roleId === 'Sales');
+        const deliveryStaff = accounts.filter(account => account.roleId === 'Delivery');
+        const salesStaff = accounts.filter(account => account.roleId === 'Sales');
   
-        // // Tính số lượng đơn hàng cho delivery staff
-        // const deliveryCounts = {};
-        // deliveryStaff.forEach((account) => {
-        //   const totalDO = orders.filter(order => order.deliver === account.accountId).length;
-        //   deliveryCounts[account.accountId] = totalDO;
-        // });
-        // setDeliveryOrderCounts(deliveryCounts);
+        // Tính số lượng đơn hàng cho delivery staff
+        const deliveryCounts = {};
+        deliveryStaff.forEach((account) => {
+          const totalDO = orders.filter(order => order.deliver === account.accountId).length;
+          deliveryCounts[account.accountId] = totalDO;
+        });
+        setDeliveryOrderCounts(deliveryCounts);
   
-        // // Tính số lượng đơn hàng cho sales staff
-        // const salesCounts = {};
-        // salesStaff.forEach((account) => {
-        //   const totalSO = orders.filter(order => order.salesperson === account.accountId).length;
-        //   salesCounts[account.accountId] = totalSO;
-        // });
-        // setSalesOrderCounts(salesCounts);
+        // Tính số lượng đơn hàng cho sales staff
+        const salesCounts = {};
+        salesStaff.forEach((account) => {
+          const totalSO = orders.filter(order => order.salesperson === account.accountId).length;
+          salesCounts[account.accountId] = totalSO;
+        });
+        setSalesOrderCounts(salesCounts);
   
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -348,7 +346,7 @@ const ordersByStatusChartData = {
             </div>
           </section>
 
-          {/* <section className="ongoing-employee mt-4 d-flex border-top pt-3">
+          <section className="ongoing-employee mt-4 d-flex border-top pt-3">
           <div className="delivery-list col-6">
           <h2>Top Delivery Staff</h2>
           <ul>
@@ -377,7 +375,7 @@ const ordersByStatusChartData = {
               ))}
           </ul>
           </div>
-        </section> */}
+        </section> 
 
           <section className="statistics mt-4 d-flex justify-content-between border-top pt-3">
             <div className="container">
