@@ -73,6 +73,7 @@ export const orderDetail = async (orderId) => {
   }
 };
 
+
 export const getAccountById = async (accountId) => {
   try {
     const response = await axios.get(`${REST_API_ACCOUNT_URL}/${accountId}`);
@@ -83,28 +84,27 @@ export const getAccountById = async (accountId) => {
   }
 };
 
-// Example of updateAccount function
-export const updateAccount = async (accountId, values) => {
-  const response = await fetch(`${REST_API_ACCOUNT_URL}/${accountId}`, {
-    method: "PATCH", // Make sure the method is PATCH
+export const updateAccount = async (accountId, accountData) => {
+  const response = await fetch(`${REST_API_ACCOUNT_URL}/update/${accountId}`, {
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(values),
+    body: JSON.stringify(accountData),
   });
 
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    throw new Error("Failed to update account.");
   }
 
-  return await response.json(); // Return the updated data
+  return response.json();
 };
 
 
-const REST_API_BASE_URL3 = "/api/orders";
+
 
 export const getOrder = (orderId) => {
-  return axios.get(REST_API_BASE_URL3 + "/" + orderId);
+  return axios.get(REST_API_ORDER_URL + "/" + orderId);
 };
 
 export const cancelOrder = async (orderId) => {
@@ -125,5 +125,34 @@ export const getOrderPDF = async (orderId) => {
     throw new Error("Failed to fetch PDF");
   }
   return response.blob();
+};
+
+export const getAvatar = async (accountId) => {
+  const response = await fetch(`${REST_API_ACCOUNT_URL}/${accountId}/avatar`);
+  if (!response.ok) throw new Error("Failed to fetch account Avatar");
+  const blob = await response.blob();
+  return URL.createObjectURL(blob);
+};
+
+export const updateAvatar = async (accountId, avatarFile) => {
+  const formData = new FormData();
+  formData.append("avatar", avatarFile);
+
+  const response = await fetch(`${REST_API_ACCOUNT_URL}/${accountId}/avatar`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text(); // Read text response for debugging
+    throw new Error(`Failed to update avatar: ${errorText}`);
+  }
+
+  try {
+    return await response.json(); // Attempt to parse JSON if available
+  } catch (error) {
+    console.warn("Response is not in JSON format. Returning raw response.");
+    return response; // Return raw response if not JSON
+  }
 };
 

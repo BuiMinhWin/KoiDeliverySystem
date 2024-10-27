@@ -101,6 +101,14 @@ const SaleStaffComponent = () => {
   
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
   
+    const statusLabels = [
+      "Đang chờ xét duyệt",
+      "Đơn đã được duyệt",
+      "Đã chọn tài xế",
+      "Tài xế đã nhận đơn và đang vận chuyển",
+      "Đã vận chuyển",
+      "Đã nhận hàng"
+    ];
    
   return (
 
@@ -129,6 +137,10 @@ const SaleStaffComponent = () => {
 
           <li>
             <a href="/salestaff/listsaleorder"><i className="bi bi-chat-dots me-2"> <HiOutlineClipboardDocumentList/> </i>  View Order</a>
+          </li>
+
+          <li>
+            <a href="/salestaff/test"><i className="bi bi-chat-dots me-2"> <HiOutlineClipboardDocumentList/> </i> Driver Booking</a>
           </li>
 
           <li>
@@ -166,11 +178,7 @@ const SaleStaffComponent = () => {
                     )}
                   </div>
                 </div>  
-
-               
-              
-              
-
+                
               </div>
 
             </header>
@@ -250,7 +258,7 @@ const SaleStaffComponent = () => {
                         <td>{order.shippedDate}</td>
                         <td>{order.totalPrice}</td>
                         <td>{order.origin}</td>
-                        <td>{order.status}</td>
+                        <td>{statusLabels[order.status]}</td>
                         <td>
                           <button onClick={() => handleViewOrder(order.orderId)}>View</button>
                         </td>

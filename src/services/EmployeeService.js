@@ -22,7 +22,8 @@ export const updateAccount = (accountId, account) => {
 };
 
 export const deleteAccount = (accountId) => {
-  return axios.delete(REST_API_BASE_URL + '/' + accountId);
+
+  return axios.patch(`${REST_API_BASE_URL}/deActive/${accountId}`, { isDeleted: true });
 };
 
 export const loginAccount = (loginData) => {

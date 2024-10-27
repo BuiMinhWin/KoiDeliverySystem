@@ -16,11 +16,16 @@ import { listOrder } from '../../services/DeliveryService';
 import { listAccount } from '../../services/EmployeeService';
 import { CiLogout } from "react-icons/ci";
 import { IoIosNotificationsOutline } from "react-icons/io";
-  
+import {  getAvatar} from "../../services/CustomerService";  
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler );
+
+
+
 const ManagerComponent = () => {
   const [orders, setOrders] = useState([]);
+  const [avatar, setAvatar] = useState(null); 
+  const accountId = localStorage.getItem("accountId");
   const [stats, setStats] = useState({
     
     totalCustomers: 0,
@@ -36,6 +41,8 @@ const ManagerComponent = () => {
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
   }
+ 
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,9 +66,20 @@ const ManagerComponent = () => {
       }
     };
 
+    const fetchAccount = async () => {
+      try {
+       
+        const avatarUrl = await getAvatar(accountId);
+        setAvatar(avatarUrl);
+      } catch (error) {
+        console.error("Error fetching account data:", error);
+      } 
+    };
+
     fetchData();
     getAllOrders();
-  }, []);
+    if (accountId) fetchAccount();
+  }, [accountId]);
 
   const getAllOrders = () => {
     listOrder()
@@ -173,7 +191,7 @@ const ManagerComponent = () => {
           </li>
 
           <li>
-            <a href="user-page"><i className="bi bi-speedometer2 me-2"> <CgProfile /> </i> Profile</a>
+            <a href="/user-page"><i className="bi bi-speedometer2 me-2"> <CgProfile /> </i> Profile</a>
           </li>
          
         </div>
@@ -239,7 +257,7 @@ const ManagerComponent = () => {
 
             <div className="navbar-cus-right">
                   <div className="dropdown" onClick={toggleDropdown}>
-                    <img src="/Delivery/User.png" alt="Avatar" className="avatar" />
+                  <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
                     {isDropdownOpen && ( 
                       <div className="dropdown-content">
                         <a  href="user-page"><CgProfile /> View Profile</a>

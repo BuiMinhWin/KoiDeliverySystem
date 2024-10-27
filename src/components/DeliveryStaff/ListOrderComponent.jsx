@@ -42,7 +42,8 @@ const ListOrderComponent = () => {
     setEditedStatuses(updatedStatuses);
   };
 
-  const API_KEY =import.meta.env.VITE_GOONG_API_KEY; 
+  const API_KEY =import.meta.env.VITE_GOONG_API_KEY; // Thay bằng API Key của bạn
+
   const reverseGeocodeAddress = async (lat, long) => {
     try {
       const response = await axios.get(
@@ -50,8 +51,8 @@ const ListOrderComponent = () => {
       );
       const data = response.data;
       if (data.results && data.results.length > 0) {
-        const address = data.results[0].formatted_address; 
-        return address;
+        const address = data.results[0].formatted_address; // Get the formatted address
+        return address; // Return the full address
       } else {
         throw new Error('No results found for the address.');
       }

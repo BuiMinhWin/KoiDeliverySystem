@@ -1,119 +1,125 @@
 import React, { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Button,
-  Typography,
-  Paper,
-} from "@mui/material";
+import { Paper, Stack, Typography, Button, Box } from "@mui/material";
 import axios from "axios";
-import { getOrderPDF, orderDetail } from "../../services/CustomerService";
-
-const REST_API_ORDER_URL = "http://koideliverysystem.id.vn:8080/api/orders";
+import { useNavigate } from "react-router-dom";
 
 const OrderReport = () => {
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  // Fetch all order data from multiple APIs
-  const fetchAllOrderData = async () => {
-    try {
-      console.log("Fetching orders...");
+  // Define the sort order for statuses
+  const statusOrder = [1, 0, 2, 3, 4];
 
-      // Fetch orders
-      const ordersResponse = await axios.get(REST_API_ORDER_URL);
-      const ordersData = ordersResponse.data;
-      console.log("Orders data:", ordersData);
+  // Fetch orders and filter by accountId from localStorage
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get(
+          "http://koideliverysystem.id.vn:8080/api/orders"
+        );
+        const accountId = localStorage.getItem("accountId");
 
-      if (!Array.isArray(ordersData) || ordersData.length === 0) {
-        throw new Error("No orders found.");
+        // Filter orders by accountId
+        const filteredOrders = response.data.filter(
+          (order) => order.accountId === accountId
+        );
+
+        // Sort orders based on the defined status order
+        const sortedOrders = filteredOrders.sort((a, b) => {
+          return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+        });
+
+        setOrders(sortedOrders);
+      } catch (error) {
+        console.error("Failed to fetch orders:", error);
       }
+    };
+    fetchOrders();
+  }, []);
 
-      // Fetch details and documents for each order
-      const orderDataPromises = ordersData.map(async (order) => {
-        console.log(`Fetching details for order ${order.id}...`);
-        const detailResponse = await orderDetail(order.id);
-
-        console.log(`Fetching document for order ${order.id}...`);
-        const documentBlob = await getOrderPDF(order.id);
-
-        return {
-          ...order,
-          detail: detailResponse,
-          documentBlob,
-        };
-      });
-
-      const combinedOrders = await Promise.all(orderDataPromises);
-      console.log("Combined Orders:", combinedOrders);
-
-      setOrders(combinedOrders);
-    } catch (error) {
-      setError("Failed to fetch orders. " + error.message);
-      console.error("Error fetching orders:", error);
-    } finally {
-      setLoading(false);
+  // Navigate to checkout or order view based on status
+  const handleButtonClick = (order) => {
+    if (order.status === 1 || order.status === 4) {
+      navigate("/checkout", { state: { orderId: order.orderId } });
+    } else {
+      navigate("/checkout", { state: { orderId: order.orderId } });
     }
   };
 
-  useEffect(() => {
-    fetchAllOrderData();
-  }, []);
-
-  const handleDownload = (orderId, blob) => {
-    console.log(`Downloading document for order ${orderId}...`);
-
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `order_${orderId}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+  // Determine button properties based on order status
+  const getButtonProps = (status) => {
+    switch (status) {
+      case 0:
+        return { text: "Pending", color: "warning" };
+      case 1:
+        return { text: "Checkout", color: "error" };
+      case 4:
+        return { text: "View", color: "success" };
+      default:
+        return { text: "Unknown", color: "default" };
+    }
   };
 
-  if (loading) return <Typography>Loading...</Typography>;
-  if (error) return <Typography color="error">{error}</Typography>;
-
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Order ID</TableCell>
-            <TableCell>Order Details</TableCell>
-            <TableCell>Document</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {orders.map((order) => (
-            <TableRow key={order.id}>
-              <TableCell>{order.id}</TableCell>
-              <TableCell>{JSON.stringify(order.detail)}</TableCell>
-              <TableCell>
-                {order.documentBlob ? "Available" : "Not Available"}
-              </TableCell>
-              <TableCell>
+    <Stack spacing={2} sx={{ margin: 2 }}>
+      {orders.length > 0 ? (
+        orders.map((order) => {
+          const { text, color } = getButtonProps(order.status);
+
+          return (
+            <Paper
+              key={order.orderId}
+              elevation={3}
+              sx={{
+                padding: 2,
+                backgroundColor: "#f5f5f5",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              {/* Left: Order Details */}
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Typography variant="h6">Order ID: {order.orderId}</Typography>
+                <Typography variant="body2">
+                  From: {order.senderName} ({order.senderPhone}) -{" "}
+                  {order.origin}
+                </Typography>
+                <Typography variant="body2">
+                  To: {order.receiverName} ({order.receiverPhone}) -{" "}
+                  {order.destination}
+                </Typography>
+                <Typography variant="body2">
+                  Status: {order.status === 0 ? "Pending" : "Shipped"}
+                </Typography>
+                <Typography variant="body2">
+                  Total Price: ${order.totalPrice}
+                </Typography>
+              </Box>
+
+              {/* Right: Dynamic Status Button */}
+              <Box sx={{ flexShrink: 0, marginLeft: "auto" }}>
                 <Button
                   variant="contained"
-                  color="primary"
-                  onClick={() => handleDownload(order.id, order.documentBlob)}
-                  disabled={!order.documentBlob}
+                  color={color}
+                  onClick={() => handleButtonClick(order)}
+                  sx={{
+                    padding: "4px 10px",
+                    fontSize: "1.2rem",
+                    height: 40,
+                  }}
                 >
-                  Download Document
+                  {text}
                 </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+              </Box>
+            </Paper>
+          );
+        })
+      ) : (
+        <Typography variant="body1" sx={{ textAlign: "center" }}>
+          No orders found for this account.
+        </Typography>
+      )}
+    </Stack>
   );
 };
 

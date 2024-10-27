@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { listOrder, updateStatus, getOrderDetail } from '../../services/DeliveryService';
+import { listOrder, updateStatus, updateSale } from '../../services/SaleStaffService';
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 
 const ListOrderComponent = () => {
   const [orders, setOrders] = useState([]);
-  const [editedStatuses, setEditedStatuses] = useState({});
-  const [orderDetail, setOrderDetail] = useState(null); // Lưu chi tiết đơn hàng ở đây
   const navigate = useNavigate();
+  const accountId = localStorage.getItem("accountId");
 
   useEffect(() => {
     getAllOrders();
@@ -23,26 +22,24 @@ const ListOrderComponent = () => {
           setOrders([]);
         }
       })
-      .catch((error) => {
-        console.error("Error fetching orders: ", error);
-      });
+      .catch((error) => console.error("Error fetching orders: ", error));
   };
 
-  const handleStatusChange = (orderId, newStatus) => {
-    const updatedStatuses = {
-      ...editedStatuses,
-      [orderId]: newStatus,
-    };
-    setEditedStatuses(updatedStatuses);
+  const handleUpdateStatus = (orderId, currentStatus) => {
+    if (currentStatus === 0) {
+      const newStatus = 1;
+      updateStatus(orderId, newStatus)
+        .then(() => updateSale(orderId, accountId)) 
+        .then(getAllOrders) // Refresh list
+        .catch((error) => console.error("Error updating order: ", error));
+    }
   };
 
-  const handleViewOrder = (orderId) => {
-    navigate(`/confirmDetail/${orderId}`);
-  };
+  const handleViewOrder = (orderId) => navigate(`/confirmDetail/${orderId}`);
 
   return (
     <div className="container">
-       <button
+      <button
         type="button"
         onClick={() => navigate('/delivery')}
         style={{
@@ -62,7 +59,7 @@ const ListOrderComponent = () => {
         <span style={{ marginLeft: '15px' }}>Back</span>
       </button>
 
-      <h2 className="text-center">List of Orders</h2>
+      <h2 className="text-center">List of Confirm Orders</h2>
       <table className="table table-striped table-bordered">
         <thead>
           <tr>
@@ -73,7 +70,9 @@ const ListOrderComponent = () => {
             <th>ShipDate</th>
             <th>TotalPrice</th>
             <th>Origin</th>
+            <th>Sale</th>
             <th>Status</th>
+            <th>Update Status</th>
             <th>View</th>
           </tr>
         </thead>
@@ -88,7 +87,24 @@ const ListOrderComponent = () => {
                 <td>{order.shippedDate}</td>
                 <td>{order.totalPrice}</td>
                 <td>{order.origin}</td>
-                <td>{order.status}</td>
+                <td>{order.sale}</td>
+                <td>
+                  {order.status === 0 ? "Đang chờ xét duyệt" : "Đơn đã được duyệt"}
+                </td>
+                <td>
+                  {order.status === 0 ? (
+                    <button
+                      className="btn btn-success"
+                      onClick={() => handleUpdateStatus(order.orderId, order.status)}
+                    >
+                      Update
+                    </button>
+                  ) : (
+                    <button className="btn btn-secondary" disabled>
+                      Already Approved
+                    </button>
+                  )}
+                </td>
                 <td>
                   <button
                     className="btn btn-primary"
@@ -101,7 +117,7 @@ const ListOrderComponent = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="9" className="text-center">No Orders Found</td>
+              <td colSpan="10" className="text-center">No Orders Found</td>
             </tr>
           )}
         </tbody>

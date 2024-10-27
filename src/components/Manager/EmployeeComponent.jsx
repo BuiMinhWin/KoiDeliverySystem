@@ -11,6 +11,7 @@ const EmployeeComponent = () => {
   const [userName, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [phone, setPhone] = useState('');
+  const [status, setStatus] = useState('');
   const [errors, setErrors] = useState({ 
     firstName: '', 
     lastName: '', 
@@ -29,6 +30,11 @@ const EmployeeComponent = () => {
         setFirstName(response.data.firstName);
         setLastName(response.data.lastName);
         setEmail(response.data.email);
+        setRoleId(response.data.roleId);
+        setUsername(response.data.userName);
+        setPassword(response.data.password);
+        setPhone(response.data.phone);
+        setStatus(response.data.status);
 
       }).catch(error =>{
         console.error(error);
@@ -66,7 +72,16 @@ const EmployeeComponent = () => {
     e.preventDefault();
 
     if (validateForm()) {  
-      const account = { firstName, lastName, userName, password, email, phone,roleId,avatar:"",createAt:new Date().toISOString };
+      const account = { 
+        firstName, 
+        lastName, 
+        userName, 
+        password, 
+        email, 
+        phone,
+        roleId,
+        createAt:new Date().toISOString() 
+      };
       console.log(account);
       if(accountId){
         updateAccount(accountId, account).then ((response)=>{
@@ -213,7 +228,7 @@ const EmployeeComponent = () => {
               <div className='form-group mb-2'>
                 <label className='form-label'>User Name</label>
                 <input
-                  type='text'
+                  type='password'
                   placeholder='Enter Employee User Name'
                   name='userName'
                   value={userName}
@@ -226,7 +241,7 @@ const EmployeeComponent = () => {
               <div className='form-group mb-2'>
                 <label className='form-label'>Password</label>
                 <input
-                  type='text'
+                  type='password'
                   placeholder='Enter Employee password'
                   name='password'
                   value={password}
@@ -243,6 +258,18 @@ const EmployeeComponent = () => {
                   placeholder='Enter Employee phone number'
                   value={phone} 
                   onChange={(e) => setPhone(e.target.value)} 
+                  required 
+                  
+                />
+            </div>
+
+            <div className='form-group mb-2'>
+                <label className='form-label'>Status</label>
+                <input 
+                 type="text"  
+                  placeholder='Set Status'
+                  value={status} 
+                  onChange={(e) => setStatus(e.target.value)} 
                   required 
                   
                 />

@@ -43,29 +43,20 @@ const OrderDetailDocumentComponent = () => {
       });
   };
   
-  const handleStatusChange = (orderId, newStatus) => {
-    const updatedStatuses = {
-      ...editedStatuses,  
-      [orderId]: newStatus,  
-    };
-    setEditedStatuses(updatedStatuses); 
-  };
 
-  const updateOrderStatus = (orderId) => {
-    const newStatus = editedStatuses[orderId] ?? orders.status;
-    if (newStatus) {
-      console.log('New status to update:', newStatus);
-      updateStatus(orderId, newStatus)  
-        .then((response) => {
-          console.log('Status updated successfully:', response);
-          getAllOrders();  
+  const handleUpdateStatus = (orderId, currentStatus) => {
+    // Only allow update if the current status is 0
+    if (currentStatus === 0) {
+      const newStatus = 1; // Update to 'Đơn đã được duyệt'
+      updateStatus(orderId, newStatus)
+        .then(() => {
+          getAllOrders(); // Refresh order list after update
         })
         .catch((error) => {
-          console.error('Error updating status:', error);
+          console.error("Error updating order status: ", error);
         });
     }
   };
-
   // Lọc danh sách orders để chỉ lấy đơn hàng với orderId hiện tại
   const currentOrder = orders.filter(order => order.orderId === orderId);
 
@@ -112,7 +103,6 @@ const OrderDetailDocumentComponent = () => {
       <table className="table table-striped table-bordered">
         <thead>
           <tr>
-            <th>Order ID</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -121,23 +111,24 @@ const OrderDetailDocumentComponent = () => {
           {currentOrder.length > 0 ? (
             currentOrder.map(order => (
               <tr key={order.orderId}>
-                <td>{order.orderId}</td>
-                <td>{order.status}</td>
                 <td>
-                  <input
-                    type="text"
-                    value={editedStatuses[order.orderId] ?? order.status}
-                    onChange={(e) => handleStatusChange(order.orderId, e.target.value)}
-                  />
+                  {order.status === 0 ? "Đang chờ xét duyệt" : "Đơn đã được duyệt"}
                 </td>
                 <td>
-                  <button
-                    className="btn btn-info"
-                    onClick={() => updateOrderStatus(order.orderId)}
-                  >
-                    Update Status
-                  </button>
+                  {order.status === 0 ? (
+                    <button
+                      className="btn btn-success"
+                      onClick={() => handleUpdateStatus(order.orderId, order.status)}
+                    >
+                      Update
+                    </button>
+                  ) : (
+                    <button className="btn btn-secondary" disabled>
+                      Already Approved
+                    </button>
+                  )}
                 </td>
+                
               </tr>
             ))
           ) : (

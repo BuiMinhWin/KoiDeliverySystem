@@ -430,7 +430,6 @@ const toggleDropdown = () => {
                   <th>OrderDate</th>
                   <th>Destination</th>
                   <th>ShipDate</th>
-                  <th>Province</th>
                   <th>Origin</th>
                   <th>Freight</th>
                   <th>Status</th>
@@ -440,14 +439,13 @@ const toggleDropdown = () => {
                 <tbody>
                 {currentOrders.length > 0 ? (
                   currentOrders
-                  .filter(order => order.deliver ===accountId && order.paymentStatus) 
+                  .filter(order => order.deliver ===accountId ) 
                   .map((order) => (
                     <tr key={order.orderId}>
                       <td>{order.orderId}</td>
                       <td>{new Date(order.orderDate).toLocaleDateString()}</td>
                       <td>{order.destination}</td>
                       <td>{new Date(order.shippedDate).toLocaleDateString() }</td>
-                      <td>{order.province}</td>
                       <td>{order.origin}</td>
                       <td>{order.freight}</td>
                       <td>{order.status}</td>

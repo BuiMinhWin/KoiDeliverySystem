@@ -8,7 +8,11 @@ import SelectWrapper from "../FromUI/Select";
 import ButtonWrapper from "../FromUI/Button";
 import koi_type from "../../data/koiTypes.json";
 import koi_name from "../../data/koiVarieties.json";
-import { createOrder, order, uploadDocument } from "../../services/CustomerService";
+import {
+  createOrder,
+  order,
+  uploadDocument,
+} from "../../services/CustomerService";
 import { createOrderDetail } from "../../services/CustomerService";
 // import SideBar from "../SideBar/SideBar";
 // import HeaderBar from "../Header/Header/Nguyen";
@@ -18,7 +22,7 @@ import AccessibleIcon from "@mui/icons-material/Accessible";
 import AccessibleForwardIcon from "@mui/icons-material/AccessibleForward";
 import FileUpload from "../FromUI/FileUpload";
 import CheckboxWrapper from "../FromUI/Checkbox";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import axios from "axios";
 
 
@@ -27,6 +31,10 @@ const INITIAL_FORM_STATE = {
   origin: "",
   cityS: "",
   cityR: "",
+  districtS: "",
+  districtR: "",
+  wardS: "",
+  wardR: "",
   destination: "",
   distance: "",
   receiverName: "",
@@ -35,8 +43,8 @@ const INITIAL_FORM_STATE = {
   senderAddress: "",
   receiverPhone: "",
   senderPhone: "",
-  postalCodeS: "",
-  postalCodeR: "",
+  // postalCodeS: "",
+  // postalCodeR: "",
   receiverNote: "",
   senderNote: "",
   orderNote: "",
@@ -49,7 +57,6 @@ const INITIAL_FORM_STATE = {
   weight: 0.0,
   freight: "",
   additional_service: "",
-  
 };
 
 // Validation Schema with Yup
@@ -64,12 +71,12 @@ const FORM_VALIDATION = Yup.object().shape({
   senderPhone: Yup.string()
     .matches(/^[0-9]+$/, "Số điện thoại phải là số")
     .required("Vui lòng nhập số điện thoại người gửi"),
-  postalCodeS: Yup.string()
-    .matches(/^[0-9]{5,6}$/, "Mã bưu điện phải là 5 hoặc 6 chữ số")
-    .required("Vui lòng nhập mã bưu điện"),
-  postalCodeR: Yup.string()
-    .matches(/^[0-9]{5,6}$/, "Mã bưu điện phải là 5 hoặc 6 chữ số")
-    .required("Vui lòng nhập mã bưu điện"),
+  // postalCodeS: Yup.string()
+  //   .matches(/^[0-9]{5,6}$/, "Mã bưu điện phải là 5 hoặc 6 chữ số")
+  //   .required("Vui lòng nhập mã bưu điện"),
+  // postalCodeR: Yup.string()
+  //   .matches(/^[0-9]{5,6}$/, "Mã bưu điện phải là 5 hoặc 6 chữ số")
+  //   .required("Vui lòng nhập mã bưu điện"),
   receiverNote: Yup.string().nullable(),
   senderNote: Yup.string().nullable(),
   orderNote: Yup.string().nullable(), // Optional field for additional notes
@@ -103,13 +110,28 @@ const FORM_VALIDATION = Yup.object().shape({
     ),
 });
 
-
-
 const OrderForm = () => {
+  const {testaccId, accountData} = useOutletContext();
+  console.log("accId: ", testaccId,"accData: ", "accountData: ", accountData  )
+
   const navigate = useNavigate();  
   const [provinces, setProvinces] = useState([]);
-  const [selectedProvinceS, setSelectedProvinceS] = useState(''); // Tỉnh người gửi
+  const [districts, setDistricts] = useState([]); // State để lưu danh sách quận
+  const [wards, setWards] = useState([]); // State để lưu danh sách phường
+  
+   // người gửi
+  const [selectedProvinceS, setSelectedProvinceS] = useState('');
+  const [selectedDistrictSId, setSelectedDistrictSId] = useState('');
+  const [selectedWardSId, setSelectedSWard] = useState('');
+
+
+  // người nhận
   const [selectedProvinceR, setSelectedProvinceR] = useState('');
+  const [selectedDistrictRId, setSelectedDistrictRId] = useState('');
+  const [selectedWardRId, setSelectedRWard] = useState('');
+
+  
+
 
   // const [distanceData, setDistanceData] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -117,7 +139,7 @@ const OrderForm = () => {
   const API_KEY =import.meta.env.VITE_GOONG_API_KEY; // Thay bằng API Key của bạn
 
   const geocodeAddress = async (address) => {
-    console.log(address);
+    console.log( "địa chỉ để tính", address);
     try {
       const response = await axios.get(
         `https://rsapi.goong.io/geocode?address=${encodeURIComponent(address)}&api_key=${API_KEY}`
@@ -137,6 +159,7 @@ const OrderForm = () => {
   };
 
   const GHN_API_KEY=import.meta.env.VITE_GHN_API_KEY
+
   useEffect(() => {
       
     const fetchProvinces = async () => {
@@ -150,19 +173,73 @@ const OrderForm = () => {
         });
         const data = await response.json();
         console.log(data); 
-        const provinceOptions = data.data.map((province) => ({
-          label: province.ProvinceName,
-          value: province.ProvinceID,
-        }));
-        setProvinces(provinceOptions);
+        if (data && data.data) {
+          const provinceOptions = data.data.map((province) => ({
+            label: province.ProvinceName,
+            value: province.ProvinceID,
+          }));
+          
+        
+          setProvinces(provinceOptions);
+        } else {
+          console.log('No data found');
+        }
       } catch (error) {
         console.error('Error fetching provinces:', error);
       }
     };
 
+    
     fetchProvinces();
     
   }, []);
+
+  
+  const fetchDistricts = async (provinceId) => {
+    try {
+      const response = await fetch(`https://online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id=${provinceId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Token': GHN_API_KEY,
+        },
+      });
+      const data = await response.json();
+      console.log('District data:', data); 
+      if (data && data.data) {
+        const districtOptions = data.data.map((district) => ({
+          label: district.DistrictName,
+          value: district.DistrictID,
+        }));
+        setDistricts(districtOptions); 
+      }
+    } catch (error) {
+      console.error('Error fetching districts:', error);
+    }
+  };
+
+  const fetchWards = async (districtId) => {
+    try {
+      const response = await fetch(`https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${districtId}`, {
+        method: 'GET', 
+        headers: {
+          'Content-Type': 'application/json',
+           'Token': GHN_API_KEY,
+        },
+      });
+      const data = await response.json();
+      console.log('Ward data:', data);
+      if (data && data.data) {
+        const wardOptions = data.data.map((ward) => ({
+          label: ward.WardName,
+          value: ward.WardCode  ,
+        }));
+        setWards(wardOptions);
+      }
+    } catch (error) {
+      console.error('Error fetching wards:', error);
+    }
+  };
 
   const fetchDistanceData = async (origins, destinations) => {
     try {
@@ -171,10 +248,9 @@ const OrderForm = () => {
       const response = await axios.get(
         `https://rsapi.goong.io/distancematrix?origins=${origins}&destinations=${destinations}&vehicle=car&api_key=${API_KEY}`
       );
-      
+  
       const data = response.data;
-      if (data?.rows[0]?.elements[0]?.distance) {
-        
+      if (data?.rows && data.rows.length > 0 && data.rows[0]?.elements[0]?.distance) {
         const distanceInKm = data.rows[0].elements[0].distance.value / 1000;
         return distanceInKm; 
       } else {
@@ -189,26 +265,29 @@ const OrderForm = () => {
 
   return (
     <Formik
-      initialValues={{INITIAL_FORM_STATE, cityS: selectedProvinceS, cityR: selectedProvinceR}}
+      initialValues={{INITIAL_FORM_STATE, cityS: selectedProvinceS, cityR: selectedProvinceR
+        , districtS: selectedDistrictSId, districtR: selectedDistrictRId
+        , wardS: selectedWardSId, wardR: selectedWardRId
+      }}
       validationSchema={FORM_VALIDATION}
       onSubmit={async (values, { setSubmitting, setErrors }) => {
         try {
           const accountId = localStorage.getItem("accountId");
           
-          const originCoordinates = await geocodeAddress(`${values.origin}`);
-          const destinationCoordinates = await geocodeAddress(`${values.destination}`);
+          const originCoordinates = await geocodeAddress(`${values.origin}, ${values.wardS}, ${values.districtS} ,${values.cityS}`);
+          const destinationCoordinates = await geocodeAddress(`${values.destination}, ${values.wardR}, ${values.districtR} ,${values.cityR}`);
 
           const origins = `${originCoordinates.lat},${originCoordinates.lng}`;
           const destinations = `${destinationCoordinates.lat},${destinationCoordinates.lng}`;
 
           const distance = await fetchDistanceData(origins, destinations);
-          console.log(distance);
+          console.log("Khoảng cách tính được: ",distance);
 
           const orderData = {
             ...values,
             accountId,
-            origin: `${values.origin}, ${values.cityS}, ${values.postalCodeS}`,
-            destination: `${values.destination}, ${values.cityR}, ${values.postalCodeR}`,
+            origin: `${values.origin}, ${values.wardS}, ${values.districtS} ,${values.cityS}`,
+            destination: `${values.destination}, ${values.wardR}, ${values.districtR} ,${values.cityR}`,
             freight: values.freight,
             receiverName: values.receiverName,
             senderName: values.senderName,
@@ -219,9 +298,14 @@ const OrderForm = () => {
             orderNote: values.orderNote,
             distance: distance,
           };
-          console.log(orderData);
+
           
           const orderResponse = await createOrder(orderData);
+          console.log(
+            "Order data created successfully:",
+            orderResponse
+          );
+
           if (!orderResponse?.orderId) {
             throw new Error("Order ID not found in the response");
           }
@@ -229,8 +313,11 @@ const OrderForm = () => {
           const newOrderId = orderResponse.orderId;
           console.log("Order created with ID:", newOrderId);
 
-          const uploadResponse = await uploadDocument(values.document_file, newOrderId);
-          console.log('File uploaded successfully:', uploadResponse);
+          const uploadResponse = await uploadDocument(
+            values.document_file,
+            newOrderId
+          );
+          console.log("File uploaded successfully:", uploadResponse);
 
           const orderDetails = await order(newOrderId);
           console.log("Order Details:", orderDetails);
@@ -263,18 +350,65 @@ const OrderForm = () => {
     >
       {({ handleSubmit, errors,setFieldValue }) => {
         console.log("Validation errors:", errors); // Log validation errors
-        const handleSenderProvinceChange = (event) => {
-          const value = event.target.value;
-          setSelectedProvinceS(value); // Cập nhật state địa phương người gửi
-          setFieldValue('cityS', value);
-        };
-      
-        // Hàm thay đổi giá trị tỉnh của người nhận
-        const handleReceiverProvinceChange = (event) => {
-          const value = event.target.value;
-            setSelectedProvinceR(value); // Cập nhật state địa phương người nhận
-            setFieldValue('cityR', value);
-        };
+        
+      const handleSenderProvinceChange = (event) => {
+
+        const selectedProvince = provinces.find(province => province.value === event.target.value);
+        if (selectedProvince) {
+          setSelectedProvinceS(selectedProvince.value); // Save the value for state
+          setFieldValue('cityS', selectedProvince.label); // Save the label for the form
+          console.log('Selected Province ID:', selectedProvince.value);
+          fetchDistricts(selectedProvince.value);
+        }
+      };
+
+      const handleReceiverProvinceChange = (event) => {
+        const selectedProvince = provinces.find(province => province.value === event.target.value);
+        if (selectedProvince) {
+          setSelectedProvinceR(selectedProvince.value);
+          setFieldValue('cityR', selectedProvince.label);
+          console.log('Selected Province ID:', selectedProvince.value);
+          fetchDistricts(selectedProvince.value);
+        }
+      };
+
+      const handleSenderDistrictChange = (event) => {
+        const selectedDistrict = districts.find(district => district.value === event.target.value);
+        if (selectedDistrict) {
+          setSelectedDistrictSId(selectedDistrict.value);
+          setFieldValue('districtS', selectedDistrict.label); // Save the label for the form
+          console.log('Selected District ID:', selectedDistrict.value);
+          fetchWards(selectedDistrict.value);
+        }
+      };
+
+      const handleReceiverDistrictChange = (event) => {
+        const selectedDistrict = districts.find(district => district.value === event.target.value);
+        if (selectedDistrict) {
+          setSelectedDistrictRId(selectedDistrict.value);
+          setFieldValue('districtR', selectedDistrict.label); // Save the label for the form
+          console.log('Selected District ID:', selectedDistrict.value);
+          fetchWards(selectedDistrict.value);
+        }
+      };
+
+      const handleSenderWardChange = (event) => {
+        const selectedWard = wards.find(ward => ward.value === event.target.value);
+        if (selectedWard) {
+          setSelectedSWard(selectedWard.value);
+          setFieldValue('wardS', selectedWard.label); // Save the label for the form
+          console.log('Selected Ward ID:', selectedWard.value);
+        }
+      };
+
+      const handleReceiverWardChange = (event) => {
+        const selectedWard = wards.find(ward => ward.value === event.target.value);
+        if (selectedWard) {
+          setSelectedRWard(selectedWard.value);
+          setFieldValue('wardR', selectedWard.label); // Save the label for the form
+          console.log('Selected Ward ID:', selectedWard.value);
+        }
+      };
 
         return (
           <Form onSubmit={handleSubmit}>
@@ -301,12 +435,12 @@ const OrderForm = () => {
                       </Grid>
                       <Grid item xs={6}>
                       <FormControl fullWidth>
-                        <InputLabel>Thành phố người gửi</InputLabel>
+                        <InputLabel>Tỉnh (người gửi)</InputLabel>
                         <Select
                           name="cityS"
                           value={selectedProvinceS}
                           onChange={handleSenderProvinceChange}
-                          label="Tỉnh"
+                          label="Tỉnh (người gửi)"
                         >
                           {provinces.map((province) => (
                             <MenuItem key={province.value} value={province.value}>
@@ -316,19 +450,49 @@ const OrderForm = () => {
                         </Select>
                       </FormControl>
                     </Grid>
-                                    <Grid item xs={6}>
-                        <TextFieldWrapper
-                          name="postalCodeS"
-                          label="Postal Code"
-                        />
+                    <Grid item xs={6}>
+                        <FormControl fullWidth>
+                          <InputLabel>Quận (người gửi)</InputLabel>
+                          <Select
+                            name="districtS"
+                            value={selectedDistrictSId}
+                            onChange={handleSenderDistrictChange}
+                            label="Quận (người gửi)"
+                          >
+                            {districts.map((district) => (
+                              <MenuItem key={district.value} value={district.value}>
+                                {district.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </Grid>
+
+                      <Grid item xs={6}>
+                        <FormControl fullWidth>
+                          <InputLabel>Phường (người gửi)</InputLabel>
+                          <Select
+                            name="wards"
+                            label="Phường (người gửi)"
+                            value={selectedWardSId} // Nếu bạn có state để lưu phường đã chọn
+                            onChange={handleSenderWardChange} // Nếu bạn có hàm xử lý cho phường
+                          >
+                            {wards.map((ward) => (
+                              <MenuItem key={ward.value} value={ward.value}>
+                                {ward.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+
                       <Grid item xs={6}>
                         <TextFieldWrapper
                           name="origin"
                           label="Địa chỉ người gửi"
                         />
                       </Grid>
-                      <Grid item xs={6}>
+                      <Grid item xs={12}>
                         <TextFieldWrapper
                           name="senderNote"
                           label="Hướng dẫn giao hàng"
@@ -359,12 +523,12 @@ const OrderForm = () => {
                       </Grid>
                       <Grid item xs={6}>
                       <FormControl fullWidth>
-                        <InputLabel>Thành phố người nhận</InputLabel>
+                        <InputLabel>Tỉnh (người nhận)</InputLabel>
                         <Select
                           name="cityR"
                           value={selectedProvinceR}
                           onChange={handleReceiverProvinceChange}
-                          label="Tỉnh"
+                          label="Tỉnh (người nhận)"
                         >
                           {provinces.map((province) => (
                             <MenuItem key={province.value} value={province.value}>
@@ -374,19 +538,50 @@ const OrderForm = () => {
                         </Select>
                       </FormControl>
                     </Grid>
+
                       <Grid item xs={6}>
-                        <TextFieldWrapper
-                          name="postalCodeR"
-                          label="Postal Code"
-                        />
+                        <FormControl fullWidth>
+                          <InputLabel>Quận (người nhận)</InputLabel>
+                          <Select
+                            name="districtR"
+                            value={selectedDistrictRId}
+                            onChange={handleReceiverDistrictChange}
+                            label="Quận (người nhận)"
+                          >
+                            {districts.map((district) => (
+                              <MenuItem key={district.value} value={district.value}>
+                                {district.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </Grid>
+
+                      <Grid item xs={6}>
+                        <FormControl fullWidth>
+                          <InputLabel>Phường (người nhận)</InputLabel>
+                          <Select
+                            name="wardR"
+                            label="Phường (người nhận)"
+                            value={selectedWardRId} 
+                            onChange={handleReceiverWardChange} 
+                          >
+                            {wards.map((ward) => (
+                              <MenuItem key={ward.value} value={ward.value}>
+                                {ward.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                    
                       <Grid item xs={6}>
                         <TextFieldWrapper
                           name="destination"
                           label="Địa chỉ người nhận"
                         />
                       </Grid>
-                      <Grid item xs={6}>
+                      <Grid item xs={12}>
                         <TextFieldWrapper
                           name="receiverNote"
                           label="Hướng dẫn giao hàng"
@@ -397,60 +592,60 @@ const OrderForm = () => {
                     </Grid>
                   </Paper>
 
-                  {/* Paper 3: Order Information */}
-                  <Paper elevation={4} sx={{ padding: "20px" }}>
-                    <Typography variant="h6" gutterBottom>
-                      Thông tin bưu gửi
-                    </Typography>
-                    <Grid container spacing={3}>
-                      <Grid item xs={6}>
-                        <SelectWrapper
-                          name="koi_type"
-                          label="Koi Type"
-                          options={koi_type}
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <SelectWrapper
-                          name="koi_name"
-                          label="Koi Variant"
-                          options={koi_name}
-                        />
-                      </Grid>
-                      <Grid item xs={3}>
-                        <TextFieldWrapper
-                          name="weight"
-                          label="Cân nặng trung bình"
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">kg</InputAdornment>
-                            ),
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={3}>
-                        <TextFieldWrapper
-                          name="quantity"
-                          label="Số lượng"
-                          type="number"
-                          slotProps={{
-                            inputLabel: {
-                              shrink: true,
-                            },
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <FileUpload name="document_file" />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <TextFieldWrapper
-                          name="description"
-                          label="Ghi chú"
-                          multiline
-                          rows={4}
-                        />
-                      </Grid>
+                {/* Paper 3: Order Information */}
+                <Paper elevation={4} sx={{ padding: "20px" }}>
+                  <Typography variant="h6" gutterBottom>
+                    Thông tin bưu gửi
+                  </Typography>
+                  <Grid container spacing={3}>
+                    <Grid item xs={6}>
+                      <SelectWrapper
+                        name="koi_type"
+                        label="Koi Type"
+                        options={koi_type}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <SelectWrapper
+                        name="koi_name"
+                        label="Koi Variant"
+                        options={koi_name}
+                      />
+                    </Grid>
+                    <Grid item xs={3}>
+                      <TextFieldWrapper
+                        name="weight"
+                        label="Cân nặng trung bình"
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">kg</InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={3}>
+                      <TextFieldWrapper
+                        name="quantity"
+                        label="Số lượng"
+                        type="number"
+                        slotProps={{
+                          inputLabel: {
+                            shrink: true,
+                          },
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <FileUpload name="document_file" />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextFieldWrapper
+                        name="description"
+                        label="Ghi chú"
+                        multiline
+                        rows={4}
+                      />
+                    </Grid>
 
                       <Grid item xs={12}>
                         <CustomRadioGroup

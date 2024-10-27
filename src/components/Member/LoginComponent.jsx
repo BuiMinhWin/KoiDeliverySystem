@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import './Login.css';
-import { loginAccount, googleLogin } from '../../services/EmployeeService';  
+import { loginAccount, googleLogin } from '../../services/EmployeeService';
 import * as jwtJsDecode from 'jwt-js-decode';
 import { useSnackbar } from 'notistack';
 
@@ -10,7 +10,8 @@ const LoginComponent = () => {
   const [userName, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const [avatar, setAvatar] = useState('');
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -24,8 +25,7 @@ const LoginComponent = () => {
       const result = response.data;
       localStorage.setItem('roleId', result.roleId);
       localStorage.setItem('accountId', result.accountId);
-      localStorage.setItem('province', result.province);
-
+      
       enqueueSnackbar('Login successful', { variant: 'success' });
 
       if (result.roleId === 'Manager') {
@@ -39,62 +39,80 @@ const LoginComponent = () => {
       }
     } catch (error) {
       console.error('Login Error:', error);
-      enqueueSnackbar('Login failed. Please try again.', { variant: 'error',autoHideDuration: 1000 });
+      enqueueSnackbar('Login failed. Please try again.', { variant: 'error', autoHideDuration: 1000 });
     }
   };
 
-  const handleGoogleLoginSuccess = (response) => {
+  const handleGoogleLoginSuccess = async (response) => {
     const credential = response.credential;
     if (!credential) {
-      enqueueSnackbar('Google login failed. No credential found.', { variant: 'error',autoHideDuration: 1000 });
+      enqueueSnackbar('Google login failed. No credential found.', { variant: 'error', autoHideDuration: 1000 });
       return;
     }
 
     const decodedToken = jwtJsDecode.decode(credential);
     const { payload } = decodedToken;
-    const { given_name: firstName, family_name: lastName, email, picture: avatar } = payload;
+    console.log(payload);
+    const { given_name: firstName, family_name: lastName, email, picture: avatarUrl } = payload;
+    console.log(avatarUrl);
+  
+    const avatarBytes = await convertAvatarUrlToBytes(avatarUrl);
+    if (avatarBytes) {
+    
+      const avatar = btoa(String.fromCharCode(...avatarBytes));
+      console.log();
+      
+      
+      const account = {
+        firstName,
+        lastName,
+        userName,
+        password,
+        email,
+        roleId: "Customer",
+        createAt: localStorage.getItem('createAt') || new Date().toISOString(),
+      };
 
-    let createAt = localStorage.getItem('createAt');
-    const account = {
-      firstName,
-      lastName,
-      userName,
-      password,
-      email,
-      phone,
-      roleId: "Customer",
-      avatar,
-      createAt
-    };
+      googleLogin(account)
+        .then((response) => {
+          const result = response.data;
+          localStorage.setItem('createAt', account.createAt);
+          localStorage.setItem('roleId', result.roleId);
+          localStorage.setItem('accountId', result.accountId);
+          console.log(result.accountId);
+          console.log(result);
+          // updateAvatar(result.accountId,avatar);
 
-    googleLogin(account)
-      .then((response) => {
-        const result = response.data;
-        
-        if (!createAt) {
-          createAt = result.createAt || new Date().toISOString();
-          localStorage.setItem('createAt', createAt);
-        }
-        
-        localStorage.setItem('roleId', result.roleId);
-        
-        if (result.roleId === 'Customer') {
-          enqueueSnackbar('Google login successful', { variant: 'success',autoHideDuration: 1000  });
-          navigate('/customer');
-        } else {
-          enqueueSnackbar('Unexpected roleId. Please try again.', { variant: 'warning',autoHideDuration: 1000  });
-        }
-      })
-      .catch((err) => {
-        console.error('Error during Google login:', err);
-        enqueueSnackbar('An error occurred during Google login', { variant: 'error' ,autoHideDuration: 1000 });
-      });
+          
+          if (result.roleId === 'Customer') {
+            enqueueSnackbar('Google login successful', { variant: 'success', autoHideDuration: 1000 });
+            navigate('/customer');
+          } else {
+            enqueueSnackbar('Unexpected roleId. Please try again.', { variant: 'warning', autoHideDuration: 1000 });
+          }
+        })
+        .catch((err) => {
+          console.error('Error during Google login:', err);
+          enqueueSnackbar('An error occurred during Google login', { variant: 'error', autoHideDuration: 1000 });
+        });
+    }
   };
 
   const handleGoogleLoginFailure = (response) => {
-    // console.error('Google login failure:', response);
-    enqueueSnackbar('Google login failed, please try again.', { variant: 'error',autoHideDuration: 1000 , response });
+    enqueueSnackbar('Google login failed, please try again.', { variant: 'error', autoHideDuration: 1000, response });
   };
+
+  async function convertAvatarUrlToBytes(avatarUrl) {
+    try {
+      const response = await fetch(avatarUrl);
+      const blob = await response.blob();
+      const arrayBuffer = await blob.arrayBuffer();
+      return new Uint8Array(arrayBuffer);
+    } catch (error) {
+      console.error("Error fetching and converting avatar:", error);
+      return null;
+    }
+  }
 
   return (
     <div className="login-container">
