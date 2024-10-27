@@ -20,6 +20,7 @@ import { FaTruckFast } from "react-icons/fa6";
 import { FiAlertTriangle } from "react-icons/fi";
 import { FaRegRectangleList } from "react-icons/fa6";
 import { FaBoxesStacked } from "react-icons/fa6";
+import {  getAvatar} from "../../services/CustomerService";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler );
 
@@ -44,6 +45,7 @@ const toggleDropdown = () => {
   // const [hoveredOrder, setHoveredOrder] = useState(null); 
   const [searchQuery, setSearchQuery] = useState('');
   const [orderDetail, setOrderDetail] = useState(null);
+  const [avatar, setAvatar] = useState(null); 
 
   // const [selectedDelivery, setSelectedDelivery] = useState(null);
   const [monthFilter, setMonthFilter] = useState('');
@@ -96,6 +98,17 @@ const toggleDropdown = () => {
         console.error('Error fetching provinces:', error);
       }
     };
+    const fetchAccount = async () => {
+      try {
+       
+        const avatarUrl = await getAvatar(accountId);
+        setAvatar(avatarUrl);
+      } catch (error) {
+        console.error("Error fetching account data:", error);
+      } 
+    };
+ 
+    if (accountId) fetchAccount();
 
     fetchProvinces();
     getAllOrders();
@@ -289,7 +302,7 @@ const toggleDropdown = () => {
 
               <div className="navbar-cus-right">
                 <div className="dropdown" onClick={toggleDropdown}>
-                  <img src="/Delivery/User.png" alt="Avatar" className="avatar" />
+                <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
                   {isDropdownOpen && ( 
                     <div className="dropdown-content">
                       <a  href="user-page"><CgProfile /> View Profile</a>
