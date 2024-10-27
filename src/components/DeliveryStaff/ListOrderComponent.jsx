@@ -68,21 +68,24 @@ const ListOrderComponent = () => {
     
     if (newStatus) {
       updateStatus(orderId, newStatus);
-  
+    
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          const currentLocate = await reverseGeocodeAddress(latitude, longitude);
-          const trackingData = {orderId,currentLocate,status: newStatus};
-          const response = await trackingOrder(trackingData);
-            .then(() => {
+          try {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const currentLocate = await reverseGeocodeAddress(latitude, longitude);
+            const trackingData = { orderId, currentLocate, status: newStatus };
+            const response = await trackingOrder(trackingData);
+            const result = response?.data;
+    
+            if (result) {
               enqueueSnackbar("Cập nhật trạng thái thành công", { variant: "success", autoHideDuration: 1000 });
               getAllOrders();
-            })
-            .catch(() => {
-              enqueueSnackbar("Cập nhật thất bại. Vui lòng thử lại.", { variant: "error", autoHideDuration: 1000 });
-            });
+            }
+          } catch (error) {
+            enqueueSnackbar("Cập nhật thất bại. Vui lòng thử lại.", { variant: "error", autoHideDuration: 1000 });
+          }
         }, () => {
           enqueueSnackbar("Không thể lấy vị trí hiện tại.", { variant: "error", autoHideDuration: 1000 });
         });
