@@ -48,6 +48,11 @@
     {
       "source": "/api/documents/download/order/{orderId}/:path*",
       "destination": "http://koideliverysystem.id.vn:8080/api/documents/download/order/{orderId}/:path*"
+    },
+
+    {
+      "source": "/api/deliveryStatus/:path*",
+      "destination": "http://koideliverysystem.id.vn:8080/api/deliveryStatus/:path*"
     }
 
   ]
