@@ -52,6 +52,9 @@ const ManagerComponent = () => {
         // Gọi hàm getAllOrders và getAllAccounts để lấy dữ liệu
         // const orders = await getAllOrders();
         // const accounts = await getAllAccounts();
+        const orders = await getAllOrders();
+        setOrders(orders);
+        const accounts = await getAllAccounts();
   
         // Tính toán các thống kê dựa trên dữ liệu lấy được
         const totalOrders = orders.length;
