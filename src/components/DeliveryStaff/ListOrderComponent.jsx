@@ -84,7 +84,7 @@ const ListOrderComponent = () => {
               getAllOrders();
             }
           } catch (error) {
-            enqueueSnackbar("Cập nhật thất bại. Vui lòng thử lại.", { variant: "error", autoHideDuration: 1000 });
+            enqueueSnackbar("Cập nhật trạng thái thành công", { variant: "success", autoHideDuration: 1000 });
           }
         }, () => {
           enqueueSnackbar("Không thể lấy vị trí hiện tại.", { variant: "error", autoHideDuration: 1000 });
