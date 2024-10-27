@@ -5,6 +5,10 @@
       "destination": "http://koideliverysystem.id.vn:8080/api/accounts/:path*"
     },
     {
+      "source": "/api/accounts/",
+      "destination": "http://koideliverysystem.id.vn:8080/api/accounts/"
+    },
+    {
       "source": "/api/Google/loginGG",
       "destination": "http://koideliverysystem.id.vn:8080/api/Google/loginGG"
     },
