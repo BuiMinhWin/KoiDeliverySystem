@@ -4,6 +4,7 @@ import { FaLongArrowAltLeft } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import axios from "axios";
+import { trackingOrder } from '../../services/DeliveryStatusService';
 
 
 
@@ -67,38 +68,27 @@ const ListOrderComponent = () => {
     
     if (newStatus) {
       updateStatus(orderId, newStatus);
+  
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
           const currentLocate = await reverseGeocodeAddress(latitude, longitude);
-          console.log(currentLocate);
-          // const currentLocate = `${latitude},${longitude}`;
-          const data = {
-            orderId: orderId,
+  
+          trackingOrder({
+            orderId,
             timeTracking: new Date().toISOString(),
-            currentLocate: currentLocate,
-            status: newStatus, 
-          };
-          console.log(data.status);
-
-          fetch("/api/deliveryStatus/create", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
+            currentLocate,
+            status: newStatus,
           })
-            .then((response) => response.json())
             .then(() => {
               enqueueSnackbar("Cập nhật trạng thái thành công", { variant: "success", autoHideDuration: 1000 });
-              getAllOrders(); 
+              getAllOrders();
             })
             .catch(() => {
               enqueueSnackbar("Cập nhật thất bại. Vui lòng thử lại.", { variant: "error", autoHideDuration: 1000 });
             });
         }, () => {
-          
           enqueueSnackbar("Không thể lấy vị trí hiện tại.", { variant: "error", autoHideDuration: 1000 });
         });
       } else {
@@ -106,6 +96,7 @@ const ListOrderComponent = () => {
       }
     }
   };
+  
 
   const handleViewOrder = (orderId) => {
     navigate(`/order/${orderId}`);
