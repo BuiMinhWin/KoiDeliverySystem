@@ -24,7 +24,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcEleme
 
 const ManagerComponent = () => {
   const [orders, setOrders] = useState([]);
-  const [acounts, setAccounts] = useState([]);
+  const [accounts, setAccounts] = useState([]);
   const [avatar, setAvatar] = useState(null); 
   const accountId = localStorage.getItem("accountId");
 
@@ -128,8 +128,12 @@ const ManagerComponent = () => {
   const getAllAccounts = async () => {
     try {
       const response = await listAccount();
+      console.log("danh sach account", response.data
+
+      )
       if (Array.isArray(response.data)) {
         setAccounts(response.data);
+        
         return response.data;  // Trả về dữ liệu để sử dụng sau
       } else {
         console.error("API response is not an array", response.data);
