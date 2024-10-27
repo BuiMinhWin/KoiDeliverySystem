@@ -26,13 +26,19 @@ import Authenticate from "../components/Member/Authenticate";
 import ResetPasswordComponent from "../components/Member/ResetPasswordComponent";
 import Map from "../components/Map";
 import { SnackbarProvider } from 'notistack';
-import PaymentOutcome from "../pages/CheckoutPage/PaymentOutCome";
+import PaymentOutcome from "../pages/CheckoutPage/PaymentOutcome";
 import DriverBooking from "../components/SaleStaff/AssignDriverComponent";
 import ConfirmDriver from "../components/SaleStaff/ConfirmDriver";
 import ListOrderManageComponent from "../components/Manager/ListOrderManageComponent";
-
 function index() {
   return (
+    <SnackbarProvider
+    maxSnack={3}
+    anchorOrigin={{
+    vertical: 'top',     
+    horizontal: 'center' 
+    }}
+    >
       
 
   
@@ -41,6 +47,7 @@ function index() {
       <Route path="/" element={<Homepage />} />
       <Route path="/login" element={<LoginComponent />} />
       <Route path="/user-page" element={<UserPage />} />
+      <Route path="/register" element={<RegisterComponent />} />
       <Route path="/register" element={<RegisterComponent />} />
       <Route path="/reset" element={<ResetPasswordComponent />} />
       <Route path="/map" element={< Map />} />
@@ -58,10 +65,9 @@ function index() {
         <Route
           path="/form"
           element={
-            // <Authenticate allowedRoles={["Customer"]}>
-            //   <OrderForm />
-            // </Authenticate>
-            <OrderForm />
+            <Authenticate allowedRoles={["Customer"]}>
+              <OrderForm />
+            </Authenticate>
           }
         />
         <Route
@@ -122,15 +128,6 @@ function index() {
       />
 
       <Route
-        path="/listcustomers"
-        element={
-          <Authenticate allowedRoles={["Manager"]}>
-            <ListCustomerComponent />
-          </Authenticate>
-        }
-      />
-
-      <Route
         path="/ordersM"
         element={
           <Authenticate allowedRoles={["Manager"]}>
@@ -139,7 +136,14 @@ function index() {
         }
       />
 
-    
+      <Route
+        path="/listcustomers"
+        element={
+          <Authenticate allowedRoles={["Manager"]}>
+            <ListCustomerComponent />
+          </Authenticate>
+        }
+      />
 
       {/*customer*/}
       <Route
@@ -164,7 +168,7 @@ function index() {
       <Route
         path="/orders"
         element={
-          <Authenticate allowedRoles={["Delivery"]}>
+          <Authenticate allowedRoles={["Delivery", "Manager"]}>
             <ListOrderComponent />
           </Authenticate>
         }
@@ -189,8 +193,7 @@ function index() {
         }
       />
 
-        {/*SalesStaff*/}
-        <Route
+<Route
         path="/salestaff/driverbooking"
         element={
           <Authenticate allowedRoles={["Sales"]}>
@@ -236,6 +239,7 @@ function index() {
         }
       />
     </Routes>
+    </SnackbarProvider>
   );
 }
 
