@@ -17,6 +17,7 @@ const OrderReport = () => {
         const response = await axios.get(
           "http://koideliverysystem.id.vn:8080/api/orders"
         );
+        console.log(respone.data);
         const accountId = localStorage.getItem("accountId");
 
         // Filter orders by accountId

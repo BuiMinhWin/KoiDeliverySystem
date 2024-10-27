@@ -6,7 +6,7 @@ import logo from '../../assets/Logo.png';
 import blog from '../../assets/Blog.jpg';
 import { useNavigate } from 'react-router-dom';
 import { getOrder } from '../../services/CustomerService';
-
+import DeliveryStatus from '../../pages/DeliveryStatus/DeliveryStatus'; // Import component hiển thị trạng thái đơn hàng
 
 const Homepage = () => {
 
@@ -28,8 +28,7 @@ const Homepage = () => {
     if (trackingCode) {
       getOrder(trackingCode)
         .then((response) => {
-          // Lưu thông tin đơn hàng vào trackingResult
-          setTrackingResult(response.data);
+          setTrackingResult(response.data); // Lưu thông tin đơn hàng vào trackingResult
         })
         .catch((error) => {
           console.error("Error fetching order:", error);
@@ -37,6 +36,7 @@ const Homepage = () => {
         });
     }
   };
+
 
   useEffect(() => {
     if (activeTab !== 'tracking') {
@@ -71,12 +71,12 @@ const Homepage = () => {
         <a href="#" className="nav-link support-link">
             <i className="fas fa-question-circle"></i>Hỗ Trợ
           </a>
-          {!roleId ? (
+          {/* {!roleId ? ( */}
             <>
               <button className="register-btn" onClick={() => navigate('/register')}>Đăng Ký</button>
               <button className="login-btn" onClick={() => navigate('/login')}>Đăng Nhập</button>
             </>
-          ) : (
+          {/* ) : (
             <>
               {roleId === 'Manager' ? (
                 <button onClick={() => navigate('/manager')}>Back</button>
@@ -89,7 +89,7 @@ const Homepage = () => {
               ):null
               }
             </>
-          )}
+          )} */}
         
       </div>
 
@@ -143,26 +143,7 @@ const Homepage = () => {
             {/* Kết quả theo dõi đơn hàng */}
             {trackingResult && (
           <div className="tracking-result active">
-            <table className="table table-striped table-bordered">
-              <thead>
-                <tr>
-                  <th>TotalPrice</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {trackingResult.orderId ? (
-                  <tr key={trackingResult.orderId}>
-                    <td>{trackingResult.totalPrice}</td>
-                    <td>{trackingResult.status}</td>
-                  </tr>
-                ) : (
-                  <tr>
-                    <td colSpan="3" className="text-center">No Orders Found</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+             <DeliveryStatus orderId={trackingResult.orderId} /> 
           </div>
         )}
 
@@ -234,7 +215,7 @@ const Homepage = () => {
     </div>
 
     {/* Phần giới thiệu về blog */}
-    <div className="blog-intro-section">
+    <div className="blog-intro-section-Koi">
       <div className="blog-content">
         <h2 className="blog-title">Những gì chúng tôi đề cập trong Blog</h2>
         <p className="blog-description">
@@ -249,7 +230,7 @@ const Homepage = () => {
         </p>
         <button className="blog-btn" onClick={() => navigate('/blog')}>Thông tin về Blog</button>
       </div>
-      <div className="blog-image">
+      <div className="blog-image-Koi">
       <img src={blog} className="img" alt="Blog" />
       </div>
     </div>
