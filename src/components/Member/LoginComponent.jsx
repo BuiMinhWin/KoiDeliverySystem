@@ -25,6 +25,9 @@ const LoginComponent = () => {
       const result = response.data;
       localStorage.setItem('roleId', result.roleId);
       localStorage.setItem('accountId', result.accountId);
+
+      console.log(result.roleId);
+      console.log(result.accountId);
       
       enqueueSnackbar('Login successful', { variant: 'success' });
 
