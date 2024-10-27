@@ -42,12 +42,8 @@ const RegisterComponent = () => {
         navigate('/login');
       })
       .catch((error) => {
-        const errorMessage = error.response?.data?.message || "Registration failed!";
-        if (errorMessage.includes("Duplicate entry")) {
-          enqueueSnackbar("Username or email already exists!", { variant: 'error', autoHideDuration: 5000 });
-        } else {
-          enqueueSnackbar(errorMessage, { variant: 'error', autoHideDuration: 5000 });
-        }
+        const errorMessage = error.response?.data?.message ;
+        enqueueSnackbar(errorMessage, { variant: 'error', autoHideDuration: 1000 });
       });
   };
 
