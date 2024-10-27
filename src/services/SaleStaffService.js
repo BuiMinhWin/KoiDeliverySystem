@@ -25,6 +25,10 @@ export const updateStatus = (orderId, newStatus) => {
   return axios.patch(`${REST_API_BASE_URL}/updateStatus/${orderId}`, { newStatus });
 };
 
+export const updateSale = (orderId, sale) => {
+  return axios.patch(`${REST_API_BASE_URL}/update/${orderId}`, { sale });
+};
+
 
 const REST_API_BASE_URL3 = "/api/documents/download/order/{orderId}";
 export const getDocument = (orderId) => {
