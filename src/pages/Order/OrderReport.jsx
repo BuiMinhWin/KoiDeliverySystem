@@ -35,9 +35,9 @@ const OrderReport = () => {
 
         setOrders(sortedOrders);
       })
-      . catch (error) {
+      .catch((error) => {
         console.error("Failed to fetch orders:", error);
-      }
+      });
     };
     fetchOrders();
   }, []);
