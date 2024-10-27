@@ -14,13 +14,13 @@ const OrderReport = () => {
   // Fetch orders and filter by accountId from localStorage
   useEffect(() => {
     const fetchOrders = async () => {
-      try {
+     
         // const response = await axios.get(
         //   "/api/orders"
         // );
         listOrder()
         .then((response) => {
-        console.log("danh sach order cua accountID nay",respone.data);
+        console.log("danh sach order cua accountID nay",response.data);
         const accountId = localStorage.getItem("accountId");
 
         // Filter orders by accountId
@@ -35,7 +35,7 @@ const OrderReport = () => {
 
         setOrders(sortedOrders);
       })
-      } catch (error) {
+      . catch (error) {
         console.error("Failed to fetch orders:", error);
       }
     };
