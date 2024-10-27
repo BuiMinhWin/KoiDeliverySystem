@@ -82,7 +82,7 @@ const ListOrderComponent = () => {
           };
           console.log(data.status);
 
-          fetch("http://koideliverysystem.id.vn:8080/api/deliveryStatus/create", {
+          fetch("/api/deliveryStatus/create", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
