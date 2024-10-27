@@ -28,8 +28,8 @@ const ManagerComponent = () => {
   const [avatar, setAvatar] = useState(null); 
   const accountId = localStorage.getItem("accountId");
 
-  // const [deliveryOrderCounts, setDeliveryOrderCounts] = useState({});
-  // const [salesOrderCounts, setSalesOrderCounts] = useState({});
+  const [deliveryOrderCounts, setDeliveryOrderCounts] = useState({});
+  const [salesOrderCounts, setSalesOrderCounts] = useState({});
 
   const [stats, setStats] = useState({
     
