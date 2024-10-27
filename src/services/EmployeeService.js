@@ -34,7 +34,24 @@ export const loginAccount = (loginData) => {
 };
 
 export const googleLogin = (account) => {
-  return axios.post(REST_API_BASE_URL2, account);
+  console.log('URL:', REST_API_BASE_URL2);
+  console.log('Account data:', account);
+
+  return axios.post(REST_API_BASE_URL2, account, {
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  })
+  .then((response) => response)
+  .catch((error) => {
+    console.error('Google login error:', error);
+    if (error.response) {
+      console.error('Error response data:', error.response.data);
+      // Trả về lỗi có cấu trúc để có thể xử lý trong component
+      return Promise.reject(error.response);
+    }
+    return Promise.reject(error);
+  });
 };
 
 export const forgotPassword = (email) => {
