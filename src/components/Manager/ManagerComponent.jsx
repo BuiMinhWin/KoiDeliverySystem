@@ -26,10 +26,6 @@ const ManagerComponent = () => {
   const [orders, setOrders] = useState([]);
   const [avatar, setAvatar] = useState(null); 
   const accountId = localStorage.getItem("accountId");
-
-  // const [deliveryOrderCounts, setDeliveryOrderCounts] = useState({});
-  // const [salesOrderCounts, setSalesOrderCounts] = useState({});
-
   const [stats, setStats] = useState({
     
     totalCustomers: 0,
@@ -45,97 +41,61 @@ const ManagerComponent = () => {
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
   }
-  
+ 
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Gọi hàm getAllOrders và getAllAccounts để lấy dữ liệu
-        // const orders = await getAllOrders();
-        // const accounts = await getAllAccounts();
-  
-        // Tính toán các thống kê dựa trên dữ liệu lấy được
-        const totalOrders = orders.length;
+        const ordersResponse = await listOrder();
+        const totalOrders = ordersResponse.data.length; 
+
+        const accountsResponse = await listAccount();
+        const accounts = accountsResponse.data;  
+
         const totalCustomers = accounts.filter(account => account.roleId === 'Customer').length;
         const totalEmployees = accounts.filter(account => ['Sales', 'Delivery'].includes(account.roleId)).length;
-        const totalErrors = orders.filter(order => order.status === 6).length;
-  
+
         setStats({
           totalCustomers,
           totalEmployees,
           totalOrders,
-          totalErrors,
         });
-  
-        // const deliveryStaff = accounts.filter(account => account.roleId === 'Delivery');
-        // const salesStaff = accounts.filter(account => account.roleId === 'Sales');
-  
-        // // Tính số lượng đơn hàng cho delivery staff
-        // const deliveryCounts = {};
-        // deliveryStaff.forEach((account) => {
-        //   const totalDO = orders.filter(order => order.deliver === account.accountId).length;
-        //   deliveryCounts[account.accountId] = totalDO;
-        // });
-        // setDeliveryOrderCounts(deliveryCounts);
-  
-        // // Tính số lượng đơn hàng cho sales staff
-        // const salesCounts = {};
-        // salesStaff.forEach((account) => {
-        //   const totalSO = orders.filter(order => order.salesperson === account.accountId).length;
-        //   salesCounts[account.accountId] = totalSO;
-        // });
-        // setSalesOrderCounts(salesCounts);
-  
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-  
+
     const fetchAccount = async () => {
       try {
+       
         const avatarUrl = await getAvatar(accountId);
         setAvatar(avatarUrl);
       } catch (error) {
         console.error("Error fetching account data:", error);
       } 
     };
-  
+
     fetchData();
+    getAllOrders();
     if (accountId) fetchAccount();
   }, [accountId]);
 
-  const getAllOrders = async () => {
-    try {
-      const response = await listOrder();
-      if (Array.isArray(response.data)) {
-        setOrders(response.data);
-        return response.data;  // Trả về dữ liệu để sử dụng sau
-      } else {
-        console.error("API response is not an array", response.data);
-        setOrders([]);
-        return [];
-      }
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-      return [];
-    }
+  const getAllOrders = () => {
+    listOrder()
+      .then((response) => {
+        if (Array.isArray(response.data)) {
+          setOrders(response.data);
+        } else {
+          console.error("API response is not an array", response.data);
+          setOrders([]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching : ", error);
+      });
   };
-  
-  // const getAllAccounts = async () => {
-  //   try {
-  //     const response = await listAccount();
-  //     if (Array.isArray(response.data)) {
-  //       setOrders(response.data);
-  //       return response.data;  // Trả về dữ liệu để sử dụng sau
-  //     } else {
-  //       console.error("API response is not an array", response.data);
-  //       setOrders([]);
-  //       return [];
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching accounts:", error);
-  //     return [];
-  //   }
-  // };
+
   const getStatusCounts = () => {
     const statusCounts = orders.reduce((acc, order) => {
       const status = order.status;
@@ -157,7 +117,7 @@ const ManagerComponent = () => {
     ];
   };
 
-const ordersByStatusChartData = {
+ const ordersByStatusChartData = {
       labels: ['Status 1', 'Status 2', 'Status 3', 'Status 4','Status 5'], 
       datasets: [
         {
@@ -211,13 +171,13 @@ const ordersByStatusChartData = {
   return (
     <div className="container-fluid">
       <div className="row">
-        <aside className="sidebar col-2 p-3">
+         <aside className="sidebar col-2 p-3">
           <div className='manager-sidebar'>
           <div className="profile-container text-center mb-4">
             <div className="SideKoi d-flex align-items-center justify-content-between">
               <img src="/Logo-Koi/Order.png" alt="Profile " className="profile-img rounded-circle me-3" />
               <div className=" KoiLogo">
-                <p className="KoiDeli ">Koi Deli</p>
+                <p className="KoiDeli mb-0">Koi Deli</p>
               </div>
             </div>
           
@@ -233,7 +193,7 @@ const ordersByStatusChartData = {
           <li>
             <a href="/user-page"><i className="bi bi-speedometer2 me-2"> <CgProfile /> </i> Profile</a>
           </li>
-        
+         
         </div>
 
         <div>
@@ -247,7 +207,7 @@ const ordersByStatusChartData = {
           </li>
 
           <li>
-            <a href="/ordersM"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Orders</a>
+            <a href="/orders"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Orders</a>
           </li>
 
         </div>
@@ -257,11 +217,11 @@ const ordersByStatusChartData = {
 
           <li>
             <a href="#"><i className="bi bi-chat-dots me-2"><FaRegCalendarAlt /></i> Calendar</a>
-          </li>
+           </li>
 
           <li>
             <a href="#"><i className="bi bi-chat-dots me-2"><MdOutlineMessage /></i> Notification</a>
-          </li>
+           </li>
 
         </div>
 
@@ -319,7 +279,7 @@ const ordersByStatusChartData = {
               <h3>Total Employee</h3>
               <p>{stats.totalEmployees}</p>
               
-            
+             
             </div>
             <div className="card total-customers">
               <h3>Total Customers</h3>
@@ -330,44 +290,24 @@ const ordersByStatusChartData = {
               <h3>Total Orders</h3>
               <p>{stats.totalOrders}</p>
               
-            
+             
             </div>
             <div className="card revenue">
               <h3>Orders Issue</h3>
-              <p>{stats.totalErrors}</p> 
+              <p>Not available yet</p> 
             </div>
           </section>
 
-          {/* <section className="ongoing-employee mt-4 d-flex border-top pt-3">
-          <div className="delivery-list col-6">
-          <h2>Top Delivery Staff</h2>
-          <ul>
-            {Object.entries(deliveryOrderCounts)
-              .map(([accountId, count]) => ({ accountId, count }))
-              .sort((a, b) => b.count - a.count) // Sắp xếp theo count giảm dần
-              .slice(0, 10) // Giới hạn 10 người
-              .map(({ accountId, count }) => (
-                <li key={accountId}>
-                  Staff ID: {accountId}, Orders Delivered: {count}
-                </li>
-              ))}
-          </ul>
-        </div>
-          <div className="sales-list col-6">
+          <section className="ongoing-employee mt-4 d-flex border-top pt-3">
+            <div className="delivery-list col-6">
+              <h2>Top Delivery Staff</h2>
+           
+            </div>
+            <div className="sales-list col-6">
             <h2>Top Sales Staff</h2>
-            <ul>
-            {Object.entries(salesOrderCounts)
-              .map(([accountId, count]) => ({ accountId, count }))
-              .sort((a, b) => b.count - a.count) // Sắp xếp theo count giảm dần
-              .slice(0, 10) // Giới hạn 10 người
-              .map(({ accountId, count }) => (
-                <li key={accountId}>
-                  Staff ID: {accountId}, Orders Delivered: {count}
-                </li>
-              ))}
-          </ul>
-          </div>
-        </section> */}
+              
+            </div>
+          </section>
 
           <section className="statistics mt-4 d-flex justify-content-between border-top pt-3">
             <div className="container">
