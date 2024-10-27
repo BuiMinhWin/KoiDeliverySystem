@@ -48,14 +48,16 @@ const ManagerComponent = () => {
   
 
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const ordersResponse = await listOrder();
+        const orders = await getAllOrders();
+        const accounts = await getAllAccounts();
         const totalOrders = ordersResponse.data.length; 
 
         const accountsResponse = await listAccount();
-        const accounts = accountsResponse.data;  
+        
 
         const totalCustomers = accounts.filter(account => account.roleId === 'Customer').length;
         const totalEmployees = accounts.filter(account => ['Sales', 'Delivery'].includes(account.roleId)).length;
@@ -110,22 +112,39 @@ const ManagerComponent = () => {
     if (accountId) fetchAccount();
   }, [accountId]);
 
-  const getAllOrders = () => {
-    listOrder()
-      .then((response) => {
-        if (Array.isArray(response.data)) {
-          setOrders(response.data);
-        } else {
-          console.error("API response is not an array", response.data);
-          setOrders([]);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching : ", error);
-      });
+  const getAllOrders = async () => {
+    try {
+      const response = await listOrder();
+      if (Array.isArray(response.data)) {
+        setOrders(response.data);
+        return response.data;  // Trả về dữ liệu để sử dụng sau
+      } else {
+        console.error("API response is not an array", response.data);
+        setOrders([]);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      return [];
+    }
   };
   
-
+  const getAllAccounts = async () => {
+    try {
+      const response = await listAccount();
+      if (Array.isArray(response.data)) {
+        setOrders(response.data);
+        return response.data;  // Trả về dữ liệu để sử dụng sau
+      } else {
+        console.error("API response is not an array", response.data);
+        setOrders([]);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching accounts:", error);
+      return [];
+    }
+  };
   const getStatusCounts = () => {
     const statusCounts = orders.reduce((acc, order) => {
       const status = order.status;
