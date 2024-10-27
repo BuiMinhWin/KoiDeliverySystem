@@ -62,21 +62,22 @@ const LoginComponent = () => {
       const { given_name: firstName, family_name: lastName, email, picture: avatarUrl } = payload;
       console.log("Email from payload:", email);
 
-      const avatarBytes = await convertAvatarUrlToBytes(avatarUrl);
-      const avatar = avatarBytes ? btoa(String.fromCharCode(...avatarBytes)) : null;
+      // const avatarBytes = await convertAvatarUrlToBytes(avatarUrl);
+      // const avatar = avatarBytes ? btoa(String.fromCharCode(...avatarBytes)) : null;
 
       const account = {
         firstName,
         lastName: lastName || 'Unknown',  // Giá trị mặc định nếu lastName trống
-        userName,
+        userName: userName || email,       // Đảm bảo userName không trống
         password,
         email,
         roleId: "Customer",
         createAt: localStorage.getItem('createAt') || new Date().toISOString(),
       };
       
-      if (!account.lastName) {
-        enqueueSnackbar('Thiếu lastName, vui lòng thử lại.', { variant: 'error' });
+      // Kiểm tra các trường bắt buộc
+      if (!account.lastName || !account.userName || !account.email) {
+        enqueueSnackbar('Thông tin không đầy đủ, vui lòng thử lại.', { variant: 'error' });
         return;
       }
 
@@ -109,17 +110,17 @@ const LoginComponent = () => {
     enqueueSnackbar('Google login failed, please try again.', { variant: 'error', autoHideDuration: 1000 });
   };
 
-  async function convertAvatarUrlToBytes(avatarUrl) {
-    try {
-      const response = await fetch(avatarUrl);
-      const blob = await response.blob();
-      const arrayBuffer = await blob.arrayBuffer();
-      return new Uint8Array(arrayBuffer);
-    } catch (error) {
-      console.error("Error fetching and converting avatar:", error);
-      return null;
-    }
-  }
+  // async function convertAvatarUrlToBytes(avatarUrl) {
+  //   try {
+  //     const response = await fetch(avatarUrl);
+  //     const blob = await response.blob();
+  //     const arrayBuffer = await blob.arrayBuffer();
+  //     return new Uint8Array(arrayBuffer);
+  //   } catch (error) {
+  //     console.error("Error fetching and converting avatar:", error);
+  //     return null;
+  //   }
+  // }
 
   return (
     <div className="login-container">
