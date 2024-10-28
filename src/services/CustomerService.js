@@ -155,4 +155,58 @@ export const updateAvatar = async (accountId, avatarFile) => {
     return response; // Return raw response if not JSON
   }
 };
+export const updateServiceStatus = async (
+  orderDetailId,
+  serviceId,
+  serviceStatus
+) => {
+  try {
+    console.log("Sending request with:", {
+      orderDetailId,
+      serviceId,
+      serviceStatus,
+    });
+
+    const response = await axios.patch(
+      `${REST_API_SERVICE_URL}/updateService/${orderDetailId}/service/${serviceId}`,
+      null,
+      {
+        params: { newStatus: serviceStatus },
+      }
+    );
+
+    console.log("Response status:", response.status);
+    console.log("Response data:", response.data);
+
+    if (response.status !== 200) {
+      throw new Error(`Unexpected response status: ${response.status}`);
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error updating service: status", error);
+    if (error.response) {
+      console.error("Error response data:", error.response.data);
+      console.error("Error response status:", error.response.status);
+    } else if (error.request) {
+      console.error("Error request:", error.request);
+    } else {
+      console.error("Error message:", error.message);
+    }
+    throw new Error("Failed to update service status.");
+  }
+};
+
+export const getServiceStatus = async (orderDetailId) => {
+  try {
+    console.log("Sending request with:", orderDetailId);
+    const response = await axios.get(
+      `${REST_API_SERVICE_URL}/getServices/${orderDetailId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching Service Status:", error);
+    throw error;
+  }
+};
 
