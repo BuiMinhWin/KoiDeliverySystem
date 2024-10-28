@@ -19,7 +19,7 @@ const SaleStaffComponent = () => {
 
   const handleLogout = () => {
     logout();
-    Navigate('/');
+    navigate('/');
   }
 
   const [isDropdownOpen, setDropdownOpen] = useState(false); // Quản lý trạng thái mở dropdown
