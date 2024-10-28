@@ -73,7 +73,6 @@ const OrderDetailDocumentComponent = () => {
               <th>KoiType</th>
               <th>Quantity</th>
               <th>Weight</th>
-              <th>Status</th>
             </tr>
           </thead>
           <tbody>

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { listOrder, updateStatus, getOrderDetail } from '../../services/DeliveryService';
+import { listOrder } from '../../services/DeliveryService';
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+
 
 const ListOrderOfSales = () => {
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
   const accountId = localStorage.getItem("accountId");
-  // Define status labels
+
   const statusLabels = [
     "Đang chờ xét duyệt",
     "Đơn đã được duyệt",
@@ -25,7 +26,7 @@ const ListOrderOfSales = () => {
     listOrder()
       .then((response) => {
         if (Array.isArray(response.data)) {
-          const filteredOrders = response.data.filter(orders => orders.sale === accountId);
+          const filteredOrders = response.data.filter(order => order.sale === accountId);
           setOrders(filteredOrders);
         } else {
           console.error("API response is not an array", response.data);
@@ -41,27 +42,13 @@ const ListOrderOfSales = () => {
     navigate(`/confirmDetail/${orderId}`);
   };
 
+  const handleViewFeedback = (orderId) => {
+    navigate(`/salestaff/respondFeedback/${orderId}`);
+  };
+
   return (
     <div className="container">
-      <button
-        type="button"
-        onClick={() => navigate('/delivery')}
-        style={{
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          position: 'absolute',
-          top: '10px',
-          left: '120px',
-          padding: '5px',
-          fontSize: '14px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <FaLongArrowAltLeft size={16} color="black" />
-        <span style={{ marginLeft: '15px' }}>Back</span>
-      </button>
+      
 
       <h2 className="text-center">List of Orders</h2>
       <table className="table table-striped table-bordered">
@@ -78,6 +65,7 @@ const ListOrderOfSales = () => {
             <th>Delivery</th>
             <th>Status</th>
             <th>View</th>
+            <th>Feedback</th> {/* Thêm cột Feedback */}
           </tr>
         </thead>
         <tbody>
@@ -102,11 +90,19 @@ const ListOrderOfSales = () => {
                     View
                   </button>
                 </td>
+                <td>
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => handleViewFeedback(order.orderId)}
+                  >
+                    View Feedback
+                  </button>
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="9" className="text-center">No Orders Found</td>
+              <td colSpan="11" className="text-center">No Orders Found</td>
             </tr>
           )}
         </tbody>

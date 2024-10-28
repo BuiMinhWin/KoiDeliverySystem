@@ -30,8 +30,8 @@ import { createOrderDetail } from "../../services/CustomerService";
 // import HeaderBar from "../Header/Header/Nguyen";
 import RadioGroupWrapper from "../FromUI/RadioGroup";
 import CustomRadioGroup from "../FromUI/CustomRadioGroup";
-import AccessibleIcon from "@mui/icons-material/Accessible";
-import AccessibleForwardIcon from "@mui/icons-material/AccessibleForward";
+import RocketIcon from '@mui/icons-material/Rocket';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import FileUpload from "../FromUI/FileUpload";
 import CheckboxWrapper from "../FromUI/Checkbox";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -77,11 +77,11 @@ const FORM_VALIDATION = Yup.object().shape({
   receiverName: Yup.string().required("Vui lòng nhập tên người nhận"),
   senderName: Yup.string().required("Vui lòng nhập tên người gửi"),
   receiverPhone: Yup.string()
-    .matches(/^[0-9]+$/, "Số điện thoại phải là số")
-    .required("Vui lòng nhập số điện thoại người nhận"),
+  .required("Vui lòng nhập số điện thoại người nhận")
+  .matches(/^[0-9]{10}$/, "Số điện thoại phải là số và có 10 số"),
   senderPhone: Yup.string()
-    .matches(/^[0-9]+$/, "Số điện thoại phải là số")
-    .required("Vui lòng nhập số điện thoại người gửi"),
+  .required("Vui lòng nhập số điện thoại người gửi")
+  .matches(/^[0-9]{10}$/, "Số điện thoại phải là số và có 10 số"),
   receiverNote: Yup.string().nullable(),
   senderNote: Yup.string().nullable(),
   orderNote: Yup.string().nullable(), // Optional field for additional notes
@@ -750,7 +750,7 @@ const OrderForm = () => {
                             label: "Dịch vụ tiêu chuẩn",
                             description:
                               "Giao theo tiêu chuẩn dịch vụ 1-4 ngày",
-                            icon: <AccessibleIcon fontSize="large" />,
+                            icon: <RocketIcon fontSize="large" />,
                             helpText:
                               "Phí vận chuyển ước tính sẽ bao gồm phụ phí và trừ đi các khoản chiến khấu/giảm giá bởi khuyến mãi.",
                           },
@@ -758,7 +758,7 @@ const OrderForm = () => {
                             value: "Dịch vụ hỏa tốc",
                             label: "Dịch vụ hỏa tốc",
                             description: "Giao theo tiêu chuẩn dịch vụ 1-3 giờ",
-                            icon: <AccessibleForwardIcon fontSize="large" />,
+                            icon: <RocketLaunchIcon fontSize="large" />,
                             helpText:
                               "Phí vận chuyển ước tính sẽ bao gồm phụ phí và trừ đi các khoản chiến khấu/giảm giá bởi khuyến mãi.",
                           },

@@ -14,26 +14,27 @@ import {
   createFeedback,
   getFeedbackByOrderId,
 } from "../../services/FeedBackService";
+import { useSnackbar } from "notistack";
 
 // Custom styled Rating component
 const StyledRating = styled(Rating)(({ theme }) => ({
   "& .MuiRating-iconFilled": {
     color: "#ff6d75",
+    fontSize: "2rem",
   },
   "& .MuiRating-iconHover": {
     color: "#ff3d47",
   },
   "& .MuiRating-iconEmpty": {
+    color: "#ff6d75",
     fontSize: "2rem",
   },
-  "& .MuiRating-iconFilled": {
-    fontSize: "2rem",
-  }
 }));
 
 const FeedbackForm = ({ orderId }) => {
   const [existingFeedback, setExistingFeedback] = useState(null);
   const [accountId, setAccountId] = useState("");
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     const fetchExistingFeedback = async () => {
@@ -77,7 +78,7 @@ const FeedbackForm = ({ orderId }) => {
           comment: values.comment,
           accountId: accountId,
         });
-        alert("Feedback submitted successfully!");
+        enqueueSnackbar("Feedback được gửi thành công", { variant: "success" });
         // After submission, fetch existing feedback again to update state
         const feedback = await getFeedbackByOrderId(orderId);
         if (feedback && feedback.length > 0) {
@@ -88,7 +89,7 @@ const FeedbackForm = ({ orderId }) => {
         formik.resetForm();
       } catch (error) {
         console.error("Error submitting feedback:", error);
-        alert("Failed to submit feedback.");
+        enqueueSnackbar("Feedback gửi thất bại", { variant: "error" });
       }
     },
   });
@@ -109,9 +110,9 @@ const FeedbackForm = ({ orderId }) => {
           sx={{ textDecoration: "underline" }}
           gutterBottom
         >
-          Existing Feedback
+          Feedback của bạn:
         </Typography>
-        <Typography>Rating: {existingFeedback.rating}</Typography>
+        <StyledRating value={existingFeedback.rating} readOnly />
         <Typography>Comment: {existingFeedback.comment}</Typography>
         {/* Display responses if available */}
         {existingFeedback.responses &&
@@ -121,7 +122,6 @@ const FeedbackForm = ({ orderId }) => {
               {existingFeedback.responses.map((response) => (
                 <Paper key={response.feedbackId} sx={{ p: 2, mb: 1 }}>
                   <Typography>Response: {response.comment}</Typography>
-                  <Typography>Rating: {response.rating}</Typography>
                 </Paper>
               ))}
             </Box>

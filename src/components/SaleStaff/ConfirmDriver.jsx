@@ -60,25 +60,7 @@ const Booking = () => {
 
   return (
     <div className="container">
-      <button
-        type="button"
-        onClick={() => navigate('/delivery')}
-        style={{
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          position: 'absolute',
-          top: '10px',
-          left: '120px',
-          padding: '5px',
-          fontSize: '14px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <FaLongArrowAltLeft size={16} color="black" />
-        <span style={{ marginLeft: '15px' }}>Back</span>
-      </button>
+      
 
       <h2 className="text-center">List of Confirm Drivers</h2>
       <table className="table table-striped table-bordered">

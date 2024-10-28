@@ -1,0 +1,59 @@
+/* src/components/FeedbackResponse.css */
+.feedback-response-container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.feedback-item p {
+  margin: 5px 0;
+}
+
+.feedback-item button {
+  padding: 8px 12px;
+  background-color: #133D7D;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.feedback-item button:hover {
+  background-color: #021b40;
+}
+
+.response-input {
+  margin-top: 10px;
+}
+
+.response-input textarea {
+  width: 100%;
+  height: 60px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  resize: none;
+  margin-bottom: 10px;
+}
+
+.response-input button {
+  padding: 8px 12px;
+  background-color: #008CBA;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.response-input button:hover {
+  background-color: #007bb5;
+}
