@@ -33,6 +33,7 @@
       "source": "/api/ordersDetail/:path*",
       "destination": "http://koideliverysystem.id.vn:8080/api/ordersDetail/:path*"
     },
+    
     {
       "source": "/api/deliveryStatus/:path*",
       "destination": "http://koideliverysystem.id.vn:8080/api/deliveryStatus/:path*"
