@@ -21,13 +21,9 @@ import { FaBoxesStacked } from "react-icons/fa6";
 import {  getAvatar} from "../../services/CustomerService";
 import { trackingOrderState } from '../../services/DeliveryStatusService';
 import { useSnackbar } from 'notistack';
+import polyline from 'polyline';
 import axios from "axios";
-
-
-
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler );
-
+import Map from '../Map';
 
 const DeliveryComponent = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -116,6 +112,8 @@ const toggleDropdown = () => {
  
     if (accountId) fetchAccount();
 
+    
+
     fetchProvinces();
     getAllOrders();
   }, []);
@@ -134,14 +132,7 @@ const toggleDropdown = () => {
         console.error("Error fetching : ", error);
       });
   };
-  
-  // const handleMouseEnter = (order) => {
-  //   setHoveredOrder(order); 
-  // };
 
-  // const handleMouseLeave = () => {
-  //   setHoveredOrder(null); 
-  // };
 
   const handleSearch = async (event) => {
     const orderId = event.target.value;
@@ -167,22 +158,28 @@ const toggleDropdown = () => {
   };
   const API_KEY =import.meta.env.VITE_GOONG_API_KEY; // Thay bằng API Key của bạn
 
-  const reverseGeocodeAddress = async (lat, long) => {
-    try {
-      const response = await axios.get(
-        `https://rsapi.goong.io/Geocode?latlng=${lat},${long}&api_key=${API_KEY}`
-      );
-      const data = response.data;
-      if (data.results && data.results.length > 0) {
-        const address = data.results[0].formatted_address; // Get the formatted address
-        return address; // Return the full address
-      } else {
-        throw new Error('No results found for the address.');
-      }
-    } catch (error) {
-      console.error('Error fetching geocode:', error);
-      throw new Error('Failed to fetch geocode.');
-    }
+  const [selectedOrigin, setSelectedOrigin] = useState('');
+  const [selectedDestination, setSelectedDestination] = useState('');
+  const [showMap, setShowMap] = useState(false);
+
+  const handleDirection = async ( destination) => {
+    navigate('/map', { state: { destination } });
+    // console.log(destination);
+    // if (navigator.geolocation) {
+    //   navigator.geolocation.getCurrentPosition(async (position) => {
+       
+    //       const latitude = position.coords.latitude;
+    //       const longitude = position.coords.longitude;
+    //       const currentLocate = await reverseGeocodeAddress(latitude, longitude);
+    //       setSelectedOrigin(currentLocate);
+    //       setSelectedDestination(destination);
+    //       setShowMap(true);
+    //   }, () => {
+    //     enqueueSnackbar("Không thể lấy vị trí hiện tại.", { variant: "error", autoHideDuration: 1000 });
+    //   });
+    // } else {
+    //   enqueueSnackbar("Không thể lấy vị trí hiện tại.", { variant: "error", autoHideDuration: 1000 });
+    // }
   };
  
   const filteredOrders = orders.filter(order => {
@@ -409,9 +406,9 @@ const toggleDropdown = () => {
               </select>
               </div>
               
-              <table className="table table-striped table-bordered ">
-                <thead>
-                  <tr>
+              <table className="table table-striped table-bordered">
+              <thead>
+                <tr>
                   <th>OrderId</th>
                   <th>OrderDate</th>
                   <th>Origin</th>
@@ -420,45 +417,58 @@ const toggleDropdown = () => {
                   <th>Status</th>
                   <th>Action</th>
                   <th>Details</th>
-                  </tr>
-                </thead>
-                <tbody>
+                  <th>Direction</th>
+                </tr>
+              </thead>
+              <tbody>
                 {currentOrders.length > 0 ? (
                   currentOrders
-                  .filter(order => order.deliver ===accountId&& order.status > 1 && order.status < 5 ) 
-                  .map((order) => (
-                    <tr key={order.orderId}>
-                      <td>{order.orderId}</td>
-                      <td>{new Date(order.orderDate).toLocaleDateString()}</td>
-                      <td>{order.origin}</td>
-                      <td>{order.destination}</td>
-                      <td>{order.freight}</td>
-                      <td>
-                        {order.status === 2 && "Đang lấy hàng"}
-                        {order.status === 3 && "Đã lấy hàng"}
-                        {order.status === 4 && "Đang giao"}
-                        {order.status === 5 && "Đã hoàn thành"}  
-                    </td>
-                      <td>
-                      <button
-                        className="btn btn-info"
-                        onClick={() => updateOrderStatus(order.orderId)}
-                      >
-                        Update Status
-                      </button>
-                    </td>
-                      <td>
-                        <button onClick={() => handleViewOrder(order.orderId)}>View</button>
-                      </td>
-                    </tr>
-                  ))
+                    .filter(order => order.deliver === accountId && order.status > 1 && order.status < 5)
+                    .map((order) => (
+                      <tr key={order.orderId}>
+                        <td>{order.orderId}</td>
+                        <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                        <td>{order.origin}</td>
+                        <td>{order.destination}</td>
+                        <td>{order.freight}</td>
+                        <td>
+                          {order.status === 2 && "Đang lấy hàng"}
+                          {order.status === 3 && "Đã lấy hàng"}
+                          {order.status === 4 && "Đang giao"}
+                          {order.status === 5 && "Đã hoàn thành"}  
+                        </td>
+                        <td>
+                          <button
+                            className="btn btn-info"
+                            onClick={() => updateOrderStatus(order.orderId)}
+                          >
+                            Update Status
+                          </button>
+                        </td>
+                        <td>
+                          <button onClick={() => handleViewOrder(order.orderId)}>View</button>
+                        </td>
+                        <td>
+                          <button
+                            className="btn btn-primary"
+                            onClick={() => handleDirection( order.destination)}
+                          >
+                            Direction
+                          </button>
+                        </td>
+                      </tr>
+                    ))
                 ) : (
                   <tr>
                     <td colSpan="12" className="text-center">No Orders Found</td>
                   </tr>
                 )}
               </tbody>
-              </table>
+            </table>
+            {showMap && (
+              <Map origin={selectedOrigin} destination={selectedDestination} />
+            )}
+
 
               <nav>
               <ul className="pagination">
@@ -475,14 +485,6 @@ const toggleDropdown = () => {
             </div>
           
           </section>
-
-          {/* <section className="statistics mt-4 d-flex justify-content-between border-top pt-3">
-            
-            <div className="container">
-              <h2>Orders by Status</h2>
-              <Line data={ordersByStatusChartData} options={chartOptions} />
-            </div>
-          </section> */}
         </main>
       </div>
     </div>

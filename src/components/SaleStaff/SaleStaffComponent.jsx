@@ -190,7 +190,7 @@ import './SaleStaff.css';
 
               </header>
 
-              <section className="ongoing-delivery mt-4 d-flex border-top pt-3">
+              <section className="ongoing-delivery mt-4 d-flex pt-3">
               <div className="delivery-list col-12" style={{ width: '80%', margin: '0 0' }}>
                   <h2>List of Orders</h2>
 
