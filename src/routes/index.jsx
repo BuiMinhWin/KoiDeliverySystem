@@ -26,16 +26,19 @@ import Authenticate from "../components/Member/Authenticate";
 import ResetPasswordComponent from "../components/Member/ResetPasswordComponent";
 import Map from "../components/Map";
 import { SnackbarProvider } from 'notistack';
-import PaymentOutcome from "../pages/CheckoutPage/PaymentOutCome";
+import PaymentOutcome from "../pages/CheckoutPage/PaymentOutcome";
 import DriverBooking from "../components/SaleStaff/AssignDriverComponent";
 import ConfirmDriver from "../components/SaleStaff/ConfirmDriver";
 import ListOrderManageComponent from "../components/Manager/ListOrderManageComponent";
-import RespondFeedBack from "../components/SaleStaff/ResponseFeedback";
-import AboutUs from "../pages/AboutUs/AboutUsComponent";
-import Support from "../pages/Support/SupportComponent";
-
 function index() {
   return (
+    <SnackbarProvider
+    maxSnack={3}
+    anchorOrigin={{
+    vertical: 'top',     
+    horizontal: 'center' 
+    }}
+    >
       
 
   
@@ -45,9 +48,7 @@ function index() {
       <Route path="/login" element={<LoginComponent />} />
       <Route path="/user-page" element={<UserPage />} />
       <Route path="/register" element={<RegisterComponent />} />
-      <Route path="/AboutUs" element={<AboutUs />} />
-      <Route path="/Support" element={<Support />} />
-     
+      <Route path="/register" element={<RegisterComponent />} />
       <Route path="/reset" element={<ResetPasswordComponent />} />
       <Route path="/map" element={< Map />} />
       {/* <Route path="/calculate" element={< DistanceCalculator />} /> */}
@@ -56,19 +57,17 @@ function index() {
         <Route
           path="/user"
           element={
-            // <Authenticate allowedRoles={["Customer"]}>
-            //   <UserPage />
-            // </Authenticate>
-               <UserPage />
+            <Authenticate allowedRoles={["Customer"]}>
+              <UserPage />
+            </Authenticate>
           }
         />
         <Route
           path="/form"
           element={
-            // <Authenticate allowedRoles={["Customer"]}>
-            //   <OrderForm />
-            // </Authenticate>
-            <OrderForm />
+            <Authenticate allowedRoles={["Customer"]}>
+              <OrderForm />
+            </Authenticate>
           }
         />
         <Route
@@ -129,15 +128,6 @@ function index() {
       />
 
       <Route
-        path="/listcustomers"
-        element={
-          <Authenticate allowedRoles={["Manager"]}>
-            <ListCustomerComponent />
-          </Authenticate>
-        }
-      />
-
-      <Route
         path="/ordersM"
         element={
           <Authenticate allowedRoles={["Manager"]}>
@@ -146,7 +136,14 @@ function index() {
         }
       />
 
-    
+      <Route
+        path="/listcustomers"
+        element={
+          <Authenticate allowedRoles={["Manager"]}>
+            <ListCustomerComponent />
+          </Authenticate>
+        }
+      />
 
       {/*customer*/}
       <Route
@@ -168,11 +165,10 @@ function index() {
         }
       />
 
-
       <Route
         path="/orders"
         element={
-          <Authenticate allowedRoles={["Delivery"]}>
+          <Authenticate allowedRoles={["Delivery", "Manager"]}>
             <ListOrderComponent />
           </Authenticate>
         }
@@ -197,8 +193,7 @@ function index() {
         }
       />
 
-        {/*SalesStaff*/}
-        <Route
+<Route
         path="/salestaff/driverbooking"
         element={
           <Authenticate allowedRoles={["Sales"]}>
@@ -216,17 +211,6 @@ function index() {
           </Authenticate>
         }
       />
-
-      {/*SalesStaff*/}
-      <Route
-        path="/salestaff/respondFeedback/:orderId"
-        element={
-          <Authenticate allowedRoles={["Sales"]}>
-            <RespondFeedBack />
-          </Authenticate>
-        }
-      />
-
 
       <Route
         path="/salestaff"
@@ -255,6 +239,7 @@ function index() {
         }
       />
     </Routes>
+    </SnackbarProvider>
   );
 }
 
