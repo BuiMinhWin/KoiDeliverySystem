@@ -112,12 +112,13 @@ const FORM_VALIDATION = Yup.object().shape({
 });
 
 const OrderForm = () => {
+  const [services, setServices] = useState([]);
   const services = [
     { id: 1, label: "Bảo hiểm" },
     { id: 2, label: "Chăm sóc cá" },
     { id: 3, label: "Người nhận thanh toán" },
   ] || [];
-  
+
   const { testaccId, accountData } = useOutletContext();
   console.log("accId: ", testaccId, "accData: ", "accountData: ", accountData);
 
@@ -173,6 +174,20 @@ const OrderForm = () => {
   const GHN_API_KEY = import.meta.env.VITE_GHN_API_KEY;
 
   useEffect(() => {
+
+    const fetchServices = async () => {
+      try {
+        const response = await fetch("http://koideliverysystem.id.vn:8080/api/services"); // Thay 'API_URL' bằng URL thật
+        const data = await response.json();
+        setServices(data); // Cập nhật state services với dữ liệu lấy được
+      } catch (error) {
+        console.error('Error fetching services:', error);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
     const fetchProvinces = async () => {
       try {
         const response = await fetch(
