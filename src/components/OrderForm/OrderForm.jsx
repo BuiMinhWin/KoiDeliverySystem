@@ -172,6 +172,7 @@ const OrderForm = () => {
       .then((response) => {
         if (Array.isArray(response.data)) {
           setServices(response.data);
+          console.log(response.data);
         } else {
           console.error("API response is not an array", response.data);
           setServices([]);
