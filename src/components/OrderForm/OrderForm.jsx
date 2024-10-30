@@ -22,8 +22,6 @@ import {
   createOrder,
   order,
   uploadDocument,
-  updateServiceStatus,
-  getServiceStatus,
 } from "../../services/CustomerService";
 import { createOrderDetail } from "../../services/CustomerService";
 // import SideBar from "../SideBar/SideBar";
@@ -95,24 +93,21 @@ const FORM_VALIDATION = Yup.object().shape({
     .min(0.1, "Cân nặng phải lớn hơn 0")
     .required("Vui lòng nhập cân nặng"),
   freight: Yup.string().required("Vui lòng chọn phương thức vận chuyển"),
-  additional_service: Yup.string().nullable(),
-  additional_service_1: Yup.string().nullable(),
-  additional_service_2: Yup.string().nullable(),
   termsOfService: Yup.boolean()
-    .oneOf([true], "The terms and conditions must be accepted.")
-    .required("The terms and conditions must be accepted."),
-  document_file: Yup.mixed()
-    .required("A file is required")
-    .test(
-      "fileSize",
-      "File size must be less than 8MB",
-      (value) => value && value.size <= 8 * 1024 * 1024
-    )
-    .test(
-      "fileFormat",
-      "Only PDF file are allowed",
-      (value) => value && value.type === "application/pdf"
-    ),
+  .oneOf([true], "The terms and conditions must be accepted.")
+  .required("The terms and conditions must be accepted."),
+document_file: Yup.mixed()
+  .required("A file is required")
+  .test(
+    "fileSize",
+    "File size must be less than 8MB",
+    (value) => value && value.size <= 8 * 1024 * 1024
+  )
+  .test(
+    "fileFormat",
+    "Only PDF file are allowed",
+    (value) => value && value.type === "application/pdf"
+  ),
 });
 
 const OrderForm = () => {
@@ -769,14 +764,18 @@ const OrderForm = () => {
                       justifyContent="center"
                       alignItems="center"
                     >
-                      {services.map((service) => (
-                        <RadioGroupWrapper
-                          key={service.id}
-                          service={service}
-                          serviceIds={values.serviceIds} // Pass serviceIds from Formik state
-                          setFieldValue={setFieldValue} // Ensure it can update the Formik state
-                        />
-                      ))}
+                 {services && services.length > 0 ? (
+                  services.map((service) => (
+                    <RadioGroupWrapper
+                      key={service.id}
+                      service={service}
+                      serviceIds={values.serviceIds} // Pass serviceIds from Formik state
+                      setFieldValue={setFieldValue} // Ensure it can update the Formik state
+                    />
+                  ))
+                ) : (
+                  <p>No services available</p> // Thông báo nếu không có dịch vụ nào
+                )}
                     </Grid>
 
                     </Grid>
