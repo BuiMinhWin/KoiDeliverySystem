@@ -24,7 +24,6 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcEleme
 
 const ManagerComponent = () => {
   const [orders, setOrders] = useState([]);
-  const [accounts, setAccounts] = useState([]);
   const [avatar, setAvatar] = useState(null); 
   const accountId = localStorage.getItem("accountId");
 
@@ -47,102 +46,85 @@ const ManagerComponent = () => {
     setDropdownOpen(!isDropdownOpen);
   }
   
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-    
-        const orders = await getAllOrders();
-        setOrders(orders);
-        const accounts = await getAllAccounts();
-        setAccounts(accounts);
-  
-        // Tính toán các thống kê dựa trên dữ liệu lấy được
-        const totalOrders = orders.length;
+        const ordersResponse = await listOrder();
+        const totalOrders = ordersResponse.data.length; 
+
+        const accountsResponse = await listAccount();
+        const accounts = accountsResponse.data;  
+
         const totalCustomers = accounts.filter(account => account.roleId === 'Customer').length;
         const totalEmployees = accounts.filter(account => ['Sales', 'Delivery'].includes(account.roleId)).length;
-        const totalErrors = orders.filter(order => order.status === 6).length;
-  
+        const totalErrors = ordersResponse.data.some(order => order.status === 6) 
+        ? ordersResponse.data.filter(order => order.status === 6).length 
+        : 0;
+
+
         setStats({
           totalCustomers,
           totalEmployees,
           totalOrders,
           totalErrors,
         });
-  
+
         const deliveryStaff = accounts.filter(account => account.roleId === 'Delivery');
         const salesStaff = accounts.filter(account => account.roleId === 'Sales');
-  
-        // Tính số lượng đơn hàng cho delivery staff
+        
+
         const deliveryCounts = {};
         deliveryStaff.forEach((account) => {
-          const totalDO = orders.filter(order => order.deliver === account.accountId).length;
+          const totalDO = ordersResponse.data.filter(order => order.deliver === account.accountId).length;
           deliveryCounts[account.accountId] = totalDO;
         });
         setDeliveryOrderCounts(deliveryCounts);
-  
+
         // Tính số lượng đơn hàng cho sales staff
         const salesCounts = {};
         salesStaff.forEach((account) => {
-          const totalSO = orders.filter(order => order.salesperson === account.accountId).length;
+          const totalSO = ordersResponse.data.filter(order => order.salesperson === account.accountId).length;
           salesCounts[account.accountId] = totalSO;
         });
         setSalesOrderCounts(salesCounts);
-  
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-  
+
     const fetchAccount = async () => {
       try {
+      
         const avatarUrl = await getAvatar(accountId);
         setAvatar(avatarUrl);
       } catch (error) {
         console.error("Error fetching account data:", error);
       } 
     };
-  
+
     fetchData();
+    getAllOrders();
     if (accountId) fetchAccount();
   }, [accountId]);
 
-  const getAllOrders = async () => {
-    try {
-      const response = await listOrder();
-      if (Array.isArray(response.data)) {
-        setOrders(response.data);
-        return response.data;  // Trả về dữ liệu để sử dụng sau
-      } else {
-        console.error("API response is not an array", response.data);
-        setOrders([]);
-        return [];
-      }
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-      return [];
-    }
+  const getAllOrders = () => {
+    listOrder()
+      .then((response) => {
+        if (Array.isArray(response.data)) {
+          setOrders(response.data);
+        } else {
+          console.error("API response is not an array", response.data);
+          setOrders([]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching : ", error);
+      });
   };
   
-  const getAllAccounts = async () => {
-    try {
-      const response = await listAccount();
-      console.log("danh sach account", response.data
-
-      )
-      if (Array.isArray(response.data)) {
-        setAccounts(response.data);
-        
-        return response.data;  // Trả về dữ liệu để sử dụng sau
-      } else {
-        console.error("API response is not an array", response.data);
-        setAccounts([]);
-        return [];
-      }
-    } catch (error) {
-      console.error("Error fetching accounts:", error);
-      return [];
-    }
-  };
 
   const getStatusCounts = () => {
     const statusCounts = orders.reduce((acc, order) => {
@@ -258,6 +240,10 @@ const ordersByStatusChartData = {
             <a href="/ordersM"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Orders</a>
           </li>
 
+          <li>
+            <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Services</a>
+          </li>
+
         </div>
 
         <div>
@@ -273,17 +259,6 @@ const ordersByStatusChartData = {
 
         </div>
 
-        <div>
-        <h6>Maintenance</h6>
-        <li>
-          <a href="#"><i className="bi bi-life-preserver me-2"><MdSupportAgent /></i> Help & Support</a>
-        </li>
-        <li>
-          <a href="#"><i className="bi bi-gear me-2"><IoSettingsOutline /></i> Settings</a>
-        </li>
-
-        </div>
-      
       </ul>
     </nav>
     </div>
@@ -375,7 +350,7 @@ const ordersByStatusChartData = {
               ))}
           </ul>
           </div>
-        </section> 
+        </section>
 
           <section className="statistics mt-4 d-flex justify-content-between border-top pt-3">
             <div className="container">
