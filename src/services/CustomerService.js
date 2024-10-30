@@ -225,7 +225,7 @@ export const updatePaymentStatus = async (orderId) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ paymentStatus: true }),
+      body: JSON.stringify({ paymentStatus: 1 }),
     });
 
     if (!response.ok) {
