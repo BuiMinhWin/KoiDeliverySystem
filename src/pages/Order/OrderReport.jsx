@@ -61,7 +61,7 @@ const OrderReport = () => {
       case 4:
         return { text: "View", color: "success" };
       default:
-        return { text: "Unknown", color: "default" };
+        return { text: "Success", color: "default" };
     }
   };
 

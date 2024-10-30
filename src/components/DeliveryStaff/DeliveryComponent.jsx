@@ -21,7 +21,6 @@ import { FaBoxesStacked } from "react-icons/fa6";
 import {  getAvatar} from "../../services/CustomerService";
 import { trackingOrderState } from '../../services/DeliveryStatusService';
 import { useSnackbar } from 'notistack';
-import polyline from 'polyline';
 import axios from "axios";
 import Map from '../Map';
 
