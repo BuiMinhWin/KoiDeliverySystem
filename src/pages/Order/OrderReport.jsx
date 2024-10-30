@@ -19,7 +19,7 @@ const OrderReport = () => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get(
-          "/api/orders"
+          "http://koideliverysystem.id.vn:8080/api/orders"
         );
         const accountId = localStorage.getItem("accountId");
 

@@ -76,6 +76,30 @@ export const orderDetail = async (orderId) => {
   }
 };
 
+export const getOrder = (orderId) => {
+  return axios.get(REST_API_ORDER_URL + "/" + orderId);
+};
+
+export const cancelOrder = async (orderId) => {
+  const response = await fetch(`${REST_API_ORDER_URL}/${orderId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to cancel order");
+  }
+
+  return response.json();
+};
+
+export const getOrderPDF = async (orderId) => {
+  const response = await fetch(`${REST_API_DOCUMENT_URL}/download/order/${orderId}`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch PDF");
+  }
+  return response.blob();
+};
+
 
 export const getAccountById = async (accountId) => {
   try {
@@ -103,32 +127,6 @@ export const updateAccount = async (accountId, accountData) => {
   return response.json();
 };
 
-
-
-
-export const getOrder = (orderId) => {
-  return axios.get(REST_API_ORDER_URL + "/" + orderId);
-};
-
-export const cancelOrder = async (orderId) => {
-  const response = await fetch(`${REST_API_ORDER_URL}/${orderId}`, {
-    method: "DELETE",
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to cancel order");
-  }
-
-  return response.json();
-};
-
-export const getOrderPDF = async (orderId) => {
-  const response = await fetch(`${REST_API_DOCUMENT_URL}/download/order/${orderId}`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch PDF");
-  }
-  return response.blob();
-};
 
 export const getAvatar = async (accountId) => {
   const response = await fetch(`${REST_API_ACCOUNT_URL}/${accountId}/avatar`);
@@ -200,22 +198,22 @@ export const updateServiceStatus = async (
   }
 };
 
-export const getServiceStatus = async (orderDetailId) => {
-  try {
-    console.log("Sending request with:", orderDetailId);
-    const response = await axios.get(
-      `${REST_API_SERVICE_URL}/getServices/${orderDetailId}`
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching Service Status:", error);
-    throw error;
-  }
-};
+// export const getServiceStatus = async (orderDetailId) => {
+//   try {
+//     console.log("Sending request with:", orderDetailId);
+//     const response = await axios.get(
+//       `${REST_API_SERVICE_URL}/getServices/${orderDetailId}`
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error fetching Service Status:", error);
+//     throw error;
+//   }
+// };
 
-export const listService = () => {
-  return axios.get(REST_API_SERVICE_URL);
-};
+// export const listService = () => {
+//   return axios.get(REST_API_SERVICE_URL);
+// };
 
 export const updatePaymentStatus = async (orderId) => {
   try {

@@ -26,7 +26,7 @@ import FeedbackForm from "../../components/FeedbackForm";
 import { useSnackbar } from "notistack";
 
 const REST_API_BANK_URL =
-  "/api/v1/payment/vn-pay";
+  "http://koideliverysystem.id.vn:8080/api/v1/payment/vn-pay";
 
 const formatCurrency = (value) => {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -57,11 +57,6 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
-
-    if (orderData) {
-      console.log("Order Status:", orderData.status); // Log order status
-    }
-
     const fetchOrderData = async () => {
       try {
         const fetchedOrder = await order(orderId);
@@ -349,10 +344,7 @@ const CheckoutPage = () => {
               <Typography>PDF đang được tải...</Typography>
             )}
             <Grid item xs={12}>
-            {orderData && orderData.status === 5 && (
-                <FeedbackForm orderId={orderId} />
-              )}
-              
+              {orderData.status === 5 && <FeedbackForm orderId={orderId} />}
             </Grid>
           </Grid>
 

@@ -49,6 +49,7 @@ const AccountForm = () => {
         });
 
         const avatarUrl = await getAvatar(accountId);
+        
         setAvatar(avatarUrl);
       } catch (error) {
         console.error("Error fetching account data:", error);

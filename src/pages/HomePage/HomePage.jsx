@@ -57,18 +57,16 @@ const Homepage = () => {
           <div className="dropdown">
             <a href="#" className="nav-link">Dịch Vụ</a>
             <div className="dropdown-content">
-              <a href="/form">Tạo Đơn</a>
-              <a href="#">Ước Tính Chi Phí</a>
-              <a href="#">Theo dõi đơn hàng</a>
+              <a href="/login">Tạo Đơn</a>
               <a href="#">Quy định vận chuyển</a>
               <a href="#">Chương trình khuyến mãi</a>
             </div>
           </div>
-          <a href="#" className="nav-link">Giới Thiệu</a>
+          <a href="/AboutUs" className="nav-link">Giới Thiệu</a>
         </div>
         
         <div className="navbar-right">
-        <a href="#" className="nav-link support-link">
+        <a href="/Support" className="nav-link support-link">
             <i className="fas fa-question-circle"></i>Hỗ Trợ
           </a>
           {/* {!roleId ? ( */}
@@ -106,7 +104,7 @@ const Homepage = () => {
       <header className="homepage-header">
         <h1 className='title-1'>VẬN CHUYỂN CÁ KOI</h1>
         <h1 className='title-2'>GẦN GŨI - TIN CẬY - HIỆU QUẢ</h1>
-        <button className="order-btn" onClick={() => navigate('/form')}>TẠO ĐƠN TẠI ĐÂY</button>  
+        <button className="order-btn" onClick={() => navigate('/login')}>TẠO ĐƠN TẠI ĐÂY</button>  
       </header>
 
       {/* Main content */}
@@ -257,7 +255,7 @@ const Homepage = () => {
     {/* The end section */}
     <header className="order-header">
         <h1>Bắt đầu tạo đơn với Koi Express</h1>
-        <button className="order-btn-end" onClick={() => navigate('/form')}>TẠO ĐƠN TẠI ĐÂY</button>  
+        <button className="order-btn-end" onClick={() => navigate('/login')}>TẠO ĐƠN TẠI ĐÂY</button>  
       </header>
 
       {/* Footer */}
@@ -287,20 +285,20 @@ const Homepage = () => {
         <div className="footer-column">
           <h4>Dịch Vụ</h4>
           <a href="#">Theo Dõi Đơn Hàng</a><br />
-          <a href="#">Ước Tính Chi Phí</a><br />
-          <a href="/form">Tạo đơn hàng</a><br />
+          {/* <a href="#">Ước Tính Chi Phí</a><br />
+          <a href="/login">Tạo đơn hàng</a><br /> */}
           <a href="#">Quy định vận chuyển</a><br />
           <a href="#">Chương trình khuyến mãi</a>
         </div>
 
         {/* Cột 3: Giới Thiệu */}
         <div className="footer-column">
-          <a className="footer-link" href="#">Giới Thiệu</a>
+          <a className="footer-link" href="/AboutUs">Giới Thiệu</a>
         </div>
 
         {/* Cột 4: Hỗ Trợ */}
         <div className="footer-column">
-          <a className="footer-link" href="#">Hỗ Trợ</a>
+          <a className="footer-link" href="/Support">Hỗ Trợ</a>
         </div>
       </div>
       

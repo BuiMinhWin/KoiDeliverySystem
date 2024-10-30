@@ -2,7 +2,7 @@ import axios from "axios";
 
 const REST_API_BASE_URL = "/api/orders";
 const REST_API_BASE_URL2 = "/api/ordersDetail/order";
-
+const REST_API_BASE_URL3 = "/api/documents/download/order/{orderId}";
 const REST_API_BASE_URL4 = "/api/accounts";
 
 export const getOrder = (orderId) => {
@@ -29,8 +29,10 @@ export const updateSale = (orderId, sale) => {
   return axios.patch(`${REST_API_BASE_URL}/update/${orderId}`, { sale });
 };
 
+export const assignDriver = (orderId, deliver) => {
+  return axios.patch(`${REST_API_BASE_URL}/update/${orderId}`, { deliver });
+};
 
-const REST_API_BASE_URL3 = "/api/documents/download/order/{orderId}";
 export const getDocument = (orderId) => {
   return axios.get(`${REST_API_BASE_URL3}/${orderId}`);
 }
@@ -44,8 +46,6 @@ export const listAccount = () => {
 };
 
 
-export const assignDriver = (orderId, deliver) => {
-  return axios.patch(`${REST_API_BASE_URL}/update/${orderId}`, { deliver });
-};
+
 
 

@@ -5,10 +5,20 @@ import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <GoogleOAuthProvider clientId="168634669859-34entdccui9d411p4438g664kim5ft64.apps.googleusercontent.com">
     <StrictMode>
-      <App />
+      <SnackbarProvider
+        maxSnack={3}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        
+        }}
+        autoHideDuration={1000}
+      >
+        <App />
+      </SnackbarProvider>
     </StrictMode>
   </GoogleOAuthProvider>
 );

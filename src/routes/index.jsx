@@ -34,7 +34,6 @@ import RespondFeedBack from "../components/SaleStaff/ResponseFeedback";
 import AboutUs from "../pages/AboutUs/AboutUsComponent";
 import Support from "../pages/Support/SupportComponent";
 
-
 function index() {
   return (
       

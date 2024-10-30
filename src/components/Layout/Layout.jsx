@@ -182,7 +182,7 @@ const Layout = () => {
               <Button
                 color="inherit"
                 component={Link}
-                 to="/customer"
+                to="/customer"
                 startIcon={<HomeIcon />}
               >
                 Trang chủ
