@@ -38,6 +38,11 @@
       "source": "/api/services",
       "destination": "http://koideliverysystem.id.vn:8080/api/services"
     },
+
+    {
+      "source": "/api/feedbacks/:path*",
+      "destination": "http://koideliverysystem.id.vn:8080/api/feedbacks/:path*"
+    },
     
     {
       "source": "/api/deliveryStatus/:path*",
@@ -64,11 +69,6 @@
       "destination": "/"
     },
 
-    {
-      "source": "/api/feedbacks/:path*",
-      "destination": "http://koideliverysystem.id.vn:8080/api/feedbacks/:path*"
-    },
-    
     {
       "source": "/api/documents/download/order/{orderId}/:path*",
       "destination": "http://koideliverysystem.id.vn:8080/api/documents/download/order/{orderId}/:path*"

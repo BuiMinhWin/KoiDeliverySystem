@@ -6,7 +6,8 @@ import './ResponseFeedback.css';
 const FeedbackResponse = () => {
     const { orderId } = useParams();
     const [feedbacks, setFeedbacks] = useState([]);
-    const [responses, setResponses] = useState({}); // Manage responses by feedbackId
+    const [responses, setResponses] = useState({});
+    const [submitted, setSubmitted] = useState({}); // Track submitted responses
 
     useEffect(() => {
         if (orderId) {
@@ -34,22 +35,35 @@ const FeedbackResponse = () => {
     };
 
     const handleResponseSubmit = async (feedbackId) => {
+        const accountId = localStorage.getItem("accountId"); // Get accountId from local storage
+        if (!accountId) {
+            alert("Account ID is missing. Please log in again.");
+            return;
+        }
+        
+        if (!responses[feedbackId]) {
+            alert("Response cannot be empty.");
+            return;
+        }
+
         try {
-            const accountId = localStorage.getItem("accountId"); // Get accountId from local storage
             const payload = {
                 comment: responses[feedbackId],
                 accountId: accountId,
             };
-    
+
             await respondToFeedback(feedbackId, payload);
             setResponses(prevResponses => ({
                 ...prevResponses,
-                [feedbackId]: "" // Clear the specific response text after submission
+                [feedbackId]: "" // Clear input after submission
             }));
-            alert("Phản hồi đã được gửi thành công!");
+            setSubmitted(prevSubmitted => ({
+                ...prevSubmitted,
+                [feedbackId]: true // Mark feedback as submitted
+            }));
         } catch (error) {
             console.error("Error responding to feedback:", error);
-            alert("Có lỗi xảy ra khi gửi phản hồi.");
+            alert("An error occurred while submitting the response.");
         }
     };
 
@@ -69,9 +83,15 @@ const FeedbackResponse = () => {
                                 onChange={(e) => handleInputChange(feedback.feedbackId, e.target.value)}
                                 placeholder="Điền phản hồi của bạn..."
                             />
-                            <button onClick={() => handleResponseSubmit(feedback.feedbackId)}>
+                            <button 
+                                onClick={() => handleResponseSubmit(feedback.feedbackId)}
+                                disabled={!responses[feedback.feedbackId]}
+                            >
                                 Gửi Phản Hồi
                             </button>
+                            {submitted[feedback.feedbackId] && (
+                                <p className="success-message">Phản hồi đã được gửi thành công!</p>
+                            )}
                         </div>
                     </div>
                 ))
