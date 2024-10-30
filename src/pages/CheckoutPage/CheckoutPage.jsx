@@ -9,19 +9,24 @@ import {
   Stepper,
   Step,
   StepLabel,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import {
   order,
   orderDetail,
   cancelOrder,
   getOrderPDF,
-  getAccountById,
 } from "../../services/CustomerService";
 import axios from "axios";
 import FeedbackForm from "../../components/FeedbackForm";
+import { useSnackbar } from "notistack";
 
 const REST_API_BANK_URL =
-  "/api/v1/payment/vn-pay";
+  "http://koideliverysystem.id.vn:8080/api/v1/payment/vn-pay";
 
 const formatCurrency = (value) => {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -30,12 +35,26 @@ const formatCurrency = (value) => {
 const CheckoutPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [openDialog, setOpenDialog] = useState(false);
   const orderId = location.state?.orderId;
 
   const [orderData, setOrderData] = useState(null);
   const [orderDetailData, setOrderDetailData] = useState([]);
+  const [serviceStatusData, setServiceStatusData] = useState([]);
   const [error, setError] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
+
+  
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const confirmCancelOrder = () => {
+    setOpenDialog(true); // Open the confirmation dialog
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false); // Close the dialog without canceling the order
+  };
 
   useEffect(() => {
     const fetchOrderData = async () => {
@@ -75,11 +94,15 @@ const CheckoutPage = () => {
     try {
       await cancelOrder(orderId);
       alert("Order canceled successfully.");
-      navigate("/");
+      navigate("/customer");
     } catch (error) {
       console.error("Error canceling order:", error);
-      alert("Failed to cancel order.", { orderId });
     }
+  };
+  const handleConfirmCancel = async () => {
+    await handleCancelOrder(); // Execute cancel order logic after confirmation
+    enqueueSnackbar("Đơn của bạn đã được hủy", { variant: "success" }); // Show success notification
+    setOpenDialog(false); // Close the dialog
   };
 
   const handleProceedToPayment = async () => {
@@ -98,7 +121,6 @@ const CheckoutPage = () => {
       console.log("Payment URL:", paymentUrl);
 
       if (paymentUrl) {
-        // Store a flag in state to indicate payment status
         navigate("/payment-outcome", {
           state: { orderId, paymentStatus: "pending" },
         });
@@ -109,7 +131,6 @@ const CheckoutPage = () => {
     } catch (error) {
       if (error.response) {
         console.error("API Error:", error.response.data);
-        // If the payment fails
         navigate("/payment-outcome", {
           state: { orderId, paymentStatus: "failed" },
         });
@@ -123,7 +144,7 @@ const CheckoutPage = () => {
     }
   };
 
-  if (!orderId) return <Navigate to="/" />;
+  if (!orderId) return <Navigate to="/customer" />;
   if (error) return <Typography color="error">Error: {error}</Typography>;
   if (!orderData) return <Typography>Đang tải...</Typography>;
 
@@ -131,40 +152,19 @@ const CheckoutPage = () => {
   const steps = [
     "Đang Xử Lí", // Step 1
     "Đã Duyệt", // Step 2
-    orderData.paymentStatus ? "Đang Vận chuyển" : "Thanh Toán", // Step 3
+    orderData.paymentStatus ? "Đang Vận chuyển" : "Vui Lòng Thanh Toán", // Step 3
     "Hoàn Thành", // Step 4
   ];
 
   const getActiveStep = (status, paymentStatus) => {
-    // Step 1: Only for order.status = 0
-    if (status === 0) {
-      return 0; // "Đang xử lí"
-    }
-
-    // Step 2: Only for order.status = 1
-    if (status === 1) {
-      return 1; // "Đã duyệt"
-    }
-
-    // Step 3: For order.status = 2 or 3
-    if (status === 2 || status === 3) {
-      return 2; // "Đang vận chuyển"
-    }
-
-    // Step 4: For order.status = 4
-    if (status === 4) {
-      return paymentStatus ? 4 : 3; // If payment is made, go to step 4; if not, stay at step 3
-    }
-
-    // Completed orders
-    if (status === 5) {
-      return paymentStatus ? 4 : 3; // If payment is made, stay at step 4; if not stayed at step 3
-    }
-
+    if (status === 0) return 0; // "Đang xử lí"
+    if (status === 1) return 1; // "Đã duyệt"
+    if (status === 2 || status === 3) return 2; // "Đang vận chuyển"
+    if (status === 4) return paymentStatus ? 4 : 3; // Completed orders
+    if (status === 5) return paymentStatus ? 4 : 3; // If payment is made
     return 0; // Default case
   };
 
-  // Get the active step based on order status and payment status
   const activeStep = getActiveStep(orderData.status, orderData.paymentStatus);
 
   return (
@@ -173,10 +173,10 @@ const CheckoutPage = () => {
         <Typography
           variant="h3"
           align="center"
-          fontWeight={"semi-bold"}
+          fontWeight={"bold"}
           gutterBottom
         >
-          Xác nhận đơn hàng
+          Thông Tin Đơn Hàng
         </Typography>
 
         {/* Stepper for Order Status */}
@@ -210,6 +210,12 @@ const CheckoutPage = () => {
               <Typography>Mã đơn: {orderData.orderId}</Typography>
               <Typography>
                 Ngày đặt đơn: {new Date(orderData.orderDate).toLocaleString()}
+              </Typography>
+              <Typography>
+                Ngày nhận hàng:{" "}
+                {orderData.shippedDate && orderData.shippedDate.trim() !== ""
+                  ? orderData.shippedDate
+                  : "Đơn hàng chưa được giao đến"}
               </Typography>
               <Typography>
                 <span style={{ fontWeight: "bold" }}>Gửi từ:</span>{" "}
@@ -258,13 +264,7 @@ const CheckoutPage = () => {
                     : "Không có ghi chú nào cho đơn hàng này"}
                 </Typography>
               </Paper>
-              <Typography>
-                Ngày nhận hàng:{" "}
-                {orderData.shippedDate && orderData.shippedDate.trim() !== ""
-                  ? orderData.shippedDate
-                  : "N/A"}
-              </Typography>
-              <Typography>
+              <Typography sx={{ fontWeight: "bold" }}>
                 Tình trạng đơn hàng: {steps[orderData.status]}
               </Typography>
               <Typography variant="h6">
@@ -305,7 +305,12 @@ const CheckoutPage = () => {
                     <Typography>Biến thể: {detail.koiName}</Typography>
                     <Typography>Số lượng: {detail.quantity}</Typography>
                     <Typography>Cân nặng: {detail.weight} kg</Typography>
-                    <Typography>Mã giảm giá: {detail.discount}</Typography>
+                    <Typography>
+                      Mã giảm giá:{" "}
+                      {detail.discount && detail.discount.trim() !== ""
+                        ? detail.discount
+                        : "Không có mã giảm giá nào được áp dụng cho đơn hàng này"}{" "}
+                    </Typography>
                     <Typography>
                       Tình trạng cá:{" "}
                       {detail.status === 0 ? "Bất thường" : "Khỏe mạnh"}
@@ -339,32 +344,81 @@ const CheckoutPage = () => {
               <Typography>PDF đang được tải...</Typography>
             )}
             <Grid item xs={12}>
-            <FeedbackForm orderId={orderId} />
-          </Grid>
+              {orderData.status === 5 && <FeedbackForm orderId={orderId} />}
+            </Grid>
           </Grid>
 
+          {(orderData.status === 0 || orderData.status === 1) &&
+            orderData.paymentStatus == false && (
+              <Button
+                variant="contained"
+                color="error"
+                onClick={confirmCancelOrder} // Use confirmCancelOrder to open the dialog
+                sx={{ mr: 2, mt: 5, mx: 15 }}
+              >
+                Hủy đơn
+              </Button>
+            )}
 
-          {(orderData.status === 0 || orderData.status === 1) && (
-            <Button
-              variant="contained"
-              color="error"
-              onClick={handleCancelOrder}
-              sx={{ mr: 2 }}
-            >
-              Hủy đơn
-            </Button>
-          )}
-          {orderData.status === 1 && (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleProceedToPayment}
-            >
-              Thanh toán
-            </Button>
-          )}
+          {[1, 2, 3, 4, 5].includes(orderData.status) &&
+            !orderData.paymentStatus && (
+              <Button
+                sx={{ mt: 5, mx: 15 }}
+                variant="contained"
+                color="primary"
+                onClick={handleProceedToPayment}
+              >
+                Thanh toán
+              </Button>
+            )}
         </Grid>
       </Paper>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            p: 2,
+            width: "400px",
+            bgcolor: "#171B36",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            fontWeight: "bold",
+            textAlign: "center",
+            pb: 1,
+            color: "#ffffff",
+          }}
+        >
+          Xác nhận hủy đơn
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ textAlign: "center", fontSize: "16px",  color: "#ffffff", }}>
+            Bạn có chắc muốn hủy đơn này?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: "center", gap: 2 }}>
+          <Button
+            onClick={handleCloseDialog}
+            variant="outlined"
+            sx={{ borderRadius: 2, px: 4,  color: "#ffffff", }}
+          >
+            Không
+          </Button>
+          <Button
+            onClick={handleConfirmCancel}
+            variant="contained"
+            color="error"
+            sx={{ borderRadius: 2, px: 4 }}
+            autoFocus
+          >
+            Có
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

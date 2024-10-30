@@ -10,7 +10,7 @@ import {
   Stack,
 } from "@mui/material";
 
-import { order } from "../../services/CustomerService";
+import { order, updatePaymentStatus } from "../../services/CustomerService";
 
 const PaymentOutcome = () => {
   const navigate = useNavigate();
@@ -22,18 +22,36 @@ const PaymentOutcome = () => {
   const extractedUUID = orderInfo ? orderInfo.split(": ")[1] : "";
 
   const success = transactionStatus === "00"; // Check if payment succeeded
-  const [countdown, setCountdown] = useState(10); // 10 second countdown
+  const [countdown, setCountdown] = useState(150000); // 15 second countdown
   const [orderData, setOrderData] = useState(null); // Store order details
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
+
+  
+  console.log("Transaction status:", transactionStatus); // Debug log
+  console.log("Extracted Order UUID:", extractedUUID); // Debug log
+
+  const formatCurrency = (value) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
   // Fetch the order details when the component loads
   useEffect(() => {
     const getOrderData = async () => {
       try {
+        console.log(`Fetching order data for UUID: ${extractedUUID}`);
         const data = await order(extractedUUID);
         setOrderData(data);
+        console.log("Payment success condition:", success); // Add this
+        if (success) {
+          console.log("Payment successful, calling updatePaymentStatus...");
+          await updatePaymentStatus(extractedUUID);
+          console.log("updatePaymentStatus completed.");
+        } else {
+          console.log("Payment not successful, skipping status update.");
+        }
       } catch (err) {
+        console.error(`Failed to fetch or update order with UUID: ${extractedUUID}`, err);
         setError("Failed to fetch order data.");
       } finally {
         setLoading(false);
@@ -42,7 +60,6 @@ const PaymentOutcome = () => {
     getOrderData();
   }, [extractedUUID]);
 
-  // Countdown to redirect after 10 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setCountdown((prev) => {
@@ -115,7 +132,7 @@ const PaymentOutcome = () => {
                 padding: "7px 16px",
               }}
               onClick={() =>
-                navigate( "/order-report" , {
+                navigate("/order-report", {
                   state: { extractedUUID },
                 })
               }
@@ -127,7 +144,6 @@ const PaymentOutcome = () => {
       </Box>
     );
   }
-
   // Render order information if available
   return (
     <Box sx={{ height: "100vh" }}>
@@ -166,7 +182,7 @@ const PaymentOutcome = () => {
                 <Typography
                   variant="h6"
                   component="span"
-                  sx={{ color: "green" }}
+                  sx={{ color: "#01611c" }}
                 >
                   {orderData.totalPrice}
                 </Typography>{" "}
