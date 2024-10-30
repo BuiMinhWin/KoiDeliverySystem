@@ -116,8 +116,8 @@ const OrderForm = () => {
     { id: 1, label: "Bảo hiểm" },
     { id: 2, label: "Chăm sóc cá" },
     { id: 3, label: "Người nhận thanh toán" },
-  ];
-
+  ] || [];
+  
   const { testaccId, accountData } = useOutletContext();
   console.log("accId: ", testaccId, "accData: ", "accountData: ", accountData);
 
