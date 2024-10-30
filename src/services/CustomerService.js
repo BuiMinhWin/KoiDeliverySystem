@@ -213,3 +213,6 @@ export const getServiceStatus = async (orderDetailId) => {
   }
 };
 
+export const listService = () => {
+  return axios.get(REST_API_SERVICE_URL);
+};
