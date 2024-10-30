@@ -259,18 +259,11 @@ const toggleDropdown = () => {
           </div>
           <nav>
       <ul className="list-unstyled">
-
-        {/* <li>
-          <a href="#"><i className="bi bi-speedometer2 me-2"></i> Dashboard</a>
-          
-        </li> */}
         
           <li>
             <a href="/"><i className="bi bi-speedometer2 me-2"> <FiHome /> </i>  Homepage</a>
         </li>
-
         
-
         <li>
           <a href="/orders"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Ordered</a>
         </li>

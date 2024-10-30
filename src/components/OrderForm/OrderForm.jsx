@@ -22,20 +22,19 @@ import {
   createOrder,
   order,
   uploadDocument,
-  updateServiceStatus,
-  getServiceStatus,
 } from "../../services/CustomerService";
 import { createOrderDetail } from "../../services/CustomerService";
 // import SideBar from "../SideBar/SideBar";
 // import HeaderBar from "../Header/Header/Nguyen";
 import RadioGroupWrapper from "../FromUI/RadioGroup";
 import CustomRadioGroup from "../FromUI/CustomRadioGroup";
-import RocketIcon from '@mui/icons-material/Rocket';
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import RocketIcon from "@mui/icons-material/Rocket";
+import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import FileUpload from "../FromUI/FileUpload";
 import CheckboxWrapper from "../FromUI/Checkbox";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import axios from "axios";
+import { useSnackbar } from "notistack";
 
 // Initial Form State
 const INITIAL_FORM_STATE = {
@@ -65,9 +64,7 @@ const INITIAL_FORM_STATE = {
   quantity: 0,
   weight: 0.0,
   freight: "",
-  additional_service: "Yes",
-  additional_service_1: "Yes",
-  additional_service_2: "Yes",
+  serviceIds: [],
 };
 
 // Validation Schema with Yup
@@ -77,14 +74,14 @@ const FORM_VALIDATION = Yup.object().shape({
   receiverName: Yup.string().required("Vui lòng nhập tên người nhận"),
   senderName: Yup.string().required("Vui lòng nhập tên người gửi"),
   receiverPhone: Yup.string()
-  .required("Vui lòng nhập số điện thoại người nhận")
-  .matches(/^[0-9]{10}$/, "Số điện thoại phải là số và có 10 số"),
+    .required("Vui lòng nhập số điện thoại người nhận")
+    .matches(/^[0-9]{10}$/, "Số điện thoại phải là số và có 10 số"),
   senderPhone: Yup.string()
-  .required("Vui lòng nhập số điện thoại người gửi")
-  .matches(/^[0-9]{10}$/, "Số điện thoại phải là số và có 10 số"),
+    .required("Vui lòng nhập số điện thoại người gửi")
+    .matches(/^[0-9]{10}$/, "Số điện thoại phải là số và có 10 số"),
   receiverNote: Yup.string().nullable(),
   senderNote: Yup.string().nullable(),
-  orderNote: Yup.string().nullable(), // Optional field for additional notes
+  orderNote: Yup.string().nullable(), 
   discount: Yup.string().nullable(),
   cityS: Yup.string().required("Vui lòng chọn thành phố"), //
   cityR: Yup.string().required("Vui lòng chọn thành phố"), //
@@ -97,9 +94,6 @@ const FORM_VALIDATION = Yup.object().shape({
     .min(0.1, "Cân nặng phải lớn hơn 0")
     .required("Vui lòng nhập cân nặng"),
   freight: Yup.string().required("Vui lòng chọn phương thức vận chuyển"),
-  additional_service: Yup.string().nullable(),
-  additional_service_1: Yup.string().nullable(),
-  additional_service_2: Yup.string().nullable(),
   termsOfService: Yup.boolean()
     .oneOf([true], "The terms and conditions must be accepted.")
     .required("The terms and conditions must be accepted."),
@@ -118,18 +112,24 @@ const FORM_VALIDATION = Yup.object().shape({
 });
 
 const OrderForm = () => {
+  const services = [
+    { id: 1, label: "Bảo hiểm" },
+    { id: 2, label: "Chăm sóc cá" },
+    { id: 3, label: "Người nhận thanh toán" },
+  ];
+
   const { testaccId, accountData } = useOutletContext();
   console.log("accId: ", testaccId, "accData: ", "accountData: ", accountData);
 
   const navigate = useNavigate();
   // state lưu danh sáchh tỉnh, phường, quận người gửi
   const [provincesS, setProvincesS] = useState([]);
-  const [districtsS, setDistrictsS] = useState([]); 
-  const [wardsS, setWardsS] = useState([]); 
+  const [districtsS, setDistrictsS] = useState([]);
+  const [wardsS, setWardsS] = useState([]);
   // state lưu danh sáchh tỉnh, phường, quận người nhận
   const [provincesR, setProvincesR] = useState([]);
-  const [districtsR, setDistrictsR] = useState([]); 
-  const [wardsR, setWardsR] = useState([]); 
+  const [districtsR, setDistrictsR] = useState([]);
+  const [wardsR, setWardsR] = useState([]);
 
   // người gửi
   const [selectedProvinceS, setSelectedProvinceS] = useState(null);
@@ -144,7 +144,9 @@ const OrderForm = () => {
   // const [distanceData, setDistanceData] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const API_KEY = import.meta.env.VITE_GOONG_API_KEY; 
+  const { enqueueSnackbar } = useSnackbar();
+
+  const API_KEY = import.meta.env.VITE_GOONG_API_KEY; // Thay bằng API Key của bạn
 
   const geocodeAddress = async (address) => {
     console.log("địa chỉ để tính", address);
@@ -190,7 +192,7 @@ const OrderForm = () => {
             label: province.ProvinceName,
             value: province.ProvinceID,
           }));
-  
+
           // Lưu các tỉnh cho cả người gửi và người nhận
           setProvincesS(provinceOptions);
           setProvincesR(provinceOptions);
@@ -201,10 +203,10 @@ const OrderForm = () => {
         console.error("Error fetching provinces:", error);
       }
     };
-  
+
     fetchProvinces();
   }, []);
-  
+
   const fetchDistricts = async (provinceId, isSender) => {
     try {
       const response = await fetch(
@@ -224,22 +226,21 @@ const OrderForm = () => {
           label: district.DistrictName,
           value: district.DistrictID,
         }));
-  
-       // check điều kiện để gán
+
+        // check điều kiện để gán
         if (isSender) {
-          setDistrictsS(districtOptions);// set quận người gửi
-          setWardsS([]); // reset 
+          setDistrictsS(districtOptions); // set quận người gửi
+          setWardsS([]); // reset
         } else {
-          setDistrictsR(districtOptions);// set quận người nhận
-          setWardsR([]); 
+          setDistrictsR(districtOptions); // set quận người nhận
+          setWardsR([]);
         }
       }
     } catch (error) {
       console.error("Error fetching districts:", error);
     }
   };
-  
- 
+
   const fetchWards = async (districtId, isSender) => {
     try {
       const response = await fetch(
@@ -259,7 +260,7 @@ const OrderForm = () => {
           label: ward.WardName,
           value: ward.WardCode,
         }));
-  
+
         // check điều kiện để gán
         if (isSender && wardsS !== wardOptions) {
           setWardsS(wardOptions); // set quận người gửi
@@ -365,7 +366,9 @@ const OrderForm = () => {
             discount: values.discount,
             koiName: values.koi_name,
             koiType: values.koi_type,
+            serviceIds: values.serviceIds,
           };
+          console.log("Service IDs being sent:", orderData.serviceIds);
           const orderDetailResponse = await createOrderDetail(orderDetailData);
           console.log(
             "Order detail created successfully:",
@@ -374,69 +377,11 @@ const OrderForm = () => {
 
           console.log("Order created successfully with ID:", newOrderId);
 
-          const orderDetailId = orderDetailResponse.orderDetailId; //getting the orderDetailId for newly created order
-
-          try {
-            const orderServiceData = await getServiceStatus(orderDetailId);
-            console.log(
-              "Service for order detail Id: ",
-              orderDetailId,
-              "data: ",
-              orderServiceData
-            );
-          } catch (error) {
-            console.error("Failed to get service status:", error);
-          }
-
-          console.log("order detail Id get for status", orderDetailId);
-          const services = [
-            {
-              serviceId: 1,
-              serviceStatus: values.additional_service === "Yes" ? "Yes" : "No",
-            },
-            {
-              serviceId: 2,
-              serviceStatus:
-                values.additional_service_1 === "Yes" ? "Yes" : "No",
-            },
-            {
-              serviceId: 3,
-              serviceStatus:
-                values.additional_service_2 === "Yes" ? "Yes" : "No",
-            },
-          ];
-          console.log("Current values:", values);
-
-          for (const service of services) {
-            console.log(
-              `Updating service ${service.serviceId} with status: ${service.serviceStatus}`
-            );
-            try {
-              console.log("Calling updateServiceStatus with parameters:", {
-                orderDetailId,
-                serviceId: service.serviceId,
-                serviceStatus: service.serviceStatus,
-              });
-              const updatedResponse = await updateServiceStatus(
-                orderDetailId,
-                service.serviceId,
-                service.serviceStatus
-              );
-              console.log(
-                `Service ${service.serviceId} updated successfully:`,
-                updatedResponse
-              );
-            } catch (error) {
-              console.error(
-                `Failed to update service ${service.serviceId}:`,
-                error
-              );
-            }
-          }
-
           navigate("/checkout", { state: { orderId: newOrderId } });
         } catch (error) {
-          alert("Upload failed, please try again");
+          enqueueSnackbar("Đã xảy ra lỗi trong quá trình tạo đơn", {
+            variant: "error",
+          });
           console.error("Error creating order:", error);
           setErrors({ submit: error.message });
         } finally {
@@ -445,7 +390,7 @@ const OrderForm = () => {
       }}
       validateOnMount={true}
     >
-      {({ handleSubmit, errors, setFieldValue }) => {
+      {({ handleSubmit, errors, setFieldValue, values }) => {
         console.log("Validation errors:", errors); // Log validation errors
         const handleSenderProvinceChange = (event) => {
           const selectedProvince = provincesS.find(
@@ -455,15 +400,15 @@ const OrderForm = () => {
             setSelectedProvinceS(selectedProvince.value);
             setFieldValue("cityS", selectedProvince.label);
             console.log("Selected Province ID:", selectedProvince.value);
-        
+
             // Reset quận và phường của người gửi khi thay đổi tỉnh người gửi
-            setDistrictsS([]); 
-            setWardsS([]);     
-        
-            fetchDistricts(selectedProvince.value, true); // true cho người nhận,check dk không bị mất 
+            setDistrictsS([]);
+            setWardsS([]);
+
+            fetchDistricts(selectedProvince.value, true); // true cho người nhận,check dk không bị mất
           }
         };
-        
+
         const handleReceiverProvinceChange = (event) => {
           const selectedProvince = provincesR.find(
             (province) => province.value === event.target.value
@@ -472,54 +417,52 @@ const OrderForm = () => {
             setSelectedProvinceR(selectedProvince.value);
             setFieldValue("cityR", selectedProvince.label);
             console.log("Selected Province ID:", selectedProvince.value);
-        
+
             // Reset quận và phường của người nhận khi thay đổi tỉnh người nhận
-            setDistrictsR([]); 
-            setWardsR([]);     
-        
-            fetchDistricts(selectedProvince.value, false); // false cho người nhận,check dk không bị mất 
+            setDistrictsR([]);
+            setWardsR([]);
+
+            fetchDistricts(selectedProvince.value, false); // false cho người nhận,check dk không bị mất
           }
         };
-        
-        
+
         const handleSenderDistrictChange = (event) => {
           const selectedDistrict = districtsS.find(
             (district) => district.value === event.target.value
           );
           if (selectedDistrict) {
             setSelectedDistrictSId(selectedDistrict.value);
-            setFieldValue("districtS", selectedDistrict.label); 
+            setFieldValue("districtS", selectedDistrict.label);
             console.log("Selected District ID:", selectedDistrict.value);
-            
-            fetchWards(selectedDistrict.value, true); 
+
+            fetchWards(selectedDistrict.value, true);
           }
         };
-        
+
         const handleReceiverDistrictChange = (event) => {
           const selectedDistrict = districtsR.find(
             (district) => district.value === event.target.value
           );
           if (selectedDistrict) {
             setSelectedDistrictRId(selectedDistrict.value);
-            setFieldValue("districtR", selectedDistrict.label); 
+            setFieldValue("districtR", selectedDistrict.label);
             console.log("Selected District ID:", selectedDistrict.value);
-            
-            fetchWards(selectedDistrict.value, false); 
+
+            fetchWards(selectedDistrict.value, false);
           }
         };
-        
-        
+
         const handleSenderWardChange = (event) => {
           const selectedWard = wardsS.find(
             (ward) => ward.value === event.target.value
           );
           if (selectedWard) {
             setSelectedSWard(selectedWard.value);
-            setFieldValue("wardS", selectedWard.label); 
+            setFieldValue("wardS", selectedWard.label);
             console.log("Selected Ward ID:", selectedWard.value);
           }
         };
-        
+
         const handleReceiverWardChange = (event) => {
           const selectedWard = wardsR.find(
             (ward) => ward.value === event.target.value
@@ -530,7 +473,6 @@ const OrderForm = () => {
             console.log("Selected Ward ID:", selectedWard.value);
           }
         };
-        
 
         return (
           <Form onSubmit={handleSubmit}>
@@ -817,66 +759,17 @@ const OrderForm = () => {
                     <Grid
                       item
                       xs={5}
-                      justifyContent="center" // Center horizontally
+                      justifyContent="center"
                       alignItems="center"
                     >
-                      <RadioGroupWrapper
-                        name="additional_service_2"
-                        legend="Thanh toán"
-                        options={[
-                          {
-                            value: "Yes",
-                            label: "Người gửi thanh toán",
-                          },
-                          {
-                            value: "No",
-                            label: "Người nhận thanh toán",
-                          },
-                        ]}
-                      />
-                    </Grid>
-
-                    <Grid
-                      item
-                      xs={12}
-                      justifyContent="center" // Center horizontally
-                      alignItems="center"
-                    >
-                      <RadioGroupWrapper
-                        name="additional_service"
-                        legend="Bảo hiểm sự cố"
-                        options={[
-                          {
-                            value: "Yes",
-                            label: "Có",
-                          },
-                          {
-                            value: "No",
-                            label: "Không",
-                          },
-                        ]}
-                      />
-                    </Grid>
-                    <Grid
-                      item
-                      xs={12}
-                      justifyContent="center" // Center horizontally
-                      alignItems="center"
-                    >
-                      <RadioGroupWrapper
-                        name="additional_service_1"
-                        legend="Chăm sóc cá"
-                        options={[
-                          {
-                            value: "Yes",
-                            label: "Có",
-                          },
-                          {
-                            value: "No",
-                            label: "Không",
-                          },
-                        ]}
-                      />
+                      {services.map((service) => (
+                        <RadioGroupWrapper
+                          key={service.id}
+                          service={service}
+                          serviceIds={values.serviceIds} // Pass serviceIds from Formik state
+                          setFieldValue={setFieldValue} // Ensure it can update the Formik state
+                        />
+                      ))}
                     </Grid>
                   </Grid>
                 </Paper>

@@ -25,7 +25,7 @@ import axios from "axios";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler );
 
 
-const DeliveryComponent = () => {
+const ListOrderManageComponent = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleLogout = () => {
@@ -459,4 +459,4 @@ const toggleDropdown = () => {
   );
 };
 
-export default DeliveryComponent;
+export default ListOrderManageComponent;
