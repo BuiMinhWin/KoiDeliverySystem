@@ -20,7 +20,6 @@ import koi_type from "../../data/koiTypes.json";
 import koi_name from "../../data/koiVarieties.json";
 import {
   createOrder,
-  listService,
   order,
   uploadDocument,
 } from "../../services/CustomerService";
@@ -113,7 +112,11 @@ const FORM_VALIDATION = Yup.object().shape({
 });
 
 const OrderForm = () => {
-  const [services, setServices] = useState([]);
+  const services = [
+    { id: 1, label: "Bảo hiểm" },
+    { id: 2, label: "Chăm sóc cá" },
+    { id: 3, label: "Người nhận thanh toán" },
+  ];
 
   const { testaccId, accountData } = useOutletContext();
   console.log("accId: ", testaccId, "accData: ", "accountData: ", accountData);
@@ -167,31 +170,9 @@ const OrderForm = () => {
     }
   };
 
-  const fetchServices = async () => {
-    listService()
-      .then((response) => {
-        if (Array.isArray(response.data)) {
-          setServices(response.data);
-          console.log(response.data);
-        } else {
-          console.error("API response is not an array", response.data);
-          setServices([]);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching : ", error);
-      });
-  };
-
   const GHN_API_KEY = import.meta.env.VITE_GHN_API_KEY;
 
   useEffect(() => {
-
- 
-
-    fetchServices();
-
-    
     const fetchProvinces = async () => {
       try {
         const response = await fetch(
@@ -776,24 +757,20 @@ const OrderForm = () => {
                     </Grid>
                     <Grid item xs={3.5}></Grid>
                     <Grid
-      item
-      xs={5}
-      justifyContent="center"
-      alignItems="center"
-    >
-      {Array.isArray(services) && services.length > 0 ? ( // Kiểm tra services có phải là mảng và không rỗng
-        services.map((service) => (
-          <RadioGroupWrapper
-            key={service.id}
-            service={service}
-            serviceIds={values.serviceIds} // Pass serviceIds từ trạng thái Formik
-            setFieldValue={setFieldValue} // Đảm bảo có thể cập nhật trạng thái Formik
-          />
-        ))
-      ) : (
-        <p>No services available</p> // Thông báo nếu không có dịch vụ
-      )}
-    </Grid>
+                      item
+                      xs={5}
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      {services.map((service) => (
+                        <RadioGroupWrapper
+                          key={service.id}
+                          service={service}
+                          serviceIds={values.serviceIds} // Pass serviceIds from Formik state
+                          setFieldValue={setFieldValue} // Ensure it can update the Formik state
+                        />
+                      ))}
+                    </Grid>
                   </Grid>
                 </Paper>
                 <CheckboxWrapper

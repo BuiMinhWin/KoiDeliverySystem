@@ -1,53 +1,70 @@
-import React from "react";
+import React, { useEffect, useCallback } from "react";
 import {
   FormControl,
   FormControlLabel,
   FormLabel,
   Radio,
   RadioGroup,
+  Divider,
 } from "@mui/material";
-import { useField, useFormikContext } from "formik";
+import { useFormikContext } from "formik";
 
-const RadioGroupWrapper = ({
-  name,
-  label,
-  legend,
-  defaultValue,
-  options,
-  ...otherProps
-}) => {
-  const { setFieldValue } = useFormikContext();
-  const [field, meta] = useField(name);
+const RadioGroupWrapper = React.memo(({ service, serviceIds }) => {
+  const { setFieldValue, values } = useFormikContext();
 
-  const handleChange = (evt) => {
-    setFieldValue(name, evt.target.value);
-  };
+  // Memoized function to avoid re-creating the handleChange function on every render
+  const handleChange = useCallback(
+    (event) => {
+      const selectedValue = event.target.value;
 
-  const configFormControl = {};
-  if (meta && meta.touched && meta.error) {
-    configFormControl.error = true;
-  }
+      if (selectedValue === "Yes") {
+        setFieldValue("serviceIds", [...new Set([...serviceIds, service.id])]);
+      } else {
+        setFieldValue(
+          "serviceIds",
+          serviceIds.filter((id) => id !== service.id)
+        );
+      }
+    },
+    [service.id, serviceIds, setFieldValue]
+  );
+
+  // Set initial value to "Yes" only once on component mount
+  useEffect(() => {
+    if (!serviceIds.includes(service.id)) {
+      setFieldValue("serviceIds", [...serviceIds, service.id]);
+    }
+    // Only run on mount by passing an empty dependency array
+  }, []);
 
   return (
-    <FormControl {...configFormControl}>
-      <FormLabel component="legend">{legend}</FormLabel>
-      <RadioGroup
-        {...field}
-        onChange={handleChange}
-        row // Optional: Display radios in a row
-      >
-        {options.map((option) => (
+    <>
+      <FormControl>
+        <FormLabel component="legend" sx={{ color: "black" }}>
+          {service.label}
+        </FormLabel>
+        <RadioGroup
+          row
+          value={serviceIds.includes(service.id) ? "Yes" : "No"}
+          onChange={handleChange}
+        >
           <FormControlLabel
-            key={option.value}
-            value={option.value}
-            control={<Radio />}
-            label={option.label}
-            sx={{ color: "black" }} // Set label color to black
+            control={<Radio sx={{ color: "black" }} />}
+            label="Yes"
+            value="Yes"
+            sx={{ color: "black" }}
           />
-        ))}
-      </RadioGroup>
-    </FormControl>
+          <FormControlLabel
+            control={<Radio sx={{ color: "black" }} />}
+            label="No"
+            value="No"
+            sx={{ color: "black" }}
+          />
+        </RadioGroup>
+      </FormControl>
+      <Divider sx={{ backgroundColor: "black", margin: "10px 0" }} />
+    </>
   );
-};
+});
 
 export default RadioGroupWrapper;
