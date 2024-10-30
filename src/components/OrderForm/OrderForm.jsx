@@ -22,19 +22,20 @@ import {
   createOrder,
   order,
   uploadDocument,
+  updateServiceStatus,
+  getServiceStatus,
 } from "../../services/CustomerService";
 import { createOrderDetail } from "../../services/CustomerService";
 // import SideBar from "../SideBar/SideBar";
 // import HeaderBar from "../Header/Header/Nguyen";
 import RadioGroupWrapper from "../FromUI/RadioGroup";
 import CustomRadioGroup from "../FromUI/CustomRadioGroup";
-import RocketIcon from "@mui/icons-material/Rocket";
-import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
+import RocketIcon from '@mui/icons-material/Rocket';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import FileUpload from "../FromUI/FileUpload";
 import CheckboxWrapper from "../FromUI/Checkbox";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import axios from "axios";
-import { useSnackbar } from "notistack";
 
 // Initial Form State
 const INITIAL_FORM_STATE = {
@@ -74,14 +75,14 @@ const FORM_VALIDATION = Yup.object().shape({
   receiverName: Yup.string().required("Vui lòng nhập tên người nhận"),
   senderName: Yup.string().required("Vui lòng nhập tên người gửi"),
   receiverPhone: Yup.string()
-    .required("Vui lòng nhập số điện thoại người nhận")
-    .matches(/^[0-9]{10}$/, "Số điện thoại phải là số và có 10 số"),
+  .required("Vui lòng nhập số điện thoại người nhận")
+  .matches(/^[0-9]{10}$/, "Số điện thoại phải là số và có 10 số"),
   senderPhone: Yup.string()
-    .required("Vui lòng nhập số điện thoại người gửi")
-    .matches(/^[0-9]{10}$/, "Số điện thoại phải là số và có 10 số"),
+  .required("Vui lòng nhập số điện thoại người gửi")
+  .matches(/^[0-9]{10}$/, "Số điện thoại phải là số và có 10 số"),
   receiverNote: Yup.string().nullable(),
   senderNote: Yup.string().nullable(),
-  orderNote: Yup.string().nullable(), 
+  orderNote: Yup.string().nullable(), // Optional field for additional notes
   discount: Yup.string().nullable(),
   cityS: Yup.string().required("Vui lòng chọn thành phố"), //
   cityR: Yup.string().required("Vui lòng chọn thành phố"), //
@@ -94,6 +95,9 @@ const FORM_VALIDATION = Yup.object().shape({
     .min(0.1, "Cân nặng phải lớn hơn 0")
     .required("Vui lòng nhập cân nặng"),
   freight: Yup.string().required("Vui lòng chọn phương thức vận chuyển"),
+  additional_service: Yup.string().nullable(),
+  additional_service_1: Yup.string().nullable(),
+  additional_service_2: Yup.string().nullable(),
   termsOfService: Yup.boolean()
     .oneOf([true], "The terms and conditions must be accepted.")
     .required("The terms and conditions must be accepted."),
@@ -112,6 +116,7 @@ const FORM_VALIDATION = Yup.object().shape({
 });
 
 const OrderForm = () => {
+
   const services = [
     { id: 1, label: "Bảo hiểm" },
     { id: 2, label: "Chăm sóc cá" },
@@ -124,12 +129,12 @@ const OrderForm = () => {
   const navigate = useNavigate();
   // state lưu danh sáchh tỉnh, phường, quận người gửi
   const [provincesS, setProvincesS] = useState([]);
-  const [districtsS, setDistrictsS] = useState([]);
-  const [wardsS, setWardsS] = useState([]);
+  const [districtsS, setDistrictsS] = useState([]); 
+  const [wardsS, setWardsS] = useState([]); 
   // state lưu danh sáchh tỉnh, phường, quận người nhận
   const [provincesR, setProvincesR] = useState([]);
-  const [districtsR, setDistrictsR] = useState([]);
-  const [wardsR, setWardsR] = useState([]);
+  const [districtsR, setDistrictsR] = useState([]); 
+  const [wardsR, setWardsR] = useState([]); 
 
   // người gửi
   const [selectedProvinceS, setSelectedProvinceS] = useState(null);
@@ -144,9 +149,7 @@ const OrderForm = () => {
   // const [distanceData, setDistanceData] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const { enqueueSnackbar } = useSnackbar();
-
-  const API_KEY = import.meta.env.VITE_GOONG_API_KEY; // Thay bằng API Key của bạn
+  const API_KEY = import.meta.env.VITE_GOONG_API_KEY; 
 
   const geocodeAddress = async (address) => {
     console.log("địa chỉ để tính", address);
@@ -192,7 +195,7 @@ const OrderForm = () => {
             label: province.ProvinceName,
             value: province.ProvinceID,
           }));
-
+  
           // Lưu các tỉnh cho cả người gửi và người nhận
           setProvincesS(provinceOptions);
           setProvincesR(provinceOptions);
@@ -203,10 +206,10 @@ const OrderForm = () => {
         console.error("Error fetching provinces:", error);
       }
     };
-
+  
     fetchProvinces();
   }, []);
-
+  
   const fetchDistricts = async (provinceId, isSender) => {
     try {
       const response = await fetch(
@@ -226,21 +229,22 @@ const OrderForm = () => {
           label: district.DistrictName,
           value: district.DistrictID,
         }));
-
-        // check điều kiện để gán
+  
+       // check điều kiện để gán
         if (isSender) {
-          setDistrictsS(districtOptions); // set quận người gửi
-          setWardsS([]); // reset
+          setDistrictsS(districtOptions);// set quận người gửi
+          setWardsS([]); // reset 
         } else {
-          setDistrictsR(districtOptions); // set quận người nhận
-          setWardsR([]);
+          setDistrictsR(districtOptions);// set quận người nhận
+          setWardsR([]); 
         }
       }
     } catch (error) {
       console.error("Error fetching districts:", error);
     }
   };
-
+  
+ 
   const fetchWards = async (districtId, isSender) => {
     try {
       const response = await fetch(
@@ -260,7 +264,7 @@ const OrderForm = () => {
           label: ward.WardName,
           value: ward.WardCode,
         }));
-
+  
         // check điều kiện để gán
         if (isSender && wardsS !== wardOptions) {
           setWardsS(wardOptions); // set quận người gửi
@@ -301,96 +305,96 @@ const OrderForm = () => {
 
   return (
     <Formik
-      initialValues={{
-        ...INITIAL_FORM_STATE,
-        cityS: selectedProvinceS,
-        cityR: selectedProvinceR,
-      }}
-      validationSchema={FORM_VALIDATION}
-      onSubmit={async (values, { setSubmitting, setErrors }) => {
-        try {
-          const accountId = localStorage.getItem("accountId");
+    initialValues={{
+      ...INITIAL_FORM_STATE,
+      cityS: selectedProvinceS,
+      cityR: selectedProvinceR,
+    }}
+    validationSchema={FORM_VALIDATION}
+    onSubmit={async (values, { setSubmitting, setErrors }) => {
+      try {
+        const accountId = localStorage.getItem("accountId");
 
-          const originCoordinates = await geocodeAddress(
-            `${values.origin}, ${values.wardS}, ${values.districtS} ,${values.cityS}`
-          );
-          const destinationCoordinates = await geocodeAddress(
-            `${values.destination}, ${values.wardR}, ${values.districtR} ,${values.cityR}`
-          );
+        const originCoordinates = await geocodeAddress(
+          `${values.origin}, ${values.wardS}, ${values.districtS} ,${values.cityS}`
+        );
+        const destinationCoordinates = await geocodeAddress(
+          `${values.destination}, ${values.wardR}, ${values.districtR} ,${values.cityR}`
+        );
 
-          const origins = `${originCoordinates.lat},${originCoordinates.lng}`;
-          const destinations = `${destinationCoordinates.lat},${destinationCoordinates.lng}`;
+        const origins = `${originCoordinates.lat},${originCoordinates.lng}`;
+        const destinations = `${destinationCoordinates.lat},${destinationCoordinates.lng}`;
 
-          const distance = await fetchDistanceData(origins, destinations);
-          console.log("Khoảng cách tính được: ", distance);
+        const distance = await fetchDistanceData(origins, destinations);
+        console.log("Khoảng cách tính được: ", distance);
 
-          const orderData = {
-            ...values,
-            accountId,
-            origin: `${values.origin}, ${values.wardS}, ${values.districtS} ,${values.cityS}`,
-            destination: `${values.destination}, ${values.wardR}, ${values.districtR} ,${values.cityR}`,
-            freight: values.freight,
-            receiverName: values.receiverName,
-            senderName: values.senderName,
-            receiverPhone: values.receiverPhone,
-            senderPhone: values.senderPhone,
-            receiverNote: values.receiverNote,
-            senderNote: values.senderNote,
-            orderNote: values.orderNote,
-            distance: distance,
-          };
+        const orderData = {
+          ...values,
+          accountId,
+          origin: `${values.origin}, ${values.wardS}, ${values.districtS} ,${values.cityS}`,
+          destination: `${values.destination}, ${values.wardR}, ${values.districtR} ,${values.cityR}`,
+          freight: values.freight,
+          receiverName: values.receiverName,
+          senderName: values.senderName,
+          receiverPhone: values.receiverPhone,
+          senderPhone: values.senderPhone,
+          receiverNote: values.receiverNote,
+          senderNote: values.senderNote,
+          orderNote: values.orderNote,
+          distance: distance,
+        };
 
-          const orderResponse = await createOrder(orderData);
-          console.log("Order data created successfully:", orderResponse);
+        const orderResponse = await createOrder(orderData);
+        console.log("Order data created successfully:", orderResponse);
 
-          if (!orderResponse?.orderId) {
-            throw new Error("Order ID not found in the response");
-          }
-
-          const newOrderId = orderResponse.orderId;
-          console.log("Order created with ID:", newOrderId);
-
-          const uploadResponse = await uploadDocument(
-            values.document_file,
-            newOrderId
-          );
-          console.log("File uploaded successfully:", uploadResponse);
-
-          const orderDetails = await order(newOrderId);
-          console.log("Order Details:", orderDetails);
-
-          const orderDetailData = {
-            orderId: newOrderId,
-            quantity: Number(values.quantity),
-            weight: parseFloat(values.weight),
-            discount: values.discount,
-            koiName: values.koi_name,
-            koiType: values.koi_type,
-            serviceIds: values.serviceIds,
-          };
-          console.log("Service IDs being sent:", orderData.serviceIds);
-          const orderDetailResponse = await createOrderDetail(orderDetailData);
-          console.log(
-            "Order detail created successfully:",
-            orderDetailResponse
-          );
-
-          console.log("Order created successfully with ID:", newOrderId);
-
-          navigate("/checkout", { state: { orderId: newOrderId } });
-        } catch (error) {
-          enqueueSnackbar("Đã xảy ra lỗi trong quá trình tạo đơn", {
-            variant: "error",
-          });
-          console.error("Error creating order:", error);
-          setErrors({ submit: error.message });
-        } finally {
-          setSubmitting(false);
+        if (!orderResponse?.orderId) {
+          throw new Error("Order ID not found in the response");
         }
-      }}
-      validateOnMount={true}
+
+        const newOrderId = orderResponse.orderId;
+        console.log("Order created with ID:", newOrderId);
+
+        const uploadResponse = await uploadDocument(
+          values.document_file,
+          newOrderId
+        );
+        console.log("File uploaded successfully:", uploadResponse);
+
+        const orderDetails = await order(newOrderId);
+        console.log("Order Details:", orderDetails);
+
+        const orderDetailData = {
+          orderId: newOrderId,
+          quantity: Number(values.quantity),
+          weight: parseFloat(values.weight),
+          discount: values.discount,
+          koiName: values.koi_name,
+          koiType: values.koi_type,
+          serviceIds: values.serviceIds,
+        };
+        console.log("Service IDs being sent:", orderData.serviceIds);
+        const orderDetailResponse = await createOrderDetail(orderDetailData);
+        console.log(
+          "Order detail created successfully:",
+          orderDetailResponse
+        );
+
+        console.log("Order created successfully with ID:", newOrderId);
+
+        navigate("/checkout", { state: { orderId: newOrderId } });
+      } catch (error) {
+        enqueueSnackbar("Đã xảy ra lỗi trong quá trình tạo đơn", {
+          variant: "error",
+        });
+        console.error("Error creating order:", error);
+        setErrors({ submit: error.message });
+      } finally {
+        setSubmitting(false);
+      }
+    }}
+    validateOnMount={true}
     >
-      {({ handleSubmit, errors, setFieldValue, values }) => {
+      {({ handleSubmit, errors, setFieldValue }) => {
         console.log("Validation errors:", errors); // Log validation errors
         const handleSenderProvinceChange = (event) => {
           const selectedProvince = provincesS.find(
@@ -400,15 +404,15 @@ const OrderForm = () => {
             setSelectedProvinceS(selectedProvince.value);
             setFieldValue("cityS", selectedProvince.label);
             console.log("Selected Province ID:", selectedProvince.value);
-
+        
             // Reset quận và phường của người gửi khi thay đổi tỉnh người gửi
-            setDistrictsS([]);
-            setWardsS([]);
-
-            fetchDistricts(selectedProvince.value, true); // true cho người nhận,check dk không bị mất
+            setDistrictsS([]); 
+            setWardsS([]);     
+        
+            fetchDistricts(selectedProvince.value, true); // true cho người nhận,check dk không bị mất 
           }
         };
-
+        
         const handleReceiverProvinceChange = (event) => {
           const selectedProvince = provincesR.find(
             (province) => province.value === event.target.value
@@ -417,52 +421,54 @@ const OrderForm = () => {
             setSelectedProvinceR(selectedProvince.value);
             setFieldValue("cityR", selectedProvince.label);
             console.log("Selected Province ID:", selectedProvince.value);
-
+        
             // Reset quận và phường của người nhận khi thay đổi tỉnh người nhận
-            setDistrictsR([]);
-            setWardsR([]);
-
-            fetchDistricts(selectedProvince.value, false); // false cho người nhận,check dk không bị mất
+            setDistrictsR([]); 
+            setWardsR([]);     
+        
+            fetchDistricts(selectedProvince.value, false); // false cho người nhận,check dk không bị mất 
           }
         };
-
+        
+        
         const handleSenderDistrictChange = (event) => {
           const selectedDistrict = districtsS.find(
             (district) => district.value === event.target.value
           );
           if (selectedDistrict) {
             setSelectedDistrictSId(selectedDistrict.value);
-            setFieldValue("districtS", selectedDistrict.label);
+            setFieldValue("districtS", selectedDistrict.label); 
             console.log("Selected District ID:", selectedDistrict.value);
-
-            fetchWards(selectedDistrict.value, true);
+            
+            fetchWards(selectedDistrict.value, true); 
           }
         };
-
+        
         const handleReceiverDistrictChange = (event) => {
           const selectedDistrict = districtsR.find(
             (district) => district.value === event.target.value
           );
           if (selectedDistrict) {
             setSelectedDistrictRId(selectedDistrict.value);
-            setFieldValue("districtR", selectedDistrict.label);
+            setFieldValue("districtR", selectedDistrict.label); 
             console.log("Selected District ID:", selectedDistrict.value);
-
-            fetchWards(selectedDistrict.value, false);
+            
+            fetchWards(selectedDistrict.value, false); 
           }
         };
-
+        
+        
         const handleSenderWardChange = (event) => {
           const selectedWard = wardsS.find(
             (ward) => ward.value === event.target.value
           );
           if (selectedWard) {
             setSelectedSWard(selectedWard.value);
-            setFieldValue("wardS", selectedWard.label);
+            setFieldValue("wardS", selectedWard.label); 
             console.log("Selected Ward ID:", selectedWard.value);
           }
         };
-
+        
         const handleReceiverWardChange = (event) => {
           const selectedWard = wardsR.find(
             (ward) => ward.value === event.target.value
@@ -473,6 +479,7 @@ const OrderForm = () => {
             console.log("Selected Ward ID:", selectedWard.value);
           }
         };
+        
 
         return (
           <Form onSubmit={handleSubmit}>
@@ -756,7 +763,7 @@ const OrderForm = () => {
                       />
                     </Grid>
                     <Grid item xs={3.5}></Grid>
-                    <Grid
+                <Grid
                       item
                       xs={5}
                       justifyContent="center"
@@ -771,7 +778,8 @@ const OrderForm = () => {
                         />
                       ))}
                     </Grid>
-                  </Grid>
+
+                    </Grid>
                 </Paper>
                 <CheckboxWrapper
                   name="termsOfService"
