@@ -19,8 +19,6 @@
       "source": "/api/auth/:path*",
       "destination": "http://koideliverysystem.id.vn:8080/api/auth/:path*"
     },
-
-    
     {
       "source": "/api/orders",
       "destination": "http://koideliverysystem.id.vn:8080/api/orders"

@@ -26,7 +26,7 @@ import FeedbackForm from "../../components/FeedbackForm";
 import { useSnackbar } from "notistack";
 
 const REST_API_BANK_URL =
-  "http://koideliverysystem.id.vn:8080/api/v1/payment/vn-pay";
+  "/api/v1/payment/vn-pay";
 
 const formatCurrency = (value) => {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
