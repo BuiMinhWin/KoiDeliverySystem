@@ -158,6 +158,24 @@ const toggleDropdown = () => {
   };
   const API_KEY =import.meta.env.VITE_GOONG_API_KEY; // Thay bằng API Key của bạn
 
+  const reverseGeocodeAddress = async (lat, long) => {
+    try {
+      const response = await axios.get(
+        `https://rsapi.goong.io/Geocode?latlng=${lat},${long}&api_key=${API_KEY}`
+      );
+      const data = response.data;
+      if (data.results && data.results.length > 0) {
+        const address = data.results[0].formatted_address; // Get the formatted address
+        return address; // Return the full address
+      } else {
+        throw new Error('No results found for the address.');
+      }
+    } catch (error) {
+      console.error('Error fetching geocode:', error);
+      throw new Error('Failed to fetch geocode.');
+    }
+  };
+
   const [selectedOrigin, setSelectedOrigin] = useState('');
   const [selectedDestination, setSelectedDestination] = useState('');
   const [showMap, setShowMap] = useState(false);
@@ -204,6 +222,7 @@ const toggleDropdown = () => {
   
     const currentOrder = orders.find(order => order.orderId === orderId);
     let newStatus = currentOrder.status;
+    console.log(newStatus);
 
     if (newStatus < 5) {
       newStatus += 1;
@@ -214,6 +233,8 @@ const toggleDropdown = () => {
     
     if (newStatus) {
       updateStatus(orderId, newStatus);
+      console.log(orderId);
+      console.log(newStatus);
     
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
@@ -221,9 +242,10 @@ const toggleDropdown = () => {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
             const currentLocate = await reverseGeocodeAddress(latitude, longitude);
-            const trackingData = { orderId, currentLocate, status: newStatus };
+            const trackingData = { orderId,currentLocate ,status: newStatus };
             const response = await trackingOrderState(trackingData);
             const result = response?.data;
+            console.log(result);
     
             if (result) {
               enqueueSnackbar("Cập nhật trạng thái thành công", { variant: "success", autoHideDuration: 1000 });

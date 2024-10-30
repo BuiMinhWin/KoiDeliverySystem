@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { forgotPassword, verifyPassword } from '../../services/EmployeeService';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import './Reset.css';
 
 const ResetPasswordComponent = () => {
   const [newPassword, setNewPassword] = useState('');
@@ -47,14 +48,14 @@ const ResetPasswordComponent = () => {
   };
 
   return (
-    <div className='password-container'>
-      <div className='main-content'>
-        <div className="login-image-container"></div>
-        <div className="login-form-container">
-          <div className="login-form-box">
-            <div className="logo-title">
-              <img src="/Logo-Koi/Order.png" alt="Koi Logo" className="koi-logo" />
-              <div className="text-container">
+    <div className='reset-password-container'>
+      <div className='reset-main-content'>
+        <div className="reset-image-container"></div>
+        <div className="reset-form-container">
+          <div className="reset-form-box">
+            <div className="reset-logo-title">
+              <img src="/Logo-Koi/Order.png" alt="Koi Logo" className="reset-koi-logo" />
+              <div className="reset-text-container">
                 <h2>Koi Delivery</h2>
                 <p>Nice to see you again</p>
               </div>

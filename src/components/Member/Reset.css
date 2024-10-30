@@ -1,0 +1,177 @@
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+.reset-main-content{
+  overflow-x: hidden;
+  height: 100vh;
+  width: 100vw;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  margin-top:-1px;
+  background-image: url('/Koi-image/shutterstock_1683545551_web.jpg');
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat;   
+}
+
+.reset-password-container {
+  display: flex;
+  height: 100%;  
+  width: 100%;   
+  background-size: cover;
+  align-items: center;
+  justify-content: center;
+  
+  
+}
+
+.reset-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+  height: 85%;
+  padding: 20px;
+  background-color: #2b3a4d;
+  border-radius: 15px;
+  
+}
+
+.reset-form-box{
+  width: 100%;   
+  height: 100%;  
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+.reset-logo-title {
+  position: absolute; /* Cố định vị trí */
+  top: 120px; /* Khoảng cách từ đỉnh trang đến phần tử */
+  left: 580px; /* Khoảng cách từ lề trái của trang */
+  display: flex;
+  align-items: center;
+}
+
+.reset-koi-logo {
+  width: 60px; 
+  margin-right: 10px;
+}
+
+.reset-text-container h2 {
+  font-size: 26px; 
+  margin: 0;
+  color:white;
+}
+
+.reset-text-container p {
+  font-size: 16px;
+  color: #888;
+}
+
+
+form div {
+  margin-bottom: 25px; 
+}
+
+label {
+  display: block;
+  font-size: 15px; 
+  color: white;
+  /* margin-bottom: white;  */
+}
+
+input[type="text"], input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 15px;
+  color: #333;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+  outline: none;
+  border-color: #007BFF;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  margin-top: -20px;
+  margin-bottom:0px;
+}
+
+.remember-me {
+  padding-top: 33px;
+  display: flex;
+  align-items: center;
+}
+
+.options label {
+  margin-left: 5px;
+  color: #666;
+}
+
+a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #ffffff;
+  background-color: #007BFF;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.google-login {
+  margin-top: 15px;
+  background-color: #4285F4;
+}
+
+.google-login:hover {
+  background-color: #357ae8;
+}
+
+.sign-up {
+  margin-top: 30px; 
+  text-align: center;
+  color: white;
+}
+
+.sign-up a {
+  font-weight: bold;
+  color: #007BFF;
+}
+
+.sign-up a:hover {
+  text-decoration: underline;
+}

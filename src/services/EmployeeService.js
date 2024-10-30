@@ -4,6 +4,7 @@ import axios from "axios";
 const REST_API_BASE_URL = "/api/accounts";
 const REST_API_BASE_URL2 = "/api/Google/loginGG";
 const REST_API_PASSWORD_URL = "/api/auth";
+const REST_API_SERVICE_URL = "/api/services";
 
 export const listAccount = () => {
   return axios.get(REST_API_BASE_URL);
@@ -60,4 +61,22 @@ export const forgotPassword = (email) => {
 
 export const verifyPassword = (email, code, newPassword, confirmPassword) => {
   return axios.post(REST_API_PASSWORD_URL + `/verify?email=${email}&code=${code}&newPassword=${newPassword}&confirmPassword=${confirmPassword}`);
+};
+
+export const getService = () =>{
+  return axios.get(REST_API_SERVICE_URL+'/Services');
+}
+
+export const updatePrice = (serviceName, newPrice) => {
+  return axios.put(`${REST_API_SERVICE_URL}/updatePrice`, null, {
+    params: {
+      servicesName: serviceName,
+      newPrice: newPrice
+    }
+  })
+  .then(response => response.data)
+  .catch(error => {
+    console.error("Error updating service price:", error);
+    throw error;
+  });
 };

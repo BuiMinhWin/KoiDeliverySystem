@@ -11,8 +11,8 @@ const LoginComponent = () => {
   const [password, setPassword] = useState('');
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  const clientId = "168634669859-34entdccui9d411p4438g664kim5ft64.apps.googleusercontent.com";
-
+  const clientId=import.meta.env.VITE_CLIENT_ID;
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     const loginData = { userName, password };
@@ -67,8 +67,8 @@ const LoginComponent = () => {
 
       const account = {
         firstName,
-        lastName: lastName || 'Unknown',  // Giá trị mặc định nếu lastName trống
-        userName: userName || email,       // Đảm bảo userName không trống
+        lastName: lastName || 'Unknown',  
+        userName: userName || email,       
         password,
         email,
         roleId: "Customer",
@@ -109,7 +109,6 @@ const LoginComponent = () => {
   const handleGoogleLoginFailure = () => {
     enqueueSnackbar('Google login failed, please try again.', { variant: 'error', autoHideDuration: 1000 });
   };
-
 
   return (
     <div className="login-container">
