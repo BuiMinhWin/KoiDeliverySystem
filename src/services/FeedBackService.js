@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const API_BASE_URL = "/api/feedbacks";
 
+
 export const createFeedback = async (feedbackData) => {
   const response = await axios.post(`${API_BASE_URL}/create`, feedbackData);
   return response.data;
