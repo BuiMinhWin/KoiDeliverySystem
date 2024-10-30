@@ -58,7 +58,7 @@ const Homepage = () => {
     };
     if (accountId) fetchAccount();
 
-  }, [activeTab,accountId]);
+  }, [accountId]);
 
   const [isDropdownOpen, setDropdownOpen] = useState(false); // Quản lý trạng thái mở dropdown
 
@@ -94,13 +94,7 @@ const Homepage = () => {
           <a href="/SupportUser" className="nav-link support-link">
             <i className="fas fa-question-circle"></i> Hỗ Trợ
           </a>
-          <div className="dropdown">
-          <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
-            <div className="dropdown-content-avatar ">
-              <a href="user-page">Tài khoản của tôi</a>
-              <a  onClick={handleLogout}>Đăng xuất</a>
-            </div>  
-      </div>
+          
     </div>
       </nav>
 

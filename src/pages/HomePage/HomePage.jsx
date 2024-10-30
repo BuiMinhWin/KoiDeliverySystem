@@ -7,22 +7,30 @@ import blog from '../../assets/Blog.jpg';
 import { useNavigate } from 'react-router-dom';
 import { getOrder } from '../../services/CustomerService';
 import DeliveryStatus from '../../pages/DeliveryStatus/DeliveryStatus'; // Import component hiển thị trạng thái đơn hàng
-
+import { logout } from '../../components/Member/auth';
+import { getAvatar } from '../../services/CustomerService';
 const Homepage = () => {
 
   const [activeTab, setActiveTab] = useState('tracking'); // State để quản lý tab
   const [trackingCode, setTrackingCode] = useState(''); // State để quản lý mã đơn hàng
   const [trackingResult, setTrackingResult] = useState(null); // State cho kết quả theo dõi
   const navigate = useNavigate();
+  const [avatar, setAvatar] = useState(null); 
 
   const roleId = localStorage.getItem('roleId'); 
   console.log('Role ID:', roleId);
-  // const accountId = localStorage.getItem('accountId');
+  const accountId = localStorage.getItem('accountId');
   // console.log("Stored Account ID:", accountId);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
 
   const handleTrackingSubmit = () => {
     if (trackingCode) {
@@ -43,7 +51,19 @@ const Homepage = () => {
       setTrackingCode(''); // Xóa mã đơn hàng
       setTrackingResult(null); // Xóa kết quả tra cứu
     }
-  }, [activeTab]);
+    const fetchAccount = async () => {
+      try {
+       
+        const avatarUrl = await getAvatar(accountId);
+        setAvatar(avatarUrl);
+        // console.log(avatarUrl); 
+      } catch (error) {
+        console.error("Error fetching account data:", error);
+      } 
+    };
+    if (accountId) fetchAccount();
+    
+  }, [activeTab,accountId]);
 
 
   return (
@@ -69,26 +89,23 @@ const Homepage = () => {
         <a href="/Support" className="nav-link support-link">
             <i className="fas fa-question-circle"></i>Hỗ Trợ
           </a>
-          {/* {!roleId ? ( */}
+           {!roleId ? ( 
             <>
               <button className="register-btn" onClick={() => navigate('/register')}>Đăng Ký</button>
               <button className="login-btn" onClick={() => navigate('/login')}>Đăng Nhập</button>
             </>
-          {/* ) : (
+           ) : (
             <>
-              {roleId === 'Manager' ? (
-                <button onClick={() => navigate('/manager')}>Back</button>
-              ) : roleId === 'Delivery' ? (
-                <button onClick={() => navigate('/delivery')}>Back</button>
-              ) : roleId === 'Sales' ? (
-                <button onClick={() => navigate('/salestaff')}>Back</button>
-              ) : roleId === 'Customer' ?(
-                <button onClick={() => navigate('/customer')}>Back</button>
-              ):null
-              }
+            <div className="dropdown">
+            <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
+              <div className="dropdown-content-avatar ">
+                <a href="user-page">Tài khoản của tôi</a>
+                <a  onClick={handleLogout}>Đăng xuất</a>
+              </div>  
+            </div>
             </>
-          )} */}
-        
+          )} 
+
       </div>
 
         {/* <div className="navbar-right">
