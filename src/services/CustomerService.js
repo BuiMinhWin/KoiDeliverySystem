@@ -216,3 +216,32 @@ export const getServiceStatus = async (orderDetailId) => {
 export const listService = () => {
   return axios.get(REST_API_SERVICE_URL);
 };
+
+export const updatePaymentStatus = async (orderId) => {
+  try {
+    console.log(`Sending PATCH request for order ID: ${orderId}`); // Debug log
+    console.log("Sending PATCH request with body:", JSON.stringify({ paymentStatus: true }));
+
+    const response = await fetch(`${REST_API_ORDER_URL}/update/${orderId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ paymentStatus: true }),
+    });
+
+    if (!response.ok) {
+      console.error("PATCH request failed:", response.status, response.statusText);
+      const errorData = await response.json();
+      console.error("Error response data:", errorData);
+      throw new Error("Failed to update payment status.");
+    }
+
+    const data = await response.json();
+    console.log("Payment status successfully updated:", data);
+    return data;
+  } catch (error) {
+    console.error("An error occurred in updatePaymentStatus:", error);
+    throw error;
+  }
+};
