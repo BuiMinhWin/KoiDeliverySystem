@@ -10,7 +10,7 @@ import {
   Stack,
 } from "@mui/material";
 
-import { order } from "../../services/CustomerService";
+import { order, updatePaymentStatus } from "../../services/CustomerService";
 
 const PaymentOutcome = () => {
   const navigate = useNavigate();
