@@ -112,7 +112,7 @@ const CheckoutPage = () => {
       const response = await axios.post(REST_API_BANK_URL, {
         orderId,
         bankCode: "NCB",
-        returnUrl: "http://localhost:3000/payment-outcome",
+        returnUrl: "https://koi-delivery-system.vercel.app/payment-outcome",
       });
 
       console.log("Payment API Response:", response.data);
