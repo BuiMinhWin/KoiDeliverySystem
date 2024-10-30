@@ -394,7 +394,7 @@ const OrderForm = () => {
     }}
     validateOnMount={true}
     >
-      {({ handleSubmit, errors, setFieldValue }) => {
+      {({ handleSubmit, errors, setFieldValue, values  }) => {
         console.log("Validation errors:", errors); // Log validation errors
         const handleSenderProvinceChange = (event) => {
           const selectedProvince = provincesS.find(
