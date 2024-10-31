@@ -26,7 +26,7 @@ const PaymentOutcome = () => {
   const failed = transactionStatus === "02";
   const fraud = transactionStatus === "07";
 
-  const [countdown, setCountdown] = useState(1500000);
+  const [countdown, setCountdown] = useState(10);
   const [orderData, setOrderData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

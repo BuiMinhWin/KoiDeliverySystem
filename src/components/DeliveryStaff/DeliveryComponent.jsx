@@ -19,6 +19,7 @@ import { FaRegRectangleList } from "react-icons/fa6";
 import { FaBoxesStacked } from "react-icons/fa6";
 import {  getAvatar} from "../../services/CustomerService";
 import { trackingOrderState } from '../../services/DeliveryStatusService';
+import { MdDirections } from "react-icons/md";
 import { useSnackbar } from 'notistack';
 import axios from "axios";
 import Map from '../Map';
@@ -374,42 +375,39 @@ const toggleDropdown = () => {
           </section>
 
           <section className="delivery-ongoing-delivery mt-4 d-flex border-top pt-3">
-          <div className="delivery-list col-12 " >
-              <h2>Delivery Report</h2>
+          <div className="delivery-list col-12">
+            <h2>Delivery Report</h2>
 
-              <div className="filter-bar d-flex mb-3">
-                <select className="form-select me-2" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)}>
-                  <option value="">All Months</option>
-                  <option value="1">January</option>
-                  <option value="2">February</option>
-                  <option value="3">March</option>
-                  <option value="4">April</option>
-                  <option value="5">May</option>
-                  <option value="6">June</option>
-                  <option value="7">July</option>
-                  <option value="8">August</option>
-                  <option value="9">September</option>
-                  <option value="10">October</option>
-                  <option value="11">November</option>
-                  <option value="12">December</option>
-                </select>
-              
-                <select className="form-select me-2" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-                  <option value="">All Statuses</option>
-                  <option value="3">Waiting for get order</option>
-                  <option value="4">Deliverin</option>
-                  
-                 
-                </select>
-                <select className="form-select me-2" value={transportationFilter} onChange={(e) => setTransportationFilter(e.target.value)}>
+            <div className="filter-bar d-flex mb-3">
+              <select className="form-select me-2" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)}>
+                <option value="">All Months</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
             
-                  <option value= "">Method Transport</option>
-                  <option value= "Giao hàng khẩn cấp">Express Delivery</option>
-                  <option value= "Giao hàng tiêu chuẩn">Regular Delivery</option>
-                </select>
+              <select className="form-select me-2" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                <option value="">All Statuses</option>
+                <option value="3">Waiting for get order</option>
+                <option value="4">Delivering</option>
+              </select>
 
-                
-                <select className="form-select me-2" value={provinceFilter} onChange={(e) => setProvinceFilter(e.target.value)}>
+              <select className="form-select me-2" value={transportationFilter} onChange={(e) => setTransportationFilter(e.target.value)}>
+                <option value="">Method Transport</option>
+                <option value="Giao hàng khẩn cấp">Express Delivery</option>
+                <option value="Giao hàng tiêu chuẩn">Regular Delivery</option>
+              </select>
+
+              <select className="form-select me-2" value={provinceFilter} onChange={(e) => setProvinceFilter(e.target.value)}>
                 <option value="">All Provinces</option>
                 {provinces?.map((province) => (
                   <option key={province.ProvinceID} value={province.ProvinceName}>
@@ -417,16 +415,15 @@ const toggleDropdown = () => {
                   </option>
                 ))}
               </select>
-              </div>
-              
-              <table className="table table-striped table-bordered">
+            </div>
+
+            <table className="table table-striped table-bordered">
               <thead>
                 <tr>
                   <th>OrderId</th>
                   <th>OrderDate</th>
                   <th>Origin</th>
                   <th>Destination</th>
-                  <th>Service</th>
                   <th>Status</th>
                   <th>Action</th>
                   <th>Details</th>
@@ -434,70 +431,68 @@ const toggleDropdown = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentOrders.length > 0 ? (
-                  currentOrders
-                    .filter(order => order.deliver === accountId && order.status > 1 && order.status < 5)
-                    .map((order) => (
-                      <tr key={order.orderId}>
-                        <td>{order.orderId}</td>
-                        <td>{new Date(order.orderDate).toLocaleDateString()}</td>
-                        <td>{order.origin}</td>
-                        <td>{order.destination}</td>
-                        <td>{order.freight}</td>
-                        <td>
-                          {order.status === 2 && "Đang lấy hàng"}
-                          {order.status === 3 && "Đã lấy hàng"}
-                          {order.status === 4 && "Đang giao"}
-                          {order.status === 5 && "Đã hoàn thành"}  
-                        </td>
-                        <td>
-                          <button
-                            className="btn btn-info"
-                            onClick={() => updateOrderStatus(order.orderId)}
-                          >
-                            Update Status
-                          </button>
-                        </td>
-                        <td>
-                          <button onClick={() => handleViewOrder(order.orderId)}>View</button>
-                        </td>
-                        <td>
-                          <button
-                            className="btn btn-primary"
-                            onClick={() => handleDirection( order.destination)}
-                          >
-                            Direction
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                ) : (
+                {currentOrders
+                  .filter(order => order.deliver === accountId && order.status > 1 && order.status < 5)
+                  .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate)) // Sort newest to oldest
+                  .map((order) => (
+                    <tr key={order.orderId}>
+                      <td style={{ color: order.freight === 'Giao hàng khẩn cấp' ? 'red' : 'inherit' }}>
+                        {order.orderId}
+                      </td>
+                      <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                      <td>{order.origin}</td>
+                      <td>{order.destination}</td>
+                      <td>
+                        {order.status === 2 && "Đang lấy hàng"}
+                        {order.status === 3 && "Đã lấy hàng"}
+                        {order.status === 4 && "Đang giao"}
+                        {order.status === 5 && "Đã hoàn thành"}
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-info"
+                          onClick={() => updateOrderStatus(order.orderId)}
+                        >
+                          Update Status
+                        </button>
+                      </td>
+                      <td>
+                        <button onClick={() => handleViewOrder(order.orderId)}>View</button>
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => handleDirection(order.destination)}
+                        >
+                          <MdDirections />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                {currentOrders.length === 0 && (
                   <tr>
                     <td colSpan="12" className="text-center">No Orders Found</td>
                   </tr>
                 )}
               </tbody>
             </table>
-            {showMap && (
-              <Map origin={selectedOrigin} destination={selectedDestination} />
-            )}
+            
+            {showMap && <Map origin={selectedOrigin} destination={selectedDestination} />}
 
-
-              <nav>
+            <nav>
               <ul className="pagination">
-              {Array.from({ length: totalPages }).map((_, index) => (
-                <li key={index} className="page-item">
-                  <button onClick={() => paginate(index + 1)} className="page-link">
-                    {index + 1}
-                  </button>
-                </li>
-              ))}
-            </ul>
+                {Array.from({ length: totalPages }).map((_, index) => (
+                  <li key={index} className="page-item">
+                    <button onClick={() => paginate(index + 1)} className="page-link">
+                      {index + 1}
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </nav>
+          </div>
+        </section>
 
-            </div>
-          
-          </section>
         </main>
       </div>
     </div>
