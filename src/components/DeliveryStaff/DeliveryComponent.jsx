@@ -462,7 +462,7 @@ const toggleDropdown = () => {
                       <td>
                       <button
                         className="btn"
-                        style={{ backgroundColor: 'transparent', border: 'none', padding: -10 }}
+                        style={{ backgroundColor: 'transparent', border: 'none'}}
                         onClick={() => handleDirection(order.destination)}
                       >
                         <MdDirections style={{ fontSize: '1.2rem', color: 'black' }} />
@@ -480,7 +480,7 @@ const toggleDropdown = () => {
             
             {showMap && <Map origin={selectedOrigin} destination={selectedDestination} />}
 
-            {/* <nav>
+            <nav>
               <ul className="pagination">
                 {Array.from({ length: totalPages }).map((_, index) => (
                   <li key={index} className="page-item">
@@ -490,7 +490,7 @@ const toggleDropdown = () => {
                   </li>
                 ))}
               </ul>
-            </nav> */}
+            </nav>
           </div>
         </section>
 
