@@ -97,14 +97,16 @@ const Homepage = () => {
            ) : (
             <>
             <div className="dropdown">
-            <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
+            <img src={avatar} alt="Avatar" className="avatar" />
               <div className="dropdown-content-avatar ">
                 <a href="user-page">Tài khoản của tôi</a>
                 <a  onClick={handleLogout}>Đăng xuất</a>
               </div>  
             </div>
             </>
-          )} 
+          )
+          
+          } 
 
       </div>
 
