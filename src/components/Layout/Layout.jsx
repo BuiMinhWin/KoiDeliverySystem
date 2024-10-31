@@ -1,4 +1,4 @@
-import { Outlet, NavLink, Link, useNavigate} from "react-router-dom";
+import { Outlet, NavLink, Link, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import {
   AppBar,
@@ -19,15 +19,15 @@ import {
 import HomeIcon from "@mui/icons-material/Home";
 import HelpIcon from "@mui/icons-material/Help";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
-import { getAccountById, getAvatar } from "../../services/CustomerService";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
+import { getAccountById, getAvatar } from "../../services/CustomerService";
 
 const drawerWidth = 240;
 
 const Layout = () => {
   const [account, setAccount] = useState(null);
-  const [avatarUrl, setAvatarUrl] = useState(null); 
+  const [avatarUrl, setAvatarUrl] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
 
@@ -40,10 +40,7 @@ const Layout = () => {
           setAccount(accountData);
 
           const fetchedAvatarUrl = await getAvatar(accountId);
-          setAvatarUrl(fetchedAvatarUrl); // Set the fetched avatar URL
-
-          const avatar = await getAvatar(accountId);
-          setAvatarUrl(avatar);
+          setAvatarUrl(fetchedAvatarUrl);
         } catch (error) {
           console.error("Error fetching account:", error);
         }
@@ -59,14 +56,13 @@ const Layout = () => {
     localStorage.removeItem("accountId");
     setAnchorEl(null);
     navigate("/");
-    navigate("/");
   };
 
   return (
-    <Box sx={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+    <Box sx={{ display: "flex", height: "100vh" }}>
       <CssBaseline />
 
-      {/* Sidebar */}
+      {/* Sidebar Drawer */}
       <Drawer
         variant="permanent"
         sx={{
@@ -83,10 +79,9 @@ const Layout = () => {
           },
         }}
       >
-        {/* Logo */}
         <Box
           component="img"
-          src="Logo-Koi\Order.png"
+          src="Logo-Koi/Order.png"
           alt="Logo"
           sx={{
             width: "80%",
@@ -97,8 +92,6 @@ const Layout = () => {
             objectFit: "cover",
           }}
         />
-
-        {/* Button */}
         <Button
           variant="contained"
           sx={{
@@ -107,9 +100,7 @@ const Layout = () => {
             mt: 2,
             mb: 2,
             bgcolor: "#F8A02F",
-            ":hover": {
-              bgcolor: "#1565C0",
-            },
+            ":hover": { bgcolor: "#1565C0" },
           }}
           component={Link}
           to="/form"
@@ -118,7 +109,6 @@ const Layout = () => {
           Tạo đơn
         </Button>
 
-        {/* Navigation Links */}
         <List sx={{ width: "100%" }}>
           <ListItem
             component={NavLink}
@@ -128,23 +118,16 @@ const Layout = () => {
             <HomeIcon sx={{ mr: 1, color: "#FFFFFF" }} />
             <ListItemText
               primary="Lịch sử đơn hàng"
-              sx={{
-                color: "#FFFFFF",
-              }}
+              sx={{ color: "#FFFFFF" }}
             />
           </ListItem>
           <ListItem
             component={NavLink}
-            to="/"
+            to="/customer"
             sx={{ "&.active": { bgcolor: "#2f386a" } }}
           >
             <HelpIcon sx={{ mr: 1, color: "#FFFFFF" }} />
-            <ListItemText
-              primary="Trợ giúp"
-              sx={{
-                color: "#FFFFFF",
-              }}
-            />
+            <ListItemText primary="Trợ giúp" sx={{ color: "#FFFFFF" }} />
           </ListItem>
           <ListItem
             component={NavLink}
@@ -152,17 +135,12 @@ const Layout = () => {
             sx={{ "&.active": { bgcolor: "#2f386a" } }}
           >
             <PersonOutlineRoundedIcon sx={{ mr: 1, color: "#FFFFFF" }} />
-            <ListItemText
-              primary="Trang cá nhân"
-              sx={{
-                color: "#FFFFFF",
-              }}
-            />
+            <ListItemText primary="Trang cá nhân" sx={{ color: "#FFFFFF" }} />
           </ListItem>
         </List>
       </Drawer>
 
-      {/* Main Content */}
+      {/* Main Content Area */}
       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
         <AppBar
           position="fixed"
@@ -175,55 +153,34 @@ const Layout = () => {
           }}
         >
           <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            <Typography variant="h6" sx={{ flexGrow: 1 }}>
               KoiFish Delivery
             </Typography>
             <Stack direction="row" spacing={2} alignItems="center">
-              <Button
-                color="inherit"
-                component={Link}
-                to="/customer"
-                startIcon={<HomeIcon />}
-              >
+              <Button component={Link} to="/customer" color="inherit">
                 Trang chủ
               </Button>
-              <Button
-                color="inherit"
-                component={Link}
-                to="/order-report"
-                startIcon={<SupportAgentIcon />}
-              >
+              <Button component={Link} to="/order-report" color="inherit">
                 Dịch vụ
               </Button>
-              <Button
-                color="inherit"
-                component={Link}
-                to="/order-report"
-                startIcon={<HelpIcon />}
-              >
+              <Button component={Link} to="/order-report" color="inherit">
                 Giới thiệu
               </Button>
-
-              {/* Avatar with Hover Menu */}
               <Avatar
-                src={avatarUrl} // Display the avatar dynamically
+                src={avatarUrl}
                 alt={account?.userName || "Account Avatar"}
                 onMouseEnter={handleAvatarHover}
                 sx={{ cursor: "pointer" }}
               />
-
               <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
                 anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                 transformOrigin={{ vertical: "top", horizontal: "left" }}
-                onMouseLeave={handleClose}
               >
-                <MenuItem disabled>
-                  <Typography variant="subtitle1">
-                    {account?.userName || "Unknown User"}
-                  </Typography>
+                <MenuItem component={Link} to="/user-page" onClick={handleClose}>
+                  <Typography>{account?.userName || "Unknown User"}</Typography>
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
@@ -231,19 +188,17 @@ const Layout = () => {
           </Toolbar>
         </AppBar>
 
+        {/* Main content below AppBar */}
         <Toolbar />
-
         <Box
           sx={{
             flexGrow: 1,
             p: 3,
             overflow: "auto",
             bgcolor: "#eeeeee",
-            display: "flex",
-            flexDirection: "column",
           }}
         >
-          <Outlet context={{ account }} />
+          <Outlet />
         </Box>
       </Box>
     </Box>

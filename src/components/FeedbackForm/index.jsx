@@ -19,17 +19,30 @@ import { useSnackbar } from "notistack";
 // Custom styled Rating component
 const StyledRating = styled(Rating)(({ theme }) => ({
   "& .MuiRating-iconFilled": {
-    color: "#ff6d75",
+    color: "#FAB700",
     fontSize: "2rem",
   },
   "& .MuiRating-iconHover": {
-    color: "#ff3d47",
+    color: "#FAB700",
   },
   "& .MuiRating-iconEmpty": {
-    color: "#ff6d75",
+    color: "#FAB700",
     fontSize: "2rem",
   },
 }));
+const buttonStyles = {
+  backgroundColor: "#161A31",
+  color: "white",
+  "&:hover": { backgroundColor: "#727376" },
+  padding: "17px 16px",
+  borderRadius: "8px",
+  minWidth: "auto",
+  maxWidth: "fit-content",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
 
 const FeedbackForm = ({ orderId }) => {
   const [existingFeedback, setExistingFeedback] = useState(null);
@@ -147,7 +160,7 @@ const FeedbackForm = ({ orderId }) => {
         sx={{ textDecoration: "underline" }}
         gutterBottom
       >
-        Submit Feedback
+        Feedback
       </Typography>
       <StyledRating
         name="rating"
@@ -165,7 +178,7 @@ const FeedbackForm = ({ orderId }) => {
         rows={4}
         variant="outlined"
         margin="normal"
-        label="Comment"
+        label="Bình luận"
         name="comment"
         value={formik.values.comment}
         onChange={formik.handleChange}
@@ -174,8 +187,8 @@ const FeedbackForm = ({ orderId }) => {
       {formik.touched.comment && formik.errors.comment && (
         <Typography color="error">{formik.errors.comment}</Typography>
       )}
-      <Button variant="contained" color="primary" type="submit">
-        Submit Feedback
+      <Button sx={{...buttonStyles}} variant="contained" type="submit">
+        Gửi Feedback
       </Button>
     </Box>
   );
