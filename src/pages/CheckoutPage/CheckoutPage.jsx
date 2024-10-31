@@ -166,11 +166,11 @@ const CheckoutPage = () => {
 
   // Define steps based on orderData
   const steps = [
-    "Đang Xử Lí", // Step 1
-    "Đã duyệt", // Step 2
-    "Tài xế đang lấy hàng",
-    "Tài xế đã nhận đơn",
-    "Đơn của bạn đang được vận chuyển", //step 4
+    " Xử Lí", // Step 1
+    " Duyệt Đơn", // Step 2
+    "Tài xế nhận đơn",
+    "Tài xế lấy hàng", 
+    "Đơn đang được vận chuyển", //step 4
     orderData.paymentStatus === 1 ? "Hoàn thành" : "Vui Lòng Thanh Toán", // Step 5
   ];
 
