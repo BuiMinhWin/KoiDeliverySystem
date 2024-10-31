@@ -205,16 +205,16 @@ const toggleDropdown = () => {
     const matchesProvince = provinceFilter ? order.destination.includes(provinceFilter) : true;
     const matchesStatus = statusFilter ? order.status === parseInt(statusFilter) : true;
     const matchesTransportation = transportationFilter ? order.freight === transportationFilter : true;
-
+  
     return matchesMonth && matchesProvince && matchesStatus && matchesTransportation;
   });
 
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
   const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-
+  
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
-
+  
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const updateOrderStatus = async (orderId) => {
@@ -481,16 +481,16 @@ const toggleDropdown = () => {
             {showMap && <Map origin={selectedOrigin} destination={selectedDestination} />}
 
             <nav>
-              <ul className="pagination">
-                {Array.from({ length: totalPages }).map((_, index) => (
-                  <li key={index} className="page-item">
-                    <button onClick={() => paginate(index + 1)} className="page-link">
-                      {index + 1}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+            <ul className="pagination">
+              {Array.from({ length: totalPages }).map((_, index) => (
+                <li key={index} className="page-item">
+                  <button onClick={() => paginate(index + 1)} className="page-link">
+                    {index + 1}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
           </div>
         </section>
 
