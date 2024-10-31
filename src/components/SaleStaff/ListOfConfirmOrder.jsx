@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { listOrder, updateStatus, updateSale } from '../../services/SaleStaffService';
-import { FaLongArrowAltLeft } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+import { colors } from '@mui/material';
 
 const ListOrderComponent = () => {
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
   const accountId = localStorage.getItem("accountId");
+
+  const formatCurrency = (value) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
   useEffect(() => {
     getAllOrders();
@@ -16,7 +20,13 @@ const ListOrderComponent = () => {
     listOrder()
       .then((response) => {
         if (Array.isArray(response.data)) {
-          setOrders(response.data);
+          // First, sort by the `freight` type to put "express" orders at the top, then by order date in descending order.
+          const sortedOrders = response.data.sort((a, b) => {
+            if (a.freight === "Dịch vụ hỏa tốc" && b.freight !== "Dịch vụ hỏa tốc") return -1;
+            if (a.freight !== "Dịch vụ hỏa tốc" && b.freight === "Dịch vụ hỏa tốc") return 1;
+            return new Date(b.orderDate) - new Date(a.orderDate);
+          });
+          setOrders(sortedOrders);
         } else {
           console.error("API response is not an array", response.data);
           setOrders([]);
@@ -46,16 +56,16 @@ const ListOrderComponent = () => {
         <thead>
           <tr>
             <th>OrderId</th>
-            <th>Destination</th>
-            <th>Freight</th>
-            <th>OrderDate</th>
-            <th>ShipDate</th>
-            <th>TotalPrice</th>
-            <th>Origin</th>
+            <th>Điểm đi</th>
+            <th>Điểm đến</th>
+            <th>Phương tiện</th>
+            <th>Ngày đặt hàng</th>
+            <th>Ngày nhận hàng</th>
+            <th>Tổng giá tiền</th>
             <th>Sale</th>
-            <th>Status</th>
-            <th>Update Status</th>
-            <th>View</th>
+            <th>Trạng thái</th>
+            <th>Cập nhật trạng thái</th>
+            <th>Chi tiết đơn hàng</th>
           </tr>
         </thead>
         <tbody>
@@ -63,14 +73,14 @@ const ListOrderComponent = () => {
             orders.map(order => (
               <tr key={order.orderId}>
                 <td>{order.orderId}</td>
+                <td>{order.origin}</td>
                 <td>{order.destination}</td>
                 <td>{order.freight}</td>
                 <td>{order.orderDate}</td>
                 <td>{order.shippedDate}</td>
-                <td>{order.totalPrice}</td>
-                <td>{order.origin}</td>
+                <td>{formatCurrency(order.totalPrice)}</td>   
                 <td>{order.sale}</td>
-                <td>
+                <td style={{ color : order.status === 0? 'red' : 'green'}}>
                   {order.status === 0 ? "Đang chờ xét duyệt" : "Đơn đã được duyệt"}
                 </td>
                 <td>
@@ -79,11 +89,11 @@ const ListOrderComponent = () => {
                       className="btn btn-success"
                       onClick={() => handleUpdateStatus(order.orderId, order.status)}
                     >
-                      Update
+                      Cập nhật
                     </button>
                   ) : (
                     <button className="btn btn-secondary" disabled>
-                      Already Approved
+                      Đã duyệt
                     </button>
                   )}
                 </td>
@@ -92,7 +102,7 @@ const ListOrderComponent = () => {
                     className="btn btn-primary"
                     onClick={() => handleViewOrder(order.orderId)}
                   >
-                    View
+                    Chi tiết
                   </button>
                 </td>
               </tr>

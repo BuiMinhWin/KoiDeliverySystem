@@ -11,6 +11,11 @@ const Booking = () => {
   const navigate = useNavigate();
   const accountId = localStorage.getItem("accountId"); //lấy accountId của sale
 
+  const formatCurrency = (value) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+
   const statusLabels = [
     "Đang chờ xét duyệt",
     "Đơn đã được duyệt",
@@ -29,8 +34,16 @@ const Booking = () => {
       .then((response) => {
         if (Array.isArray(response.data)) {
           const filteredOrders = response.data.filter(order => order.sale === accountId); // loggedInSaleId là accountId của nhân viên sale đang đăng nhập
-          setOrders(filteredOrders);
-          console.log(response.data);
+          const sortedOrders = filteredOrders.sort((a, b) => {
+            // First, prioritize express orders
+            if (a.freight === "Dịch vụ hỏa tốc" && b.freight !== "Dịch vụ hỏa tốc") return -1;
+            if (a.freight !== "Dịch vụ hỏa tốc" && b.freight === "Dịch vụ hỏa tốc") return 1;
+            
+  
+            return new Date(b.orderDate) - new Date(a.orderDate);
+          });
+  
+          setOrders(sortedOrders);
         } else {
           console.error("API response is not an array", response.data);
           setOrders([]);
@@ -66,30 +79,30 @@ const Booking = () => {
       <table className="table table-striped table-bordered">
         <thead>
           <tr>
-            <th>OrderId</th>
-            <th>Destination</th>
-            <th>Freight</th>
-            <th>OrderDate</th>
-            <th>ShipDate</th>
-            <th>TotalPrice</th>
-            <th>Origin</th>
-            <th>Delivery</th>
-            <th>Status</th>
-            <th>Assign Driver</th>
-            <th>View</th>
+          <th>OrderId</th>
+            <th>Điểm đi</th>
+            <th>Điểm đến</th>
+            <th>Phương tiện</th>
+            <th>Ngày đặt hàng</th>
+            <th>Ngày nhận hàng</th>
+            <th>Tổng giá tiền</th>
+            <th>Tài xế</th>
+            <th>Trạng thái</th>
+            <th>Chọn tài xế</th>
+            <th>Chi tiết</th>
           </tr>
         </thead>
         <tbody>
           {orders.length > 0 ? (
             orders.map(order => (
               <tr key={order.orderId}>
-                <td>{order.orderId}</td>
+               <td>{order.orderId}</td>
+                <td>{order.origin}</td>
                 <td>{order.destination}</td>
                 <td>{order.freight}</td>
                 <td>{order.orderDate}</td>
                 <td>{order.shippedDate}</td>
-                <td>{order.totalPrice}</td>
-                <td>{order.origin}</td>
+                <td>{formatCurrency(order.totalPrice)}</td>   
                 <td>{order.deliver}</td> 
                 <td>{statusLabels[order.status]}</td>
                 <td>
@@ -98,7 +111,7 @@ const Booking = () => {
                       className="btn btn-info"
                       onClick={() => openAssignDriverModal(order.orderId)}
                     >
-                      Assign Driver
+                      Chọn tài
                     </button>
                   ) : (
                     <span>N/A</span>
@@ -109,7 +122,7 @@ const Booking = () => {
                     className="btn btn-primary"
                     onClick={() => handleViewOrder(order.orderId)}
                   >
-                    View
+                    Chi tiết
                   </button>
                 </td>
               </tr>
