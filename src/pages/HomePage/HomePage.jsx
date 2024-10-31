@@ -135,12 +135,8 @@ const Homepage = () => {
         TẠO ĐƠN TẠI ĐÂY
       </button>  
 
-      {!roleId ? ( 
-        <>
-          <button className="register-btn" onClick={() => navigate('/register')}>Đăng Ký</button>
-          <button className="login-btn" onClick={() => navigate('/login')}>Đăng Nhập</button>
-        </>
-      ) : (
+      {roleId ? 
+      (
         <>
           <div className="dropdown">
             <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
@@ -150,7 +146,7 @@ const Homepage = () => {
             </div>  
           </div>
         </>
-      )} 
+      ): null } 
     </header>
 
       {/* Main content */}
