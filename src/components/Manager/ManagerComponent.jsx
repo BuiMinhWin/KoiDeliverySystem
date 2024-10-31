@@ -283,7 +283,7 @@ const ordersByStatusChartData = {
                   <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
                     {isDropdownOpen && ( 
                       <div className="dropdown-content">
-                        <a  href="user-page"><CgProfile /> View Profile</a>
+                          <a  href="employee-page"><CgProfile /> View Profile</a>
                         <a  onClick={handleLogout}><CiLogout /> Logout</a>
                       </div>
                     )}

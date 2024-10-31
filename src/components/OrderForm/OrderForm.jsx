@@ -9,6 +9,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Divider,
 } from "@mui/material";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -35,6 +36,19 @@ import CheckboxWrapper from "../FromUI/Checkbox";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+
+const buttonStyles = {
+  backgroundColor: "#161A31",
+  color: "white",
+  "&:hover": { backgroundColor: "#727376" },
+  padding: "17px 16px",
+  borderRadius: "8px",
+  minWidth: "auto",
+  maxWidth: "fit-content",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
 
 // Initial Form State
 const INITIAL_FORM_STATE = {
@@ -81,17 +95,18 @@ const FORM_VALIDATION = Yup.object().shape({
     .matches(/^[0-9]{10}$/, "Số điện thoại phải là số và có 10 số"),
   receiverNote: Yup.string().nullable(),
   senderNote: Yup.string().nullable(),
-  orderNote: Yup.string().nullable(), 
+  orderNote: Yup.string().nullable(),
   discount: Yup.string().nullable(),
-  cityS: Yup.string().required("Vui lòng chọn thành phố"), //
-  cityR: Yup.string().required("Vui lòng chọn thành phố"), //
-  koi_name: Yup.string().required("Vui lòng nhập tên cá Koi"), //
-  koi_type: Yup.string().required("Vui lòng nhập loại cá Koi"), //
+  cityS: Yup.string().required("Vui lòng chọn thành phố"), 
+  cityR: Yup.string().required("Vui lòng chọn thành phố"), 
+  koi_name: Yup.string().required("Vui lòng nhập tên cá Koi"), 
+  koi_type: Yup.string().required("Vui lòng nhập loại cá Koi"), 
   quantity: Yup.number()
     .min(1, "Số lượng phải lớn hơn 0")
     .required("Vui lòng nhập số lượng"),
   weight: Yup.number()
     .min(0.1, "Cân nặng phải lớn hơn 0")
+    .max(50, "Cá Koi kỷ lục thể giới chỉ đạt 41kg bạn có chắc bạn có con cá lớn hơn chứ 0-o!?")
     .required("Vui lòng nhập cân nặng"),
   freight: Yup.string().required("Vui lòng chọn phương thức vận chuyển"),
   termsOfService: Yup.boolean()
@@ -117,9 +132,6 @@ const OrderForm = () => {
     { id: 2, label: "Chăm sóc cá" },
     { id: 3, label: "Người nhận thanh toán" },
   ];
-
-  const { testaccId, accountData } = useOutletContext();
-  console.log("accId: ", testaccId, "accData: ", "accountData: ", accountData);
 
   const navigate = useNavigate();
   // state lưu danh sáchh tỉnh, phường, quận người gửi
@@ -674,14 +686,14 @@ const OrderForm = () => {
                     <Grid item xs={6}>
                       <SelectWrapper
                         name="koi_type"
-                        label="Koi Type"
+                        label="Loại cá Koi"
                         options={koi_type}
                       />
                     </Grid>
                     <Grid item xs={6}>
                       <SelectWrapper
                         name="koi_name"
-                        label="Koi Variant"
+                        label="Biến thể Koi"
                         options={koi_name}
                       />
                     </Grid>
@@ -772,14 +784,16 @@ const OrderForm = () => {
                       ))}
                     </Grid>
                   </Grid>
+                  <Divider sx={{ backgroundColor: "black", margin: "20px 50px" }} />
+                  <Grid xs={12}>
+                  <CheckboxWrapper
+                    name="termsOfService"
+                    legend="Terms Of Service"
+                    label="Tôi đã đọc và đồng ý với các điều khoản"
+                  /></Grid>
+                  <ButtonWrapper>Tạo đơn đặt hàng</ButtonWrapper>
+                  
                 </Paper>
-                <CheckboxWrapper
-                  name="termsOfService"
-                  legend="Terms Of Service"
-                  label="I agree"
-                />
-
-                <ButtonWrapper>Submit Order</ButtonWrapper>
               </Box>
             </>
           </Form>

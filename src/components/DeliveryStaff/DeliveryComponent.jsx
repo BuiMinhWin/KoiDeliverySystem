@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler  } from 'chart.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './DeliveryStaff.css';
 import { useNavigate } from 'react-router-dom';
@@ -241,7 +240,7 @@ const toggleDropdown = () => {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
             const currentLocate = await reverseGeocodeAddress(latitude, longitude);
-            const trackingData = { orderId,currentLocate ,status: newStatus };
+            const trackingData = { orderId,currentLocate,status: newStatus };
             const response = await trackingOrderState(trackingData);
             const result = response?.data;
             console.log(result);
@@ -331,7 +330,7 @@ const toggleDropdown = () => {
                 <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
                   {isDropdownOpen && ( 
                     <div className="dropdown-content">
-                      <a  href="user-page"><CgProfile /> View Profile</a>
+                      <a  href="employee-page"><CgProfile /> View Profile</a>
                       <a  onClick={handleLogout}><CiLogout /> Logout</a>
                     </div>
                   )}

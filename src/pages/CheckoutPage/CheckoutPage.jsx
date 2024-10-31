@@ -24,6 +24,23 @@ import {
 import axios from "axios";
 import FeedbackForm from "../../components/FeedbackForm";
 import { useSnackbar } from "notistack";
+import PaymentIcon from "@mui/icons-material/Payment";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import DeliveryStatusPopup from "../../components/DeliveryTracking";
+
+const buttonStyles = {
+  backgroundColor: "#3e404e",
+  color: "white",
+  "&:hover": { backgroundColor: "#727376" },
+  padding: "8px 16px",
+  borderRadius: "8px",
+  minWidth: "auto",
+  maxWidth: "fit-content",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
 
 const REST_API_BANK_URL =
   "/api/v1/payment/vn-pay";
@@ -36,6 +53,7 @@ const CheckoutPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
+  const [isPopupOpen, setPopupOpen] = useState(false);
   const orderId = location.state?.orderId;
 
   const [orderData, setOrderData] = useState(null);
@@ -43,8 +61,6 @@ const CheckoutPage = () => {
   const [serviceStatusData, setServiceStatusData] = useState([]);
   const [error, setError] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
-
-  
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -151,24 +167,43 @@ const CheckoutPage = () => {
   // Define steps based on orderData
   const steps = [
     "Đang Xử Lí", // Step 1
-    "Đã Duyệt", // Step 2
-    orderData.paymentStatus ? "Đang Vận chuyển" : "Vui Lòng Thanh Toán", // Step 3
-    "Hoàn Thành", // Step 4
+    "Đã duyệt", // Step 2
+    "Tài xế đang lấy hàng",
+    "Tài xế đã nhận đơn",
+    "Đơn của bạn đang được vận chuyển", //step 4
+    orderData.paymentStatus === 1 ? "Hoàn thành" : "Vui Lòng Thanh Toán", // Step 5
   ];
 
   const getActiveStep = (status, paymentStatus) => {
-    if (status === 0) return 0; // "Đang xử lí"
-    if (status === 1) return 1; // "Đã duyệt"
-    if (status === 2 || status === 3) return 2; // "Đang vận chuyển"
-    if (status === 4) return paymentStatus ? 4 : 3; // Completed orders
-    if (status === 5) return paymentStatus ? 4 : 3; // If payment is made
+    if (status === 0) return 1; // "Đang xử lí"
+    if (status === 1) return 2; // "Đã duyệt"
+    if (status === 2) return 3; // "Đang vận chuyển"
+    if (status === 3) return 4; // "Đang vận chuyển"
+    if (status === 4) return 5;
+    if (status === 5) return paymentStatus === 0 ? 5 : 6;
     return 0; // Default case
+  };
+
+  const serviceIdToName = {
+    1: "Bảo vệ cá",
+    2: "Chăm sóc cá",
+    3: "Người nhận trả tiền",
   };
 
   const activeStep = getActiveStep(orderData.status, orderData.paymentStatus);
 
   return (
-    <Box sx={{ p: 4, bgcolor: "#f5f5f5", minHeight: "100vh" }}>
+    <Box
+      sx={{
+        p: 4,
+        bgcolor: "#f5f5f5",
+        minHeight: "100vh", // Ensures the Box fills the viewport height
+        display: "flex", // Use flexbox to control layout
+        flexDirection: "column",
+        justifyContent: "center", // Centers content vertically
+        alignItems: "center", // Centers content horizontally
+      }}
+    >
       <Paper elevation={3} sx={{ p: 4 }}>
         <Typography
           variant="h3"
@@ -277,6 +312,9 @@ const CheckoutPage = () => {
                 Tình trạng thanh toán:{" "}
                 {orderData.paymentStatus ? "Đã thanh toán" : "Chưa thanh toán"}
               </Typography>
+                      <Button sx={{...buttonStyles}} variant="contained" onClick={() => setPopupOpen(true)}>
+          Nhấn vào đây để xem vị trí đơn hàng
+        </Button>
             </Box>
 
             {/* Order Detail Information */}
@@ -315,6 +353,20 @@ const CheckoutPage = () => {
                       Tình trạng cá:{" "}
                       {detail.status === 0 ? "Bất thường" : "Khỏe mạnh"}
                     </Typography>
+                    <Typography>
+                      Dịch vụ áp dụng:{" "}
+                      {detail.serviceIds && detail.serviceIds.length > 0
+                        ? detail.serviceIds
+                            .sort((a, b) => a - b) // Sort the IDs in ascending order
+                            .map((id, index) => (
+                              <span key={index}>
+                                {serviceIdToName[id] ||
+                                  `Dịch vụ không xác định (${id})`}
+                                {index < detail.serviceIds.length - 1 && ", "}
+                              </span>
+                            ))
+                        : "Không có dịch vụ nào được áp dụng"}
+                    </Typography>
                   </Box>
                 ))
               ) : (
@@ -347,14 +399,14 @@ const CheckoutPage = () => {
               {orderData.status === 5 && <FeedbackForm orderId={orderId} />}
             </Grid>
           </Grid>
-
           {(orderData.status === 0 || orderData.status === 1) &&
             orderData.paymentStatus == false && (
               <Button
+                startIcon={<HighlightOffIcon />}
                 variant="contained"
                 color="error"
                 onClick={confirmCancelOrder} // Use confirmCancelOrder to open the dialog
-                sx={{ mr: 2, mt: 5, mx: 15 }}
+                sx={{ mt: 5, mx: 80 }}
               >
                 Hủy đơn
               </Button>
@@ -363,7 +415,8 @@ const CheckoutPage = () => {
           {[1, 2, 3, 4, 5].includes(orderData.status) &&
             !orderData.paymentStatus && (
               <Button
-                sx={{ mt: 5, mx: 15 }}
+                startIcon={<PaymentIcon />}
+                sx={{ mt: 5, mx: 80 }}
                 variant="contained"
                 color="primary"
                 onClick={handleProceedToPayment}
@@ -372,6 +425,11 @@ const CheckoutPage = () => {
               </Button>
             )}
         </Grid>
+        <DeliveryStatusPopup
+          open={isPopupOpen}
+          onClose={() => setPopupOpen(false)}
+          orderId={orderId}
+        />
       </Paper>
       <Dialog
         open={openDialog}
@@ -396,7 +454,9 @@ const CheckoutPage = () => {
           Xác nhận hủy đơn
         </DialogTitle>
         <DialogContent>
-          <DialogContentText sx={{ textAlign: "center", fontSize: "16px",  color: "#ffffff", }}>
+          <DialogContentText
+            sx={{ textAlign: "center", fontSize: "16px", color: "#ffffff" }}
+          >
             Bạn có chắc muốn hủy đơn này?
           </DialogContentText>
         </DialogContent>
@@ -404,7 +464,7 @@ const CheckoutPage = () => {
           <Button
             onClick={handleCloseDialog}
             variant="outlined"
-            sx={{ borderRadius: 2, px: 4,  color: "#ffffff", }}
+            sx={{ borderRadius: 2, px: 4, color: "#ffffff" }}
           >
             Không
           </Button>
@@ -412,7 +472,7 @@ const CheckoutPage = () => {
             onClick={handleConfirmCancel}
             variant="contained"
             color="error"
-            sx={{ borderRadius: 2, px: 4 }}
+            sx={{ borderRadius: 3, px: 4 }}
             autoFocus
           >
             Có

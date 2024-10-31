@@ -9,8 +9,8 @@ import {
   Alert,
   Stack,
 } from "@mui/material";
-
 import { order, updatePaymentStatus } from "../../services/CustomerService";
+import CreditCardOffIcon from "@mui/icons-material/CreditCardOff";
 
 const PaymentOutcome = () => {
   const navigate = useNavigate();
@@ -21,37 +21,38 @@ const PaymentOutcome = () => {
   const orderInfo = searchParams.get("vnp_OrderInfo");
   const extractedUUID = orderInfo ? orderInfo.split(": ")[1] : "";
 
-  const success = transactionStatus === "00"; // Check if payment succeeded
-  const [countdown, setCountdown] = useState(150000); // 15 second countdown
-  const [orderData, setOrderData] = useState(null); // Store order details
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const success = transactionStatus === "00";
+  const notfinished = transactionStatus === "01";
+  const failed = transactionStatus === "02";
+  const fraud = transactionStatus === "07";
 
-  
-  console.log("Transaction status:", transactionStatus); // Debug log
-  console.log("Extracted Order UUID:", extractedUUID); // Debug log
+  const [countdown, setCountdown] = useState(1500000);
+  const [orderData, setOrderData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const formatCurrency = (value) => {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const buttonStyles = {
+    backgroundColor: "#161A31",
+    color: "white",
+    "&:hover": { backgroundColor: "#727376" },
+    padding: "17px 16px", 
+    borderRadius: "8px", 
+    minWidth: "auto", 
+    maxWidth: "fit-content", 
+    display: "inline-flex", 
+    alignItems: "center", 
+    justifyContent: "center", 
   };
 
-  // Fetch the order details when the component loads
   useEffect(() => {
     const getOrderData = async () => {
       try {
-        console.log(`Fetching order data for UUID: ${extractedUUID}`);
-        const data = await order(extractedUUID);
-        setOrderData(data);
-        console.log("Payment success condition:", success); // Add this
-        if (success) {
-          console.log("Payment successful, calling updatePaymentStatus...");
-          await updatePaymentStatus(extractedUUID);
-          console.log("updatePaymentStatus completed.");
-        } else {
-          console.log("Payment not successful, skipping status update.");
+        if (extractedUUID) {
+          const data = await order(extractedUUID);
+          setOrderData(data);
+          if (success) await updatePaymentStatus(extractedUUID);
         }
       } catch (err) {
-        console.error(`Failed to fetch or update order with UUID: ${extractedUUID}`, err);
         setError("Failed to fetch order data.");
       } finally {
         setLoading(false);
@@ -61,6 +62,8 @@ const PaymentOutcome = () => {
   }, [extractedUUID]);
 
   useEffect(() => {
+    if (!transactionStatus) return; // Prevent countdown if status is not available
+
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev === 1) {
@@ -68,24 +71,24 @@ const PaymentOutcome = () => {
           navigate(success ? "/order-report" : "/checkout", {
             state: { extractedUUID },
           });
-          return 0;
         }
         return prev - 1;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [success, navigate, extractedUUID]);
+  }, [success, navigate, extractedUUID, transactionStatus]);
 
-  // Render loading state
-  if (loading) {
+  // Loading screen until transaction status is available
+  if (loading || !transactionStatus) {
     return (
       <Box
         sx={{
-          p: 4,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
           bgcolor: "#f5f5f5",
-          minHeight: "100vh",
-          textAlign: "center",
         }}
       >
         <CircularProgress />
@@ -96,62 +99,66 @@ const PaymentOutcome = () => {
     );
   }
 
-  // Render error state
-  if (error || success === false) {
+  // Error or failed payment outcome
+  if (error || !success) {
     return (
       <Box
         sx={{
-          p: 4,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "50vh",
           bgcolor: "#f5f5f5",
-          minHeight: "75vh",
         }}
       >
         <Alert
           severity="error"
+          variant="filled"
+          icon={<CreditCardOffIcon sx={{ fontSize: "2rem", marginRight: 2 }} />}
           sx={{
             display: "flex",
-            justifyContent: "center",
             alignItems: "center",
+            fontSize: "1.75rem",
+            padding: "32px",
+            width: "50%",
+            textAlign: "center",
+            marginBottom: 3,
           }}
         >
-          Thanh toán thất bại
+          {failed
+            ? "Thanh toán thất bại (Ngân hàng từ chối)."
+            : notfinished
+            ? "Thanh toán chưa hoàn thành."
+            : fraud
+            ? "Thanh toán bị đánh dấu là gian lận!"
+            : "Thanh toán thất bại"}
         </Alert>
-
-        <Box sx={{ textAlign: "center", pt: "50px" }}>
-          <Typography align="center" sx={{ fontSize: "20px", color: "red" }}>
-            Bạn sẽ được tự động chuyển về sau {countdown} giây...
-          </Typography>
-          <Box sx={{ display: "inline-flex", pt: "50px" }}>
-            <Button
-              sx={{
-                backgroundColor: "#161A31",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "#1D233D",
-                },
-                padding: "7px 16px",
-              }}
-              onClick={() =>
-                navigate("/order-report", {
-                  state: { extractedUUID },
-                })
-              }
-            >
-              Hoặc nhấn vào đây để quay về
-            </Button>
-          </Box>
-        </Box>
+        <Typography sx={{ fontSize: "20px", color: "red", mb: 2 }}>
+          Bạn sẽ được tự động chuyển về sau {countdown} giây...
+        </Typography>
+        <Button
+          sx={buttonStyles}
+          onClick={() =>
+            navigate(success ? "/order-report" : "/checkout", {
+              state: { extractedUUID },
+            })
+          }
+        >
+          Hoặc nhấn vào đây để quay về
+        </Button>
       </Box>
     );
   }
-  // Render order information if available
+
+  // Successful payment outcome with order details
   return (
     <Box sx={{ height: "100vh" }}>
       <Box
         sx={{ p: 4, bgcolor: "#f5f5f5", height: "75vh", overflow: "hidden" }}
       >
         <Typography variant="h4" align="center" gutterBottom>
-          {success ? "Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ!" : ""}
+          Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ!
         </Typography>
         {orderData && (
           <Box sx={{ mt: 4 }}>
@@ -191,25 +198,14 @@ const PaymentOutcome = () => {
             </Stack>
           </Box>
         )}
-      </Box>
-      <Box sx={{ textAlign: "center" }}>
-        <Typography align="center" sx={{ fontSize: "20px", color: "red" }}>
-          Bạn sẽ được tự động chuyển về sau {countdown} giây...
-        </Typography>
-        <Box sx={{ display: "inline-flex" }}>
+        <Box sx={{ textAlign: "center" }}>
+          <Typography sx={{ fontSize: "20px", color: "red", mb: 2 }}>
+            Bạn sẽ được tự động chuyển về sau {countdown} giây...
+          </Typography>
           <Button
-            sx={{
-              backgroundColor: "#161A31",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "#1D233D",
-              },
-              padding: "7px 16px",
-            }}
+            sx={buttonStyles}
             onClick={() =>
-              navigate(success ? "/order-report" : "/checkout", {
-                state: { extractedUUID },
-              })
+              navigate("/order-report", { state: { extractedUUID } })
             }
           >
             Hoặc nhấn vào đây để quay về
