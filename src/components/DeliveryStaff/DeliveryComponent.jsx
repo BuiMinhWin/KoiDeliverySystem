@@ -204,7 +204,7 @@ const toggleDropdown = () => {
     const matchesMonth = monthFilter ? orderMonth === parseInt(monthFilter) : true;
     const matchesProvince = provinceFilter ? order.destination.includes(provinceFilter) : true;
     const matchesStatus = statusFilter ? order.status === parseInt(statusFilter) : true;
-    const matchesTransportation = transportationFilter ? order.orderNote === transportationFilter : true;
+    const matchesTransportation = transportationFilter ? order.freight === transportationFilter : true;
 
     return matchesMonth && matchesProvince && matchesStatus && matchesTransportation;
   });
@@ -433,7 +433,7 @@ const toggleDropdown = () => {
               <tbody>
                 {currentOrders
                   .filter(order => order.deliver === accountId && order.status > 1 && order.status < 5)
-                  .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate)) // Sort newest to oldest
+                  .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate)) 
                   .map((order) => (
                     <tr key={order.orderId}>
                       <td style={{ color: order.freight === 'Dịch vụ hỏa tốc' ? 'red' : 'inherit' }}>
@@ -480,7 +480,7 @@ const toggleDropdown = () => {
             
             {showMap && <Map origin={selectedOrigin} destination={selectedDestination} />}
 
-            <nav>
+            {/* <nav>
               <ul className="pagination">
                 {Array.from({ length: totalPages }).map((_, index) => (
                   <li key={index} className="page-item">
@@ -490,7 +490,7 @@ const toggleDropdown = () => {
                   </li>
                 ))}
               </ul>
-            </nav>
+            </nav> */}
           </div>
         </section>
 
