@@ -436,7 +436,7 @@ const toggleDropdown = () => {
                   .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate)) // Sort newest to oldest
                   .map((order) => (
                     <tr key={order.orderId}>
-                      <td style={{ color: order.freight === 'Giao hàng khẩn cấp' ? 'red' : 'inherit' }}>
+                      <td style={{ color: order.freight === 'Dịch vụ hỏa tốc' ? 'red' : 'inherit' }}>
                         {order.orderId}
                       </td>
                       <td>{new Date(order.orderDate).toLocaleDateString()}</td>
@@ -453,20 +453,21 @@ const toggleDropdown = () => {
                           className="btn btn-info"
                           onClick={() => updateOrderStatus(order.orderId)}
                         >
-                          Update Status
+                          Tracking
                         </button>
                       </td>
                       <td>
                         <button onClick={() => handleViewOrder(order.orderId)}>View</button>
                       </td>
                       <td>
-                        <button
-                          className="btn btn-primary"
-                          onClick={() => handleDirection(order.destination)}
-                        >
-                          <MdDirections />
-                        </button>
-                      </td>
+                      <button
+                        className="btn"
+                        style={{ backgroundColor: 'transparent', border: 'none', padding: 0 }}
+                        onClick={() => handleDirection(order.destination)}
+                      >
+                        <MdDirections style={{ fontSize: '1.2rem', color: 'black' }} />
+                      </button>
+                    </td>
                     </tr>
                   ))}
                 {currentOrders.length === 0 && (
