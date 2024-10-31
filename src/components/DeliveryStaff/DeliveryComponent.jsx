@@ -403,8 +403,8 @@ const toggleDropdown = () => {
 
               <select className="form-select me-2" value={transportationFilter} onChange={(e) => setTransportationFilter(e.target.value)}>
                 <option value="">Method Transport</option>
-                <option value="Giao hàng khẩn cấp">Express Delivery</option>
-                <option value="Giao hàng tiêu chuẩn">Regular Delivery</option>
+                <option value="Dịch vụ hỏa tốc">Express Delivery</option>
+                <option value="Dịch vụ tiêu chuẩn">Regular Delivery</option>
               </select>
 
               <select className="form-select me-2" value={provinceFilter} onChange={(e) => setProvinceFilter(e.target.value)}>
@@ -462,7 +462,7 @@ const toggleDropdown = () => {
                       <td>
                       <button
                         className="btn"
-                        style={{ backgroundColor: 'transparent', border: 'none', padding: 0 }}
+                        style={{ backgroundColor: 'transparent', border: 'none', padding: -10 }}
                         onClick={() => handleDirection(order.destination)}
                       >
                         <MdDirections style={{ fontSize: '1.2rem', color: 'black' }} />
