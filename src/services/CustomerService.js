@@ -243,3 +243,15 @@ export const updatePaymentStatus = async (orderId) => {
     throw error;
   }
 };
+export const getDeliveryStatusByOrderId = async (orderId) => {
+  try {
+    const response = await axios.get(
+      `${REST_API_DELI_URL}/getAllDeliveryStatusByOrderId/${orderId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching delivery status:", error);
+    throw error;
+  }
+};
+
