@@ -41,7 +41,7 @@
       "source": "/api/feedbacks/:path*",
       "destination": "http://koideliverysystem.id.vn:8080/api/feedbacks/:path*"
     },
-    
+ 
     {
       "source": "/api/deliveryStatus/:path*",
       "destination": "http://koideliverysystem.id.vn:8080/api/deliveryStatus/:path*"
