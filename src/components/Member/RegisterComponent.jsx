@@ -12,6 +12,7 @@ const RegisterComponent = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+ 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const navigate = useNavigate();
   
@@ -20,7 +21,7 @@ const RegisterComponent = () => {
     e.preventDefault();
   
     if (password !== confirmPassword) {
-      enqueueSnackbar('Passwords do not match!', { variant: 'error', autoHideDuration: 5000 });
+      enqueueSnackbar('Passwords do not match!', { variant: 'error', autoHideDuration: 1000 });
       return;
     }
   
@@ -38,7 +39,7 @@ const RegisterComponent = () => {
     createAccount(account)
       .then((response) => {
         console.log('Account created:', response.data.message);
-        enqueueSnackbar('Register success.', { variant: 'success', autoHideDuration: 5000 });
+        enqueueSnackbar('Register success.', { variant: 'success', autoHideDuration: 1000 });
         navigate('/login');
       })
       .catch((error) => {
@@ -130,7 +131,7 @@ const RegisterComponent = () => {
                     placeholder="Phone Number"
                   />
                 </div>
-              
+               
               </div>
             </form>
           </div>

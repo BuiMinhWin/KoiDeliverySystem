@@ -5,8 +5,8 @@ import FAQs from "../../components/FAQs/FAQs";
 import logo from '../../assets/Logo.png';
 import blog from '../../assets/Blog.jpg';
 import { useNavigate } from 'react-router-dom';
-import { getOrder } from '../../services/CustomerService';
-
+import { getOrder,getAvatar } from '../../services/CustomerService';
+import { logout } from '../../components/Member/auth'; 
 
 const Homepage = () => {
 
@@ -14,15 +14,22 @@ const Homepage = () => {
   const [trackingCode, setTrackingCode] = useState(''); // State để quản lý mã đơn hàng
   const [trackingResult, setTrackingResult] = useState(null); // State cho kết quả theo dõi
   const navigate = useNavigate();
+  const [avatar, setAvatar] = useState(null); 
 
   const roleId = localStorage.getItem('roleId'); 
   console.log('Role ID:', roleId);
-  // const accountId = localStorage.getItem('accountId');
-  // console.log("Stored Account ID:", accountId);
+  const accountId = localStorage.getItem('accountId');
+  console.log("Stored Account ID:", accountId);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
 
   const handleTrackingSubmit = () => {
     if (trackingCode) {
@@ -37,14 +44,25 @@ const Homepage = () => {
     }
   };
 
-
   useEffect(() => {
-    if (activeTab !== 'tracking') {
-      setTrackingCode(''); // Xóa mã đơn hàng
+    if (activeTab !== "tracking") {
+      setTrackingCode(""); // Xóa mã đơn hàng
       setTrackingResult(null); // Xóa kết quả tra cứu
     }
-  }, [activeTab]);
 
+    const fetchAccount = async () => {
+      try {
+       
+        const avatarUrl = await getAvatar(accountId);
+        setAvatar(avatarUrl);
+        // console.log(avatarUrl); 
+      } catch (error) {
+        console.error("Error fetching account data:", error);
+      } 
+    };
+    if (accountId) fetchAccount();
+
+  }, [activeTab,accountId]);
 
   return (
     <div className="homepage-container">
@@ -57,37 +75,34 @@ const Homepage = () => {
           <div className="dropdown">
             <a href="#" className="nav-link">Dịch Vụ</a>
             <div className="dropdown-content">
-              <a href="/login">Tạo Đơn</a>
+              <a href="/form">Tạo Đơn</a>
               <a href="#">Quy định vận chuyển</a>
               <a href="#">Chương trình khuyến mãi</a>
             </div>
           </div>
-          <a href="#" className="nav-link">Giới Thiệu</a>
+          <a href="/AboutUs" className="nav-link">Giới Thiệu</a>
         </div>
         
         <div className="navbar-right">
         <a href="/Support" className="nav-link support-link">
             <i className="fas fa-question-circle"></i>Hỗ Trợ
           </a>
-          {/* {!roleId ? ( */}
+          {!roleId ? ( 
             <>
               <button className="register-btn" onClick={() => navigate('/register')}>Đăng Ký</button>
               <button className="login-btn" onClick={() => navigate('/login')}>Đăng Nhập</button>
             </>
-          {/* ) : (
+           ) : (
             <>
-              {roleId === 'Manager' ? (
-                <button onClick={() => navigate('/manager')}>Back</button>
-              ) : roleId === 'Delivery' ? (
-                <button onClick={() => navigate('/delivery')}>Back</button>
-              ) : roleId === 'Sales' ? (
-                <button onClick={() => navigate('/salestaff')}>Back</button>
-              ) : roleId === 'Customer' ?(
-                <button onClick={() => navigate('/customer')}>Back</button>
-              ):null
-              }
+            <div className="dropdown">
+            <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
+              <div className="dropdown-content-avatar ">
+                <a href="user-page">Tài khoản của tôi</a>
+                <a  onClick={handleLogout}>Đăng xuất</a>
+              </div>  
+            </div>
             </>
-          )} */}
+          )} 
         
       </div>
 
@@ -104,7 +119,7 @@ const Homepage = () => {
       <header className="homepage-header">
         <h1 className='title-1'>VẬN CHUYỂN CÁ KOI</h1>
         <h1 className='title-2'>GẦN GŨI - TIN CẬY - HIỆU QUẢ</h1>
-        <button className="order-btn" onClick={() => navigate('/login')}>TẠO ĐƠN TẠI ĐÂY</button>  
+        <button className="order-btn" onClick={() => navigate('/form')}>TẠO ĐƠN TẠI ĐÂY</button>  
       </header>
 
       {/* Main content */}

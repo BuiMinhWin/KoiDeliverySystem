@@ -29,7 +29,7 @@ import axios from "axios";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler );
 
 
-const ListOrderComponent = () => {
+const DeliveryComponent = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleLogout = () => {
@@ -134,14 +134,6 @@ const toggleDropdown = () => {
         console.error("Error fetching : ", error);
       });
   };
-  
-  // const handleMouseEnter = (order) => {
-  //   setHoveredOrder(order); 
-  // };
-
-  // const handleMouseLeave = () => {
-  //   setHoveredOrder(null); 
-  // };
 
   const handleSearch = async (event) => {
     const orderId = event.target.value;
@@ -247,8 +239,8 @@ const toggleDropdown = () => {
   return (
     <div className="container-fluid">
       <div className="row">
-        <aside className="sidebar col- p-3 ">
-          <div className='side-bar'>
+        <aside className="sidebar col-2 p-3 ">
+          <div className='manager-sidebar'>
           <div className="profile-container text-center mb-4">
             <div className="SideKoi d-flex align-items-center justify-content-between">
               <img src="/Logo-Koi/Order.png" alt="Profile "className="profile-img rounded-circle " />
@@ -299,9 +291,9 @@ const toggleDropdown = () => {
       </div>
         </aside>
 
-        <main className="dashboard ">
+        <main className="dashboard col-10 ">
         <header className="d-flex justify-content-between align-items-center mb-4 ">
-            <h1>Delivery History</h1> 
+            <h4 className="title">Delivery History</h4> 
             {/* <h6>Delivery Orders</h6>          */}
             <header className="d-flex justify-content-between align-items-center mb-4 ">
             <div className="header-content" style={{ width: '%' }}> 
@@ -459,4 +451,4 @@ const toggleDropdown = () => {
   );
 };
 
-export default ListOrderComponent;
+export default DeliveryComponent;

@@ -1,0 +1,80 @@
+
+.dashboard {
+  margin-left: 300px; 
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+
+
+}
+
+.dashboard header input.form-control {
+  margin-right: 10px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  margin-top: 20px; /* Nếu cần */
+ 
+}
+
+.search-bar {
+  flex-grow: 1; 
+  margin: 0 20px; 
+  min-width: 300px; 
+  max-width: 100%; 
+ 
+}
+
+.notification-icon {
+    
+    position: relative;
+    cursor: pointer;
+    font-size: 1.9rem; 
+
+}
+  
+.notification-icon .notification-text {
+    display: none;
+    position: absolute;
+    top: 50%;
+    right: -80px;
+    transform: translateY(-50%);
+    background-color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+  
+.notification-icon:hover .notification-text {
+    display: block; 
+}
+
+.KoiDeli{
+  margin-top:20px;
+  margin-left: -100px;
+  color: white;
+}
+
+  
+.modal .modal-header .close {
+  font-size: 0.8rem;  /* Reduces the size of the icon */
+  margin-left: 330px;  /* Aligns the button to the far right */
+  padding: 2px 6px;   /* Adds minimal padding for a smaller button */
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal .modal-header .close:hover {
+  color: black; /* Adds a hover effect */
+}
+.modal .modal-header .modal-title {
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+  font-size: 1.25rem; /* Ensures the font size is large enough */
+  font-weight: 500; /* Sets a moderate font weight */
+  color: #000; /* Sets the color to black or your preferred color */
+}

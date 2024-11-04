@@ -80,3 +80,18 @@ export const updatePrice = (serviceName, newPrice) => {
     throw error;
   });
 };
+export const createService = (service) => {
+  console.log(service);
+  return axios.post(`${REST_API_SERVICE_URL}/create`,service);
+}
+
+export const activeService = (serviceId) => {
+  console.log(serviceId);
+  return axios.put (`${REST_API_SERVICE_URL}/${serviceId}/activate`);
+}
+
+
+export const deactiveService = (serviceId) => {
+  console.log(serviceId);
+  return axios.put (`${REST_API_SERVICE_URL}/${serviceId}/deactivate`);
+}

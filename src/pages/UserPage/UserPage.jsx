@@ -101,12 +101,13 @@ const AccountForm = () => {
         <Form onSubmit={handleSubmit}>
           <Box
             sx={{
-              height: "85vh",
+              height: "auto", 
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               bgcolor: "#f5f5f5",
-              overflow: "hidden",
+              overflow: "hidden", 
+              p: 3, 
             }}
           >
             <Paper elevation={3} sx={{ width: "100%", maxWidth: "1200px", padding: "20px" }}>

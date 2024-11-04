@@ -18,6 +18,12 @@ import './SaleStaff.css';
 
   const SaleStaffComponent = () => {
 
+    
+  const formatCurrency = (value) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+
     const handleLogout = () => {
       logout();
       navigate('/');
@@ -116,13 +122,13 @@ import './SaleStaff.css';
       <div className="container-fluid">
         <div className="row">
           {/*SideBar */}
-        <aside className="sidebar col- p-3 ">
-              <div className='side-bar'>
+        <aside className="sidebar col-2 p-3 ">
+              <div className='manager-sidebar'>
               <div className="profile-container text-center mb-4">
-                <div className="SideKoi d-flex align-items-center justify-content-between">
-                <img src={logo} className="logo" alt="Logo" />
+                <div className="SideKoi d-flex ">
+                <img src="/Logo-Koi/Order.png" alt="Profile " className="profile-img rounded-circle me-3"/>
                   <div className=" KoiLogo">
-                    <p className="KoiDeli ">Sale Staff</p>
+                    <p className="KoiDeli ">KoiDeli</p>
                   </div>
                 </div>
                 <hr className="logo-separator" /> 
@@ -166,9 +172,9 @@ import './SaleStaff.css';
           </aside>
 
           <main className="dashboard-sale">
-          <header className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-4">
+          <header className="d-flex justify-content-between align-items-center mb-4 pb-4">
           
-                <h1>Dashboard</h1>
+                <h4 className="title">Dashboard</h4>
                 <header className="d-flex justify-content-between align-items-center mb-4 ">
                 <div className="header-content" style={{ width: '%' }} > 
                   
@@ -177,8 +183,8 @@ import './SaleStaff.css';
                       <img src={avatar} alt="Avatar" className="avatar" />
                       {isDropdownOpen && ( 
                         <div className="dropdown-content-salestaff">
-                          <a href="/user-page"><CgProfile /> View Profile</a>
-                          <a onClick={handleLogout}><CiLogout /> Logout</a>
+                          <a href="/user-page"><CgProfile /> Thông tin của tôi</a>
+                          <a onClick={handleLogout}><CiLogout /> Đăng xuất</a>
                         </div>
                       )}
                     </div>
@@ -190,7 +196,7 @@ import './SaleStaff.css';
 
               </header>
 
-              <section className="ongoing-delivery mt-4 d-flex pt-3">
+              <section className="ongoing-delivery mt-4 d-flex border-top pt-3">
               <div className="delivery-list col-12" style={{ width: '80%', margin: '0 0' }}>
                   <h2>List of Orders</h2>
 
@@ -242,13 +248,13 @@ import './SaleStaff.css';
                   <thead>
                     <tr>
                     <th>OrderId</th>
-                    <th>Destination</th>
-                    <th>Freight</th>
-                    <th>OrderDate</th>
-                    <th>ShipDate</th>
-                    <th>TotalPrice</th>
-                    <th>Origin</th>
-                    <th>Status</th>
+                    <th>Điểm đi</th>
+                    <th>Điểm đến</th>
+                    <th>Phương tiện</th>
+                    <th>Ngày đặt hàng</th>
+                    <th>Ngày nhận hàng</th>
+                    <th>Tổng giá tiền</th>
+                    <th>Trạng thái</th>
  
                     </tr>
                   </thead>
@@ -256,13 +262,13 @@ import './SaleStaff.css';
                   {currentOrders.length > 0 ? (
                     currentOrders.map((order) => (
                       <tr key={order.orderId}>
-                        <td>{order.orderId}</td>
-                        <td>{order.destination}</td>
-                        <td>{order.freight}</td>
-                        <td>{order.orderDate}</td>
-                        <td>{order.shippedDate}</td>
-                        <td>{order.totalPrice}</td>
-                        <td>{order.origin}</td>
+                         <td>{order.orderId}</td>
+                          <td>{order.origin}</td>
+                          <td>{order.destination}</td>
+                          <td>{order.freight}</td>
+                          <td>{order.orderDate}</td>
+                          <td>{order.shippedDate}</td>
+                          <td>{formatCurrency(order.totalPrice)}</td>   
                         <td>{statusLabels[order.status]}</td>
                         {/* <td>
                           <button onClick={() => handleViewOrder(order.orderId)}>View</button>

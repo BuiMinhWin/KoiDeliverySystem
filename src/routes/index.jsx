@@ -26,14 +26,14 @@ import OrderReport from "../pages/Order/OrderReport";
 import Authenticate from "../components/Member/Authenticate";
 import ResetPasswordComponent from "../components/Member/ResetPasswordComponent";
 import Map from "../components/Map";
-import PaymentOutcome from "../pages/CheckoutPage/PaymentOutcome";
 import DriverBooking from "../components/SaleStaff/AssignDriverComponent";
 import ConfirmDriver from "../components/SaleStaff/ConfirmDriver";
-import ListOrderManageComponent from "../components/Manager/ListOrderManageComponent";
+import ListOrderManageComponent from "../components/Manager/ListOrderManageComponent"
 import ServiceComponent from "../components/Manager/ServiceComponent";
 import RespondFeedBack from "../components/SaleStaff/ResponseFeedback";
 import AboutUs from "../pages/AboutUs/AboutUsComponent";
 import Support from "../pages/Support/SupportComponent";
+import PaymentOutcome from "../pages/CheckoutPage/PaymentOutcome";
 
 function index() {
   return (
@@ -49,7 +49,7 @@ function index() {
       <Route path="/AboutUs" element={<AboutUs />} />
       <Route path="/Support" element={<Support />} />
       <Route path="/employee-page" element={<EmployeePage />} />
-
+     
       <Route path="/reset" element={<ResetPasswordComponent />} />
       <Route path="/map" element={< Map />} />
       {/* <Route path="/calculate" element={< DistanceCalculator />} /> */}
@@ -61,7 +61,7 @@ function index() {
             <Authenticate allowedRoles={["Customer"]}>
               <UserPage />
             </Authenticate>
-             
+              
           }
         />
         <Route
@@ -193,7 +193,7 @@ function index() {
       <Route
         path="/order/:orderId"
         element={
-          <Authenticate allowedRoles={["Delivery"]}>
+          <Authenticate allowedRoles={["Delivery","Manager"]}>
             <OrderDetailComponent />
           </Authenticate>
         }

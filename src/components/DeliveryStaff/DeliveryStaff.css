@@ -1,40 +1,15 @@
-  
-.header-content {
-  gap: 20px; 
-  display: flex;
-  align-items: center;
-  width: 250%;
+
+.KoiLogo{
+  position: absolute;     
+  left: 200px; 
+  top: 10px;        
+  font-size: 20px;    
+  color: #fff;   
+  padding-left: 50px;     
+ 
 }
-
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -70px;
-  height: 100vh;
-  width: 200px; 
-
-}
-
-.side-bar{
-  margin-left:60px;
-}
-
-.KoiDeli{
-  margin-left: -100px;
-  color: white;
-}
-
-.dashboard {
-  margin-left: 300px; 
+.title{
   margin-top: 20px;
-  padding: 20px;
-  background-color: #ffffff;
-  z-index: 1000; 
-
-}
-
-.dashboard header input.form-control {
-  margin-right: 10px;
 }
 
 .delivery-overview {

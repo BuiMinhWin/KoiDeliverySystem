@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler  } from 'chart.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './DeliveryStaff.css';
+import './ListOrderManage.css';
 import { useNavigate } from 'react-router-dom';
 import { listOrder, getOrderDetail, updateStatus } from '../../services/DeliveryService';
 import { logout } from '../Member/auth'; 
 import { FaRegCalendarAlt } from "react-icons/fa";
-import { FiHome } from "react-icons/fi";
+import { FiHome ,FiUsers } from "react-icons/fi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdSupportAgent} from "react-icons/md";
 import { IoIosNotificationsOutline } from "react-icons/io";
@@ -18,12 +17,6 @@ import { getAvatar} from "../../services/CustomerService";
 import { trackingOrderState } from '../../services/DeliveryStatusService';
 import { useSnackbar } from 'notistack';
 import axios from "axios";
-
-
-
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler );
-
 
 const ListOrderManageComponent = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -78,8 +71,6 @@ const toggleDropdown = () => {
       fail,
     };
   };
-
-  const { totalOrders, delivering, approving, fail } = getOrderCounts();
   
   const GHN_API_KEY=import.meta.env.VITE_GHN_API_KEY;
   useEffect(() => {
@@ -130,14 +121,6 @@ const toggleDropdown = () => {
         console.error("Error fetching : ", error);
       });
   };
-  
-  // const handleMouseEnter = (order) => {
-  //   setHoveredOrder(order); 
-  // };
-
-  // const handleMouseLeave = () => {
-  //   setHoveredOrder(null); 
-  // };
 
   const handleSearch = async (event) => {
     const orderId = event.target.value;
@@ -200,17 +183,9 @@ const toggleDropdown = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const updateOrderStatus = async (orderId) => {
-  
-    const currentOrder = orders.find(order => order.orderId === orderId);
-    let newStatus = currentOrder.status;
 
-    if (newStatus < 5) {
-      newStatus += 1;
-    } else {
-      enqueueSnackbar("Trạng thái không thể tăng thêm nữa!", { variant: "warning", autoHideDuration: 1000 });
-      return;
-    }
-    
+    let newStatus = 4;
+   
     if (newStatus) {
       updateStatus(orderId, newStatus);
     
@@ -243,8 +218,8 @@ const toggleDropdown = () => {
   return (
     <div className="container-fluid">
       <div className="row">
-        <aside className="sidebar col- p-3 ">
-          <div className='side-bar'>
+        <aside className="sidebar col-2 p-3 ">
+          <div className='manager-sidebar'>
           <div className="profile-container text-center mb-4">
             <div className="SideKoi d-flex align-items-center justify-content-between">
               <img src="/Logo-Koi/Order.png" alt="Profile "className="profile-img rounded-circle " />
@@ -258,22 +233,30 @@ const toggleDropdown = () => {
           </div>
           <nav>
       <ul className="list-unstyled">
-
-        {/* <li>
-          <a href="#"><i className="bi bi-speedometer2 me-2"></i> Dashboard</a>
-          
-        </li> */}
-        
-          <li>
+        <h6>Main</h6>
+        <li>
             <a href="/"><i className="bi bi-speedometer2 me-2"> <FiHome /> </i>  Homepage</a>
         </li>
 
         
-
+        <h6>List</h6>
         <li>
-          <a href="/manager"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i>Manage</a>
+          <a href="/manager"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i>Dashboard</a>
         </li>
 
+        <li>
+          <a  href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i> Customers</a>
+        </li>
+
+        <li>
+          <a href="/accounts"><i className="bi bi-person-badge me-2"><FiUsers /></i> Employees</a>
+        </li>
+
+         <li>
+            <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Services</a>
+          </li>
+        
+        <h6>General</h6>
         <li>
           <a href="#"><i className="bi bi-chat-dots me-2"><FaRegCalendarAlt /></i> Calendar</a>
          </li>
@@ -295,10 +278,9 @@ const toggleDropdown = () => {
       </div>
         </aside>
 
-        <main className="dashboard ">
+        <main className="dashboard col-10 ">
         <header className="d-flex justify-content-between align-items-center mb-4 ">
-            <h1>Delivery History</h1> 
-            {/* <h6>Delivery Orders</h6>          */}
+        <h4 className="title">Dashboard</h4>
             <header className="d-flex justify-content-between align-items-center mb-4 ">
             <div className="header-content" style={{ width: '%' }}> 
             <div className="d-flex align-items-center justify-content-center search-container">
@@ -359,7 +341,7 @@ const toggleDropdown = () => {
                   <option value="1">Paying</option>
                   <option value="2">Approving</option>
                   <option value="3">Waiting for get order</option>
-                  <option value="4">Deliverin</option>
+                  <option value="4">Delivering</option>
                   <option value="5">Delivered</option>
                   <option value="6">Special</option>
                   
@@ -393,7 +375,7 @@ const toggleDropdown = () => {
                   <th>ShippedDate</th>
                   <th>Freight</th>
                   <th>Status</th>
-                  <th>Details</th>
+                  <th> </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -407,15 +389,18 @@ const toggleDropdown = () => {
                       <td>{new Date(order.orderDate).toLocaleDateString()}</td>
                       <td>{order.destination}</td>
                       <td>
-                        {order.shippedDate ? new Date(order.shippedDate).toLocaleDateString() : 'Chưa giao hàng'}
+                      {order.shippedDate && order.status !== 0 && order.status !==6 ? new Date(order.shippedDate).toLocaleDateString() : 
+                      (order.status === 6 && "Đơn khẩn")}
                       </td>
                       <td>{order.freight}</td>
                       <td>
-                        {order.status === 2 && "Đang   duyệt"}
+                        {order.status === 2 && "Đang duyệt"}
                         {order.status === 3 && "Đã lấy hàng"}
                         {order.status === 4 && "Đang giao"}
                         {order.status === 5 && "Đã hoàn thành"}  
-                        {order.status === 6 && "Đơn khẩn"}  
+                        {order.status === 6 ? (
+                            <button onClick={() => updateOrderStatus(order.orderId)}>Solve</button>
+                          ) : null} 
                       </td>
                       <td>
                         <button onClick={() => handleViewOrder(order.orderId)}>View</button>
@@ -445,14 +430,6 @@ const toggleDropdown = () => {
             </div>
           
           </section>
-
-          {/* <section className="statistics mt-4 d-flex justify-content-between border-top pt-3">
-            
-            <div className="container">
-              <h2>Orders by Status</h2>
-              <Line data={ordersByStatusChartData} options={chartOptions} />
-            </div>
-          </section> */}
         </main>
       </div>
     </div>
