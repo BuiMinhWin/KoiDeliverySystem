@@ -64,7 +64,7 @@ export const verifyPassword = (email, code, newPassword, confirmPassword) => {
 };
 
 export const getService = () =>{
-  return axios.get(REST_API_SERVICE_URL+'/Services');
+  return axios.get(REST_API_SERVICE_URL);
 }
 
 export const updatePrice = (serviceName, newPrice) => {
