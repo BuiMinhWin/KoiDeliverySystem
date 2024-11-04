@@ -38,7 +38,7 @@
     },
 
     {
-      "source": "/api/services:path*",
+      "source": "/api/services/:path*",
       "destination": "http://koideliverysystem.id.vn:8080/api/services/:path*"
     },
 
