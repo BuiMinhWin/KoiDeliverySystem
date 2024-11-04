@@ -67,19 +67,15 @@ export const getService = () =>{
   return axios.get(REST_API_SERVICE_URL);
 }
 
-export const updatePrice = (serviceName, newPrice) => {
-  return axios.put(`${REST_API_SERVICE_URL}/updatePrice`, null, {
-    params: {
-      servicesName: serviceName,
-      newPrice: newPrice
-    }
-  })
-  .then(response => response.data)
-  .catch(error => {
-    console.error("Error updating service price:", error);
-    throw error;
-  });
-};
+export const updatePrice = (servicesId, newPrice) => {
+  
+  return axios.put(`${REST_API_SERVICE_URL}/${servicesId}/price?newPrice=${newPrice}`)
+    .then(response => response.data)
+    .catch(error => {
+      console.error("Error updating service price:", error);
+      throw error;
+    });
+}
 export const createService = (service) => {
   console.log(service);
   return axios.post(`${REST_API_SERVICE_URL}/create`,service);
