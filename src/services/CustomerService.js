@@ -50,14 +50,22 @@ export const createOrderDetail = async (orderDetailData) => {
   try {
     const response = await axios.post(
       `${REST_API_ORDER_DETAIL_URL}/create`,
-      orderDetailData
+      orderDetailData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          // Add any other headers here, e.g., authorization if needed
+        },
+      }
     );
+    console.log("Order detail created successfully:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error creating order:", error.response || error.message);
+    console.error("Error creating order detail:", error.response || error.message);
     throw error;
   }
 };
+
 export const order = async (orderId) => {
   try {
     const response = await axios.get(`${REST_API_ORDER_URL}/${orderId}`);
@@ -199,23 +207,6 @@ export const updateServiceStatus = async (
   }
 };
 
-// export const getServiceStatus = async (orderDetailId) => {
-//   try {
-//     console.log("Sending request with:", orderDetailId);
-//     const response = await axios.get(
-//       `${REST_API_SERVICE_URL}/getServices/${orderDetailId}`
-//     );
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error fetching Service Status:", error);
-//     throw error;
-//   }
-// };
-
-// export const listService = () => {
-//   return axios.get(REST_API_SERVICE_URL);
-// };
-
 export const updatePaymentStatus = async (orderId) => {
   try {
     console.log(`Sending PATCH request for order ID: ${orderId}`); // Debug log
@@ -253,6 +244,21 @@ export const getDeliveryStatusByOrderId = async (orderId) => {
   } catch (error) {
     console.error("Error fetching delivery status:", error);
     throw error;
+  }
+};
+
+export const fetchServices = async () => {
+  try {
+    const response = await fetch(`${REST_API_SERVICE_URL}`); 
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const servicesData = await response.json();
+    console.log("Fetched Services Data:", servicesData);
+    return servicesData;
+  } catch (error) {
+    console.error("Error fetching services:", error);
+    return [];
   }
 };
 

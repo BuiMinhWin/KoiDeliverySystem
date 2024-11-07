@@ -14,6 +14,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Card,
+  CardContent,
+  CardActions,
 } from "@mui/material";
 import {
   order,
@@ -27,6 +30,7 @@ import { useSnackbar } from "notistack";
 import PaymentIcon from "@mui/icons-material/Payment";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import DeliveryStatusPopup from "../../components/DeliveryTracking";
+import PDFPreview from "../../components/PDFPreview";
 
 const buttonStyles = {
   backgroundColor: "#3e404e",
@@ -41,9 +45,8 @@ const buttonStyles = {
   justifyContent: "center",
 };
 
-
 const REST_API_BANK_URL =
-  "/api/v1/payment/vn-pay";
+  "http://koideliverysystem.id.vn:8080/api/v1/payment/vn-pay";
 
 const formatCurrency = (value) => {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -55,10 +58,11 @@ const CheckoutPage = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [isPopupOpen, setPopupOpen] = useState(false);
   const orderId = location.state?.orderId;
+  const [openPDF, setOpenPDF] = useState(false);
 
   const [orderData, setOrderData] = useState(null);
   const [orderDetailData, setOrderDetailData] = useState([]);
-  const [serviceStatusData, setServiceStatusData] = useState([]);
+  // const [serviceStatusData, setServiceStatusData] = useState([]);
   const [error, setError] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
 
@@ -88,23 +92,28 @@ const CheckoutPage = () => {
       }
     };
 
-    const fetchPDF = async () => {
-      try {
-        const response = await getOrderPDF(orderId);
-        const blob = new Blob([response], { type: "application/pdf" });
-        const url = URL.createObjectURL(blob);
-        setPdfUrl(url);
-      } catch (err) {
-        console.error("Error fetching PDF:", err);
-        setError("Unable to load PDF.");
-      }
-    };
-
     if (orderId) {
       fetchOrderData();
-      fetchPDF();
     }
   }, [orderId]);
+
+  const fetchPDF = async (orderDetailId) => {
+    try {
+      const response = await getOrderPDF(orderDetailId);
+      const blob = new Blob([response], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      setPdfUrl(url);
+    } catch (err) {
+      console.error("Error fetching PDF:", err);
+      setError("Unable to load PDF.");
+    }
+  };
+
+  const handlePDFClick = (orderDetailId) => {
+    setSelectedOrderDetailId(orderDetailId);
+    fetchPDF(orderDetailId);
+    setOpenPDF(true);
+  };
 
   const handleCancelOrder = async () => {
     try {
@@ -128,7 +137,7 @@ const CheckoutPage = () => {
       const response = await axios.post(REST_API_BANK_URL, {
         orderId,
         bankCode: "NCB",
-        returnUrl: "https://koi-delivery-system.vercel.app/payment-outcome",
+        returnUrl: "http://localhost:3000/payment-outcome",
       });
 
       console.log("Payment API Response:", response.data);
@@ -166,20 +175,20 @@ const CheckoutPage = () => {
 
   // Define steps based on orderData
   const steps = [
-    " Xử Lí", // Step 1
-    " Duyệt Đơn", // Step 2
+    "Xử Lí", // Step 1
+    "Duyệt đơn", // Step 2
+    "Tài xế lấy hàng",
     "Tài xế nhận đơn",
-    "Tài xế lấy hàng", 
-    "Đơn đang được vận chuyển", //step 4
-    orderData.paymentStatus === 1 ? "Hoàn thành" : "Vui Lòng Thanh Toán", // Step 5
+    "Đơn đang được vận chuyển", //step 5
+    orderData.paymentStatus === 1 ? "Hoàn thành" : "Vui Lòng Thanh Toán", // Step 6
   ];
 
   const getActiveStep = (status, paymentStatus) => {
     if (status === 0) return 1; // "Đang xử lí"
     if (status === 1) return 2; // "Đã duyệt"
-    if (status === 2) return 3; // "Đang vận chuyển"
-    if (status === 3) return 4; // "Đang vận chuyển"
-    if (status === 4) return 5;
+    if (status === 2) return 3; // "Tài xế nhận đơn"
+    if (status === 3) return 4; // "Đã lấy hàng"
+    if (status === 4) return 5; //"Đang giao"
     if (status === 5) return paymentStatus === 0 ? 5 : 6;
     return 0; // Default case
   };
@@ -225,7 +234,7 @@ const CheckoutPage = () => {
 
         {/* Order Information */}
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <Box
               sx={{
                 p: 2,
@@ -312,22 +321,17 @@ const CheckoutPage = () => {
                 Tình trạng thanh toán:{" "}
                 {orderData.paymentStatus ? "Đã thanh toán" : "Chưa thanh toán"}
               </Typography>
-                      <Button sx={{...buttonStyles}} variant="contained" onClick={() => setPopupOpen(true)}>
-          Nhấn vào đây để xem vị trí đơn hàng
-        </Button>
+              <Button
+                sx={{ ...buttonStyles }}
+                variant="contained"
+                onClick={() => setPopupOpen(true)}
+              >
+                Nhấn vào đây để xem vị trí đơn hàng
+              </Button>
             </Box>
 
             {/* Order Detail Information */}
-            <Box
-              sx={{
-                p: 2,
-                border: "1px solid #ddd",
-                borderRadius: 1,
-                backgroundColor: "#fff",
-                maxHeight: 300,
-                overflow: "auto",
-              }}
-            >
+            <Box>
               <Typography
                 variant="h6"
                 sx={{ textDecoration: "underline" }}
@@ -337,64 +341,66 @@ const CheckoutPage = () => {
               </Typography>
 
               {orderDetailData.length > 0 ? (
-                orderDetailData.map((detail) => (
-                  <Box key={detail.orderDetailId}>
-                    <Typography>Loại cá: {detail.koiType}</Typography>
-                    <Typography>Biến thể: {detail.koiName}</Typography>
-                    <Typography>Số lượng: {detail.quantity}</Typography>
-                    <Typography>Cân nặng: {detail.weight} kg</Typography>
-                    <Typography>
-                      Mã giảm giá:{" "}
-                      {detail.discount && detail.discount.trim() !== ""
-                        ? detail.discount
-                        : "Không có mã giảm giá nào được áp dụng cho đơn hàng này"}{" "}
-                    </Typography>
-                    <Typography>
-                      Tình trạng cá:{" "}
-                      {detail.status === 0 ? "Bất thường" : "Khỏe mạnh"}
-                    </Typography>
-                    <Typography>
-                      Dịch vụ áp dụng:{" "}
-                      {detail.serviceIds && detail.serviceIds.length > 0
-                        ? detail.serviceIds
-                            .sort((a, b) => a - b) // Sort the IDs in ascending order
-                            .map((id, index) => (
-                              <span key={index}>
-                                {serviceIdToName[id] ||
-                                  `Dịch vụ không xác định (${id})`}
-                                {index < detail.serviceIds.length - 1 && ", "}
-                              </span>
-                            ))
-                        : "Không có dịch vụ nào được áp dụng"}
-                    </Typography>
-                  </Box>
-                ))
+                <Grid container spacing={2}>
+                  {orderDetailData.map((detail) => (
+                    <Grid item xs={12} sm={6} md={4} key={detail.orderDetailId}>
+                      <Card sx={{ height: "100%" }}>
+                        <CardContent>
+                          <Typography variant="subtitle1" fontWeight="bold">
+                            Loại cá: {detail.koiType}
+                          </Typography>
+                          <Typography>Biến thể: {detail.koiName}</Typography>
+                          <Typography>Số lượng: {detail.quantity}</Typography>
+                          <Typography>Cân nặng: {detail.weight} kg</Typography>
+                          <Typography>
+                            Mã giảm giá:{" "}
+                            {detail.discount && detail.discount.trim() !== ""
+                              ? detail.discount
+                              : "Không có mã giảm giá nào được áp dụng cho đơn hàng này"}
+                          </Typography>
+                          <Typography>
+                            Tình trạng cá:{" "}
+                            {detail.status === 0 ? "Bất thường" : "Khỏe mạnh"}
+                          </Typography>
+                          <Typography>
+                            Dịch vụ áp dụng:{" "}
+                            {detail.serviceIds && detail.serviceIds.length > 0
+                              ? detail.serviceIds
+                                  .sort((a, b) => a - b) // Sort the IDs in ascending order
+                                  .map((id, index) => (
+                                    <span key={index}>
+                                      {serviceIdToName[id] ||
+                                        `Dịch vụ không xác định (${id})`}
+                                      {index < detail.serviceIds.length - 1 &&
+                                        ", "}
+                                    </span>
+                                  ))
+                              : "Không có dịch vụ nào được áp dụng"}
+                          </Typography>
+                        </CardContent>
+                        <CardActions>
+                          <Button
+                            size="small"
+                            onClick={() => handlePDFClick(detail.orderDetailId)}
+                          >
+                            PDF
+                          </Button>
+                        </CardActions>
+                      </Card>
+                      <PDFPreview
+                        open={openPDF}
+                        onClose={() => setOpenPDF(false)}
+                        pdfUrl={pdfUrl}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
               ) : (
                 <Typography>Không có đơn nào được tìm thấy.</Typography>
               )}
             </Box>
           </Grid>
-
-          {/* PDF Preview */}
           <Grid item xs={12} md={6}>
-            <Typography
-              variant="h6"
-              sx={{ textDecoration: "underline" }}
-              gutterBottom
-            >
-              Xem trước PDF
-            </Typography>
-            {pdfUrl ? (
-              <iframe
-                src={pdfUrl}
-                width="100%"
-                height="400px"
-                style={{ border: "1px solid #ccc", borderRadius: 4 }}
-                title="Order PDF Preview"
-              />
-            ) : (
-              <Typography>PDF đang được tải...</Typography>
-            )}
             <Grid item xs={12}>
               {orderData.status === 5 && <FeedbackForm orderId={orderId} />}
             </Grid>

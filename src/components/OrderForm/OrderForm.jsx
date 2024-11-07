@@ -10,8 +10,9 @@ import {
   Select,
   MenuItem,
   Divider,
+  Button,
 } from "@mui/material";
-import { Formik, Form } from "formik";
+import { Formik, Form, FieldArray } from "formik";
 import * as Yup from "yup";
 import TextFieldWrapper from "../FromUI/Textfield";
 import SelectWrapper from "../FromUI/Select";
@@ -31,11 +32,13 @@ import RadioGroupWrapper from "../FromUI/RadioGroup";
 import CustomRadioGroup from "../FromUI/CustomRadioGroup";
 import RocketIcon from "@mui/icons-material/Rocket";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
+import AddIcon from "@mui/icons-material/Add";
 import FileUpload from "../FromUI/FileUpload";
 import CheckboxWrapper from "../FromUI/Checkbox";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import ServiceSelect from "../FromUI/SelectServices";
 
 const buttonStyles = {
   backgroundColor: "#161A31",
@@ -47,6 +50,15 @@ const buttonStyles = {
   maxWidth: "fit-content",
   display: "inline-flex",
   alignItems: "center",
+  justifyContent: "center",
+};
+const fishButtonStyles = {
+  backgroundColor: "#161A31",
+  color: "white",
+  "&:hover": { backgroundColor: "#727376" },
+  padding: "17px 16px",
+  borderRadius: "8px",
+  minWidth: "auto",
   justifyContent: "center",
 };
 
@@ -69,16 +81,20 @@ const INITIAL_FORM_STATE = {
   senderPhone: "",
   receiverNote: "",
   senderNote: "",
-  orderNote: "",
-  document_file: null,
   discount: "",
   koi_image: "",
-  koi_name: "",
-  koi_type: "",
-  quantity: 0,
-  weight: 0.0,
   freight: "",
   serviceIds: [],
+  document_file: null,
+  orderNote: "",
+  orderDetails: [
+    {
+      koiType: "",
+      koiName: "",
+      weight: 0.0,
+      quantity: 0,
+    },
+  ],
 };
 
 // Validation Schema with Yup
@@ -95,49 +111,50 @@ const FORM_VALIDATION = Yup.object().shape({
     .matches(/^[0-9]{10}$/, "Số điện thoại phải là số và có 10 số"),
   receiverNote: Yup.string().nullable(),
   senderNote: Yup.string().nullable(),
-  orderNote: Yup.string().nullable(),
   discount: Yup.string().nullable(),
-  cityS: Yup.string().required("Vui lòng chọn thành phố"), 
-  cityR: Yup.string().required("Vui lòng chọn thành phố"), 
-  koi_name: Yup.string().required("Vui lòng nhập tên cá Koi"), 
-  koi_type: Yup.string().required("Vui lòng nhập loại cá Koi"), 
-  quantity: Yup.number()
-    .min(1, "Số lượng phải lớn hơn 0")
-    .required("Vui lòng nhập số lượng"),
-  weight: Yup.number()
-    .min(0.1, "Cân nặng phải lớn hơn 0")
-    .max(50, "Cá Koi kỷ lục thể giới chỉ đạt 41kg bạn có chắc bạn có con cá lớn hơn chứ 0-o!?")
-    .required("Vui lòng nhập cân nặng"),
+  cityS: Yup.string().required("Vui lòng chọn thành phố"),
+  cityR: Yup.string().required("Vui lòng chọn thành phố"),
   freight: Yup.string().required("Vui lòng chọn phương thức vận chuyển"),
   termsOfService: Yup.boolean()
     .oneOf([true], "The terms and conditions must be accepted.")
     .required("The terms and conditions must be accepted."),
-  document_file: Yup.mixed()
-    .required("A file is required")
-    .test(
-      "fileSize",
-      "File size must be less than 8MB",
-      (value) => value && value.size <= 8 * 1024 * 1024
-    )
-    .test(
-      "fileFormat",
-      "Only PDF file are allowed",
-      (value) => value && value.type === "application/pdf"
-    ),
+  orderNote: Yup.string().nullable(),
+  orderDetails: Yup.array().of(
+    Yup.object().shape({
+      koiType: Yup.string().required("Vui lòng nhập loại cá Koi"),
+      koiName: Yup.string().required("Vui lòng nhập tên cá Koi"),
+      weight: Yup.number()
+        .min(0.1, "Cân nặng phải lớn hơn 0")
+        .max(50, "Cá Koi kỷ lục thể giới chỉ đạt 41kg!")
+        .required("Vui lòng nhập cân nặng"),
+      quantity: Yup.number()
+        .min(1, "Số lượng phải lớn hơn 0")
+        .required("Vui lòng nhập số lượng"),
+      document_file: Yup.mixed()
+        .required("A file is required")
+        .test(
+          "fileSize",
+          "File size must be less than 8MB",
+          (value) => value && value.size <= 8 * 1024 * 1024
+        )
+        .test(
+          "fileFormat",
+          "Only PDF files are allowed",
+          (value) => value && value.type === "application/pdf"
+        ),
+    })
+  ),
 });
 
 const OrderForm = () => {
-  const services = [
-    { id: 1, label: "Bảo hiểm" },
-    { id: 2, label: "Chăm sóc cá" },
-    { id: 3, label: "Người nhận thanh toán" },
-  ];
-
   const navigate = useNavigate();
+  const orderDetailsToSend = [];
+
   // state lưu danh sáchh tỉnh, phường, quận người gửi
   const [provincesS, setProvincesS] = useState([]);
   const [districtsS, setDistrictsS] = useState([]);
   const [wardsS, setWardsS] = useState([]);
+
   // state lưu danh sáchh tỉnh, phường, quận người nhận
   const [provincesR, setProvincesR] = useState([]);
   const [districtsR, setDistrictsR] = useState([]);
@@ -350,6 +367,7 @@ const OrderForm = () => {
             senderNote: values.senderNote,
             orderNote: values.orderNote,
             distance: distance,
+            serviceIds: values.serviceIds,
           };
 
           const orderResponse = await createOrder(orderData);
@@ -362,36 +380,56 @@ const OrderForm = () => {
           const newOrderId = orderResponse.orderId;
           console.log("Order created with ID:", newOrderId);
 
-          const uploadResponse = await uploadDocument(
-            values.document_file,
-            newOrderId
+          // Clear orderDetailsToSend array for each submission
+          const orderDetailsToSend = [];
+
+          for (const orderDetail of values.orderDetails) {
+            const { document_file, ...orderDetailData } = orderDetail;
+
+            const orderDetailToSend = {
+              ...orderDetailData,
+              orderId: newOrderId,
+            };
+
+            orderDetailsToSend.push(orderDetailToSend);
+            console.log(
+              "Data prepared for createOrderDetail:",
+              orderDetailToSend
+            );
+          }
+
+          const orderDetailResponses = await createOrderDetail(
+            orderDetailsToSend
           );
-          console.log("File uploaded successfully:", uploadResponse);
-
-          const orderDetails = await order(newOrderId);
-          console.log("Order Details:", orderDetails);
-
-          const orderDetailData = {
-            orderId: newOrderId,
-            quantity: Number(values.quantity),
-            weight: parseFloat(values.weight),
-            discount: values.discount,
-            koiName: values.koi_name,
-            koiType: values.koi_type,
-            serviceIds: values.serviceIds,
-          };
-          console.log("Service IDs being sent:", orderData.serviceIds);
-          const orderDetailResponse = await createOrderDetail(orderDetailData);
           console.log(
-            "Order detail created successfully:",
-            orderDetailResponse
+            "Order details created successfully:",
+            orderDetailResponses
           );
 
-          console.log("Order created successfully with ID:", newOrderId);
+          // Handle document upload for each order detail
+          for (let i = 0; i < orderDetailResponses.length; i++) {
+            const orderDetailResponse = orderDetailResponses[i];
+            const documentFile = values.orderDetails[i]?.document_file;
+
+            if (documentFile) {
+              const formData = new FormData();
+              formData.append("document_file", documentFile);
+              console.log("Uploading document:", {
+                orderDetailId: orderDetailResponse.orderDetailId,
+                file: documentFile,
+              });
+
+              await uploadDocument(orderDetailResponse.orderDetailId, formData);
+              console.log(
+                "Document uploaded for order detail:",
+                orderDetailResponse.orderDetailId
+              );
+            }
+          }
 
           navigate("/checkout", { state: { orderId: newOrderId } });
         } catch (error) {
-          enqueueSnackbar("Đã xảy ra lỗi trong quá trình tạo đơn", {
+          enqueueSnackbar("An error occurred while creating the order", {
             variant: "error",
           });
           console.error("Error creating order:", error);
@@ -403,6 +441,8 @@ const OrderForm = () => {
       validateOnMount={true}
     >
       {({ handleSubmit, errors, setFieldValue, values }) => {
+        console.log("Form values on submit:", values);
+        console.log("OrderDetail value on submit:", values.orderDetails);
         console.log("Validation errors:", errors); // Log validation errors
         const handleSenderProvinceChange = (event) => {
           const selectedProvince = provincesS.find(
@@ -677,61 +717,111 @@ const OrderForm = () => {
                   </Grid>
                 </Paper>
 
-                {/* Paper 3: Order Information */}
+                {/* FishDetail */}
+                <FieldArray name="orderDetails">
+                  {({ push, remove }) => (
+                    <>
+                      {values.orderDetails.map((_, index) => (
+                        <Paper
+                          elevation={4}
+                          sx={{ padding: "20px", marginBottom: "20px" }}
+                          key={index}
+                        >
+                          <Typography variant="h6" gutterBottom>
+                            Thông tin cá Koi {index + 1}
+                          </Typography>
+                          <Grid container spacing={3}>
+                            <Grid item xs={6}>
+                              <SelectWrapper
+                                name={`orderDetails.${index}.koiType`}
+                                label="Loại cá Koi"
+                                options={koi_type}
+                              />
+                            </Grid>
+                            <Grid item xs={6}>
+                              <SelectWrapper
+                                name={`orderDetails.${index}.koiName`}
+                                label="Biến thể Koi"
+                                options={koi_name}
+                              />
+                            </Grid>
+                            <Grid item xs={3}>
+                              <TextFieldWrapper
+                                name={`orderDetails.${index}.weight`}
+                                label="Cân nặng trung bình"
+                                InputProps={{
+                                  endAdornment: (
+                                    <InputAdornment position="end">
+                                      kg
+                                    </InputAdornment>
+                                  ),
+                                }}
+                              />
+                            </Grid>
+                            <Grid item xs={3}>
+                              <TextFieldWrapper
+                                name={`orderDetails.${index}.quantity`}
+                                label="Số lượng"
+                                type="number"
+                              />
+                            </Grid>
+                            <Grid item xs={6}>
+                              <FileUpload
+                                name={`orderDetails.${index}.document_file`}
+                              />
+                            </Grid>
+                            <Grid item xs={6}>
+                              <Button
+                                variant="outlined"
+                                color="error"
+                                sx={{
+                                  padding: "17px 16px",
+                                  borderRadius: "8px",
+                                }}
+                                onClick={() => remove(index)}
+                                disabled={values.orderDetails.length === 1} // Prevents removing the last section
+                              >
+                                Xóa thông tin cá Koi {index + 1}
+                              </Button>
+                            </Grid>
+                            <Grid item xs={6}>
+                              <Button
+                                variant="contained"
+                                sx={{ ...fishButtonStyles }}
+                                startIcon={<AddIcon />}
+                                onClick={() =>
+                                  push({
+                                    koiType: "",
+                                    koiName: "",
+                                    weight: 0.0,
+                                    quantity: 0,
+                                  })
+                                }
+                              >
+                                Thêm thông tin cá Koi mới
+                              </Button>
+                            </Grid>
+                          </Grid>
+                        </Paper>
+                      ))}
+                    </>
+                  )}
+                </FieldArray>
+
+                {/* Order Information */}
                 <Paper elevation={4} sx={{ padding: "20px" }}>
                   <Typography variant="h6" gutterBottom>
-                    Thông tin bưu gửi
+                    Tùy chọn bưu gửi
                   </Typography>
                   <Grid container spacing={3}>
-                    <Grid item xs={6}>
-                      <SelectWrapper
-                        name="koi_type"
-                        label="Loại cá Koi"
-                        options={koi_type}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <SelectWrapper
-                        name="koi_name"
-                        label="Biến thể Koi"
-                        options={koi_name}
-                      />
-                    </Grid>
-                    <Grid item xs={3}>
-                      <TextFieldWrapper
-                        name="weight"
-                        label="Cân nặng trung bình"
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">kg</InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={3}>
-                      <TextFieldWrapper
-                        name="quantity"
-                        label="Số lượng"
-                        type="number"
-                        slotProps={{
-                          inputLabel: {
-                            shrink: true,
-                          },
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <FileUpload name="document_file" />
-                    </Grid>
                     <Grid item xs={12}>
                       <TextFieldWrapper
-                        name="description"
+                        name="orderNote"
                         label="Ghi chú"
                         multiline
                         rows={4}
                       />
                     </Grid>
-
                     <Grid item xs={12}>
                       <CustomRadioGroup
                         name="freight"
@@ -774,25 +864,25 @@ const OrderForm = () => {
                       justifyContent="center"
                       alignItems="center"
                     >
-                      {services.map((service) => (
-                        <RadioGroupWrapper
-                          key={service.id}
-                          service={service}
-                          serviceIds={values.serviceIds} // Pass serviceIds from Formik state
-                          setFieldValue={setFieldValue} // Ensure it can update the Formik state
-                        />
-                      ))}
+                      <ServiceSelect
+                        value={values.serviceIds}
+                        onChange={(event) =>
+                          setFieldValue("serviceIds", event.target.value)
+                        }
+                      />
                     </Grid>
                   </Grid>
-                  <Divider sx={{ backgroundColor: "black", margin: "20px 50px" }} />
+                  <Divider
+                    sx={{ backgroundColor: "black", margin: "20px 50px" }}
+                  />
                   <Grid xs={12}>
-                  <CheckboxWrapper
-                    name="termsOfService"
-                    legend="Terms Of Service"
-                    label="Tôi đã đọc và đồng ý với các điều khoản"
-                  /></Grid>
+                    <CheckboxWrapper
+                      name="termsOfService"
+                      legend="Terms Of Service"
+                      label="Tôi đã đọc và đồng ý với các điều khoản"
+                    />
+                  </Grid>
                   <ButtonWrapper>Tạo đơn đặt hàng</ButtonWrapper>
-                  
                 </Paper>
               </Box>
             </>

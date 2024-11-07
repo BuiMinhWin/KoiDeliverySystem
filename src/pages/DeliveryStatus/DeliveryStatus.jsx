@@ -8,7 +8,8 @@ const DeliveryStatus = ({ orderId }) => {
   useEffect(() => {
     getAllDeliveryStatusByOrderId(orderId)
       .then((response) => {
-        setStatuses(response.data);
+        const sortedStatuses = response.data.sort((a,b) => a.status - b.status);
+        setStatuses(sortedStatuses);
       })
       .catch((error) => {
         console.error("Error fetching delivery statuses: ", error);
@@ -20,7 +21,7 @@ const DeliveryStatus = ({ orderId }) => {
     "Đơn đã được duyệt",
     "Đã chọn tài xế",
     "Tài xế đã nhận đơn và đang vận chuyển",
-    "Đã vận chuyển",
+    "Đang vận chuyển",
     "Đã nhận hàng"
   ];
 

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Paper, Stack, Typography, Button, Box } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { getAccountById } from "../../services/CustomerService";
 import DeliveryStatusPopup from "../../components/DeliveryTracking";
 
 const OrderReport = () => {
@@ -33,7 +32,7 @@ const OrderReport = () => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get(
-          "/api/orders"
+          "http://koideliverysystem.id.vn:8080/api/orders"
         );
         const accountId = localStorage.getItem("accountId");
 
@@ -131,7 +130,9 @@ const OrderReport = () => {
                     ? "Đang chờ xét duyệt"
                     : order.status === 1
                     ? "Đã duyệt - Đơn hàng của bạn đang được chuẩn bị cho bắt đầu vận chuyển"
-                    : [2, 4].includes(order.status)
+                    : order.status === 2
+                    ? "Tài xế đã nhận đơn"
+                    : [3, 4].includes(order.status)
                     ? `Đơn hàng đang được giao đến địa điểm chỉ định sau ${
                         order.freight === "Dịch vụ tiêu chuẩn"
                           ? "5-7 ngày"
@@ -139,8 +140,6 @@ const OrderReport = () => {
                           ? "3-4 ngày"
                           : "Thời gian không xác định"
                       } kể từ ngày duyệt đơn`
-                    : order.status === 3
-                    ? "Đơn hàng đang được vận chuyển"
                     : order.status === 5
                     ? "Đơn hàng đã được giao đến"
                     : "Trạng thái không xác định"}
@@ -159,7 +158,7 @@ const OrderReport = () => {
                   sx={{
                     ...(order.status === 3 && {
                       backgroundColor: "#171B36",
-                      color: "white", 
+                      color: "white",
                     }),
                     padding: "4px 10px",
                     fontSize: "1.2rem",
@@ -182,6 +181,7 @@ const OrderReport = () => {
         open={popupOpen}
         onClose={handleClosePopup}
         orderId={selectedOrderId}
+        showButton={true}
       />
     </Stack>
   );
