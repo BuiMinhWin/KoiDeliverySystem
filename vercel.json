@@ -52,6 +52,11 @@
       "destination": "http://koideliverysystem.id.vn:8080/api/deliveryStatus/:path*"
     },
 
+    {
+      "source": "/api/documents",
+      "destination": "http://koideliverysystem.id.vn:8080/api/documents"
+    },
+
 
     {
       "source": "/api/documents/:path*",
