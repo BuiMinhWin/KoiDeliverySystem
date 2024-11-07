@@ -64,7 +64,7 @@ const ListOrderOfSales = () => {
     <div className="container">
       
 
-      <h2 className="text-center">List of Orders</h2>
+      <h2 className="text-center">Danh Sách Đơn Hàng</h2>
       <table className="table table-striped table-bordered">
         <thead>
           <tr>
@@ -89,7 +89,8 @@ const ListOrderOfSales = () => {
                 <td>{order.orderId}</td>
                 <td>{order.origin}</td>
                 <td>{order.destination}</td>
-                <td>{order.freight}</td>
+                <td style={{ color: order.freight === "Dịch vụ hỏa tốc" ? "red" : "green"}}>
+                  {order.freight}</td>
                 <td>{order.orderDate}</td>
                 <td>{order.shippedDate}</td>
                 <td>{formatCurrency(order.totalPrice)}</td>   

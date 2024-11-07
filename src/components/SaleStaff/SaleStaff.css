@@ -421,3 +421,10 @@ h1 {
       display: block; 
   }
     
+
+/*Confirm*/
+/* SaleStaff.css */
+.express-order {
+  background-color: #ffcccc; /* Light red background color for emphasis */
+  color: red; /* Red text color for visibility */
+}

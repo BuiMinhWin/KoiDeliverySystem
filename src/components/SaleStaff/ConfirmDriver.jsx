@@ -4,6 +4,7 @@ import AssignDriverComponent from './AssignDriverComponent';
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import './SaleStaff.css'; 
 
 const Booking = () => {
   const [orders, setOrders] = useState([]);
@@ -14,7 +15,6 @@ const Booking = () => {
   const formatCurrency = (value) => {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
-
 
   const statusLabels = [
     "Đang chờ xét duyệt",
@@ -33,16 +33,13 @@ const Booking = () => {
     listOrder()
       .then((response) => {
         if (Array.isArray(response.data)) {
-          const filteredOrders = response.data.filter(order => order.sale === accountId); // loggedInSaleId là accountId của nhân viên sale đang đăng nhập
+          const filteredOrders = response.data.filter(order => order.sale === accountId);
           const sortedOrders = filteredOrders.sort((a, b) => {
-            // First, prioritize express orders
             if (a.freight === "Dịch vụ hỏa tốc" && b.freight !== "Dịch vụ hỏa tốc") return -1;
             if (a.freight !== "Dịch vụ hỏa tốc" && b.freight === "Dịch vụ hỏa tốc") return 1;
-            
-  
             return new Date(b.orderDate) - new Date(a.orderDate);
           });
-  
+
           setOrders(sortedOrders);
         } else {
           console.error("API response is not an array", response.data);
@@ -73,13 +70,11 @@ const Booking = () => {
 
   return (
     <div className="container">
-      
-
-      <h2 className="text-center">List of Confirm Drivers</h2>
+      <h2 className="text-center">Chọn Tài Xế</h2>
       <table className="table table-striped table-bordered">
         <thead>
           <tr>
-          <th>OrderId</th>
+            <th>OrderId</th>
             <th>Điểm đi</th>
             <th>Điểm đến</th>
             <th>Phương tiện</th>
@@ -95,15 +90,16 @@ const Booking = () => {
         <tbody>
           {orders.length > 0 ? (
             orders.map(order => (
-              <tr key={order.orderId}>
-               <td>{order.orderId}</td>
+              <tr key={order.orderId} >
+                <td>{order.orderId}</td>
                 <td>{order.origin}</td>
                 <td>{order.destination}</td>
-                <td>{order.freight}</td>
+                <td style={{ color: order.freight === "Dịch vụ hỏa tốc" ? "red" : "green"}}>
+                  {order.freight}</td>
                 <td>{order.orderDate}</td>
                 <td>{order.shippedDate}</td>
-                <td>{formatCurrency(order.totalPrice)}</td>   
-                <td>{order.deliver}</td> 
+                <td>{formatCurrency(order.totalPrice)}</td>
+                <td>{order.deliver}</td>
                 <td>{statusLabels[order.status]}</td>
                 <td>
                   {order.status === 1 ? (

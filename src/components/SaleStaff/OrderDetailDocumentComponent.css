@@ -1,0 +1,113 @@
+.order-detail-document {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.table-document {
+  width: 100%;
+  margin-bottom: 20px;
+  border-collapse: collapse;
+}
+
+.table-striped-document th, .table-striped-document td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.table-striped-document thead th {
+  background-color: #f5f5f5;
+  color: #333;
+  font-weight: bold;
+}
+
+.table-striped-document tbody tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
+.table-bordered-document th, .table-bordered-document td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.table-striped-document tbody td {
+  font-size: 14px;
+  color: #555;
+}
+
+.table-document .btn {
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+}
+
+.btn-success-document {
+  background-color: #28a745;
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+.btn-success-document:hover {
+  background-color: #218838;
+}
+
+.btn-primary-document {
+  background-color: #007bff;
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+.btn-primary-document:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary-document {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.pdf-viewer-document {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.pdf-viewer-document h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.pdf-viewer-document iframe {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.text-center-document {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+}
+
+.order-detail-item-document {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+.order-detail-item-document p {
+  color: #333;
+  font-weight: bold;
+  margin: 5px 0;
+}

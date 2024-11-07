@@ -50,18 +50,12 @@ export const createOrderDetail = async (orderDetailData) => {
   try {
     const response = await axios.post(
       `${REST_API_ORDER_DETAIL_URL}/create`,
-      orderDetailData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          // Add any other headers here, e.g., authorization if needed
-        },
-      }
+      orderDetailData
     );
     console.log("Order detail created successfully:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error creating order detail:", error.response || error.message);
+    console.error("Error creating order:", error.response || error.message);
     throw error;
   }
 };
@@ -75,9 +69,12 @@ export const order = async (orderId) => {
     throw error;
   }
 };
+
 export const orderDetail = async (orderId) => {
   try {
-    const response = await axios.get(`${REST_API_ORDER_DETAIL_URL}/order/${orderId}`);
+    const response = await axios.get(
+      `${REST_API_ORDER_DETAIL_URL}/order/${orderId}`
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching order data:", error);
@@ -98,15 +95,32 @@ export const cancelOrder = async (orderId) => {
     throw new Error("Failed to cancel order");
   }
 
-  return response.json();
+
+  const data = response.status !== 204 ? await response.json() : {};
+  return data;
 };
 
-export const getOrderPDF = async (orderId) => {
-  const response = await fetch(`${REST_API_DOCUMENT_URL}/download/order/${orderId}`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch PDF");
+// export const getOrderPDF = async (orderId) => {
+//   const response = await fetch(`${REST_API_DOCUMENT_URL}/download/order/${orderId}`);
+//   if (!response.ok) {
+//     throw new Error("Failed to fetch PDF");
+//   }
+//   return response.blob();
+// };
+
+export const getOrderPDF = async (orderDetailId) => {
+  try {
+    const response = await fetch(`${REST_API_DOCUMENT_URL}/download/order/${orderDetailId}`);
+    
+    if (!response.ok) {
+      throw new Error("Failed to fetch PDF");
+    }
+    
+    return await response.blob(); // Return blob for use as PDF in the UI
+  } catch (error) {
+    console.error("Error fetching PDF:", error);
+    throw error; // Re-throw error for handling in the calling function
   }
-  return response.blob();
 };
 
 

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { listOrder, updateStatus, updateSale } from '../../services/SaleStaffService';
 import { useNavigate } from 'react-router-dom';
 import { colors } from '@mui/material';
+import './SaleStaff.css'; 
+
 
 const ListOrderComponent = () => {
   const [orders, setOrders] = useState([]);
@@ -51,7 +53,7 @@ const ListOrderComponent = () => {
     <div className="container">
      
 
-      <h2 className="text-center">List of Confirm Orders</h2>
+      <h2 className="text-center">Duyệt Đơn Vận Chuyển</h2>
       <table className="table table-striped table-bordered">
         <thead>
           <tr>
@@ -69,50 +71,53 @@ const ListOrderComponent = () => {
           </tr>
         </thead>
         <tbody>
-          {orders.length > 0 ? (
-            orders.map(order => (
-              <tr key={order.orderId}>
-                <td>{order.orderId}</td>
-                <td>{order.origin}</td>
-                <td>{order.destination}</td>
-                <td>{order.freight}</td>
-                <td>{order.orderDate}</td>
-                <td>{order.shippedDate}</td>
-                <td>{formatCurrency(order.totalPrice)}</td>   
-                <td>{order.sale}</td>
-                <td style={{ color : order.status === 0? 'red' : 'green'}}>
-                  {order.status === 0 ? "Đang chờ xét duyệt" : "Đơn đã được duyệt"}
-                </td>
-                <td>
-                  {order.status === 0 ? (
-                    <button
-                      className="btn btn-success"
-                      onClick={() => handleUpdateStatus(order.orderId, order.status)}
-                    >
-                      Cập nhật
-                    </button>
-                  ) : (
-                    <button className="btn btn-secondary" disabled>
-                      Đã duyệt
-                    </button>
-                  )}
-                </td>
-                <td>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => handleViewOrder(order.orderId)}
-                  >
-                    Chi tiết
-                  </button>
-                </td>
-              </tr>
-            ))
+  {orders.length > 0 ? (
+    orders.map(order => (
+      <tr key={order.orderId}>
+        <td>{order.orderId}</td>
+        <td>{order.origin}</td>
+        <td>{order.destination}</td>
+        <td style={{ color: order.freight === "Dịch vụ hỏa tốc" ? "red" : "green" }}>
+          {order.freight}
+        </td>
+        <td>{order.orderDate}</td>
+        <td>{order.shippedDate}</td>
+        <td>{formatCurrency(order.totalPrice)}</td>
+        <td>{order.sale}</td>
+        <td style={{ color: order.status === 0 ? 'red' : 'green' }}>
+          {order.status === 0 ? "Đang chờ xét duyệt" : "Đơn đã được duyệt"}
+        </td>
+        <td>
+          {order.status === 0 ? (
+            <button
+              className="btn btn-success"
+              onClick={() => handleUpdateStatus(order.orderId, order.status)}
+            >
+              Cập nhật
+            </button>
           ) : (
-            <tr>
-              <td colSpan="10" className="text-center">No Orders Found</td>
-            </tr>
+            <button className="btn btn-secondary" disabled>
+              Đã duyệt
+            </button>
           )}
-        </tbody>
+        </td>
+        <td>
+          <button
+            className="btn btn-primary"
+            onClick={() => handleViewOrder(order.orderId)}
+          >
+            Chi tiết
+          </button>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="10" className="text-center">No Orders Found</td>
+    </tr>
+  )}
+</tbody>
+
       </table>
     </div>
   );
