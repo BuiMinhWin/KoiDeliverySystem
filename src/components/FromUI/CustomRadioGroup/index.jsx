@@ -63,7 +63,7 @@ const CustomRadioGroup = ({ name, options }) => {
                       sx={{
                         fontWeight: "bold",
                         color:
-                          field.value === option.value ? "#171B36" : "black", // Set default color for unselected
+                          field.value === option.value ? "#171B36" : "black", 
                       }}
                     >
                       {option.label}
@@ -71,7 +71,7 @@ const CustomRadioGroup = ({ name, options }) => {
                     <Tooltip title={option.helpText} arrow placement="top">
                       <HelpOutline
                         fontSize="small"
-                        sx={{ ml: 1, cursor: "pointer" }}
+                        sx={{ ml: 1, cursor: "pointer", color: "black" }}
                       />
                     </Tooltip>
                   </Box>

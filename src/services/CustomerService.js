@@ -26,24 +26,10 @@ export const createOrder = async (orderData) => {
   }
 };
 
-export const uploadDocument = async (file, orderId) => {
-  const formData = new FormData();
-  formData.append("document_file", file);
-  formData.append("orderId", orderId); // Attach orderId to the form data
-
-  try {
-    const response = await axios.post(
-      `${REST_API_DOCUMENT_URL}/${orderId}`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("File upload failed:", error);
-    throw new Error("Upload failed");
-  }
+export const uploadDocument = (orderDetailId, formData) => {
+  return axios.post(`/api/documents/${orderDetailId}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 };
 
 export const createOrderDetail = async (orderDetailData) => {
