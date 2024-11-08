@@ -22,6 +22,7 @@ import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import { getAccountById, getAvatar } from "../../services/CustomerService";
+import { logout } from '../Member/auth'; 
 
 const drawerWidth = 240;
 
@@ -53,7 +54,7 @@ const Layout = () => {
   const handleClose = () => setAnchorEl(null);
 
   const handleLogout = () => {
-    localStorage.removeItem("accountId");
+    logout(); 
     setAnchorEl(null);
     navigate("/");
   };
