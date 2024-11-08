@@ -21,9 +21,6 @@
   flex-direction: column;
 }
 
-a {
-  white-space: nowrap; /* Giữ tất cả nội dung trên cùng một dòng */
-}
 
 .manager-sidebar{
   width: 250px;

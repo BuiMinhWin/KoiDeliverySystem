@@ -238,10 +238,11 @@ const ordersByStatusChartData = {
         </aside>
 
         <main className="dashboard col-10 ">
-        <header className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+        <header className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2 ">
             <h4 className="title">Dashboard</h4>
 
-            <header className="d-flex justify-content-between align-items-center mb-4  ">
+            <header className="d-flex justify-content-between align-items-center mb-4" style={{ marginLeft: '-20px' }}>
+
             <div className="d-flex align-items-center search-container">
               <input 
               className="form-control me-5"
