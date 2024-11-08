@@ -179,7 +179,7 @@ const ListEmployeeComponent = () => {
       <main className="dashboard col-10 ">
       <header className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2 ">
         <h4 className="title">Danh sách nhân viên</h4>
-            <header className="d-flex justify-content-between align-items-center mb-4 ">
+        <header className="d-flex justify-content-between align-items-center mb-4" style={{ marginRight: '50px' }}>
            
             <div className="search-bar ml-auto">
               <input

@@ -14,9 +14,6 @@ import { useNavigate } from 'react-router-dom';
 import { listOrder } from '../../services/DeliveryService';
 import { listAccount } from '../../services/EmployeeService';
 import { CiLogout } from "react-icons/ci";
-import { IoIosNotificationsOutline } from "react-icons/io";
-import { FaRegMessage } from "react-icons/fa6";
-import { IoSettingsOutline } from "react-icons/io5";
 import {  getAvatar} from "../../services/CustomerService";  
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler );
@@ -241,7 +238,7 @@ const ordersByStatusChartData = {
         <header className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2 ">
             <h4 className="title">Dashboard</h4>
 
-            <header className="d-flex justify-content-between align-items-center mb-4" style={{ marginLeft: '-20px' }}>
+            <header className="d-flex justify-content-between align-items-center mb-4" style={{ marginRight: '50px' }}>
 
             <div className="d-flex align-items-center search-container">
               <input 
@@ -263,10 +260,10 @@ const ordersByStatusChartData = {
                     )}
                   </div>
                 </div>
-                <div className="notification-icon m-4">
+                {/* <div className="notification-icon m-4">
                   <IoIosNotificationsOutline />
-                  {/* <span className="notification-text">somethinghere</span> */}
-                </div>
+                
+                </div> */}
               
           </header>
           
@@ -302,8 +299,8 @@ const ordersByStatusChartData = {
           <ul>
             {Object.entries(deliveryOrderCounts)
               .map(([accountId, count]) => ({ accountId, count }))
-              .sort((a, b) => b.count - a.count) // Sắp xếp theo count giảm dần
-              .slice(0, 10) // Giới hạn 10 người
+              .sort((a, b) => b.count - a.count) 
+              .slice(0, 10) 
               .map(({ accountId, count }) => (
                 <li key={accountId}>
                   Staff ID: {accountId}, Orders Delivered: {count}
@@ -316,8 +313,8 @@ const ordersByStatusChartData = {
             <ul>
             {Object.entries(salesOrderCounts)
               .map(([accountId, count]) => ({ accountId, count }))
-              .sort((a, b) => b.count - a.count) // Sắp xếp theo count giảm dần
-              .slice(0, 10) // Giới hạn 10 người
+              .sort((a, b) => b.count - a.count) 
+              .slice(0, 10) 
               .map(({ accountId, count }) => (
                 <li key={accountId}>
                   Staff ID: {accountId}, Orders Delivered: {count}

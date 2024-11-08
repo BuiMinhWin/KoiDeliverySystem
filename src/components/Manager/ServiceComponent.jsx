@@ -154,35 +154,35 @@ const ServiceComponent = () => {
             <nav>
             <ul className="list-unstyled">
             <div>
-              <h6>Main</h6>
+             
               <li>
                 <a href="/"><i className="bi bi-speedometer2 me-2"><FiHome /></i> Homepage</a>
               </li>
             </div>
-            <h6>List</h6>
+            
             <li>
               <a href="/manager"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Dashboard</a>
             </li>
             <li>
-              <a href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i> Customers</a>
+              <a href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i>Danh sách nhân viên</a>
             </li>
             <li>
-              <a href="/accounts"><i className="bi bi-person-badge me-2"><FiUsers /></i> Employees</a>
+              <a href="/accounts"><i className="bi bi-person-badge me-2"><FiUsers /></i> Danh sách nhân viên</a>
             </li>
 
             <li onClick={toggleServiceDropdown} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-             < a href="#"><i className="bi bi-person-badge me-2"><FiUsers /></i> Services</a>
+             < a href="#"><i className="bi bi-person-badge me-2"><FiUsers /></i> Quản lí dịch vụ</a>
             </li>
             {isServiceDropdownOpen && (
               <ul className="list-unstyled ms-3">
                 <li>
                   <a href="#" onClick={handleOpenCreateModal}>
-                    <i className="bi bi-person-badge me-2"><IoMdAddCircle /></i> New Service
+                    <i className="bi bi-person-badge me-2"><IoMdAddCircle /></i> Tạo mới
                   </a>
                 </li>
                 <li>
                   <a href="#" onClick={handleOpenActiveModal}>
-                    <i className="bi bi-person-badge me-2"><IoMdAddCircle /></i> Active
+                    <i className="bi bi-person-badge me-2"><IoMdAddCircle /></i> Kích hoạt
                   </a>
                 </li>
               </ul>
@@ -196,7 +196,7 @@ const ServiceComponent = () => {
         <main className="dashboard col-10">
           <header className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
             <h4 className="title">Dịch vụ</h4>
-            <header className="d-flex justify-content-between align-items-center mb-4 ">
+            <header className="d-flex justify-content-between align-items-center mb-4" style={{ marginRight: '50px' }}>
               <div className="header-content" style={{ width: '%' }}> 
                 <div className="d-flex align-items-center justify-content-center search-container">
                   <input
@@ -242,7 +242,7 @@ const ServiceComponent = () => {
                       <td>{service.servicesName}</td>
                       <td>${service.price}</td>
                       <td>
-                        <button onClick={() => handleOpenModal(service)}>Update</button>
+                        <button onClick={() => handleOpenModal(service)}>Cập nhật</button>
                       </td>
                     </tr>
                   ))}
