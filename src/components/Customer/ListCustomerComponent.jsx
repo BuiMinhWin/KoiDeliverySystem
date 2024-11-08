@@ -135,7 +135,7 @@ const ListEmployeeComponent = () => {
         </li>
 
         
-        <h6>List</h6>
+        <h6>Quản lí</h6>
         <li>
           <a href="/manager"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i>Dashboard</a> 
         </li>
@@ -180,8 +180,8 @@ const ListEmployeeComponent = () => {
       </aside>
       <main className="dashboard col-10 ">
       <header className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2 ">
-        <h4 className="title">Employees</h4>
-            <header className="d-flex justify-content-between align-items-center mb-4 ">
+        <h4 className="title">Danh sách khách hàng</h4>
+        <header className="d-flex justify-content-between align-items-center mb-4" style={{ marginRight: '50px' }}>
            
             <div className="search-bar ml-auto">
               <input
