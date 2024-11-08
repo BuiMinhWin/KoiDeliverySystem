@@ -24,7 +24,6 @@ const OrderReport = () => {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  //Sort order theo status
   const statusOrder = [1, 0, 2, 3, 4, 5];
 
   // Lấy order rồi filter
@@ -36,22 +35,23 @@ const OrderReport = () => {
         );
         const accountId = localStorage.getItem("accountId");
 
-        // Ko có hàm lấy full order nên phải filter :(( siêu tốn tài nguyên
+        // Lấy order theo accountID
         const filteredOrders = response.data.filter(
           (order) => order.accountId === accountId
         );
 
-        // Sort order theo status
+        // Sort lại thứ tự order
         const sortedOrders = filteredOrders.sort((a, b) => {
-          // Kiểm tra paymentStatus = 1 and status = 5
-          const aPriority = a.paymentStatus === 1 && a.status === 5 ? -1 : 0;
-          const bPriority = b.paymentStatus === 1 && b.status === 5 ? -1 : 0;
-          if (aPriority === bPriority) {
-            return (
-              statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
-            );
-          }
-          return aPriority - bPriority;
+          // Status 6 có priority cao nhất
+          if (a.status === 6) return -1;
+          if (b.status === 6) return 1;
+
+          // Tiếp là 5 với paymentStatus = 0
+          if (a.status === 5 && a.paymentStatus === 0) return -1;
+          if (b.status === 5 && b.paymentStatus === 0) return 1;
+
+          // Sort còn lại thì giữ nguyên
+          return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
         });
 
         setOrders(sortedOrders);
@@ -76,20 +76,23 @@ const OrderReport = () => {
   const getButtonProps = (status, paymentStatus) => {
     switch (status) {
       case 0:
-        return { text: "Pending", color: "warning" };
+        return { text: "Đang Duyệt", color: "warning" };
       case 1:
-        return { text: "Verified", color: "success" };
+        return { text: "Đã Duyệt", color: "success" };
       case 2:
-      case 4:
-        return { text: "Shipping", color: "info" };
+        return { text: "Đang Lấy Hàng", color: "info" };
       case 3:
-        return { text: "Tracking", color: "transparent" };
+        return { text: "Theo Dõi", color: "transparent" };
+      case 4:
+        return { text: "Đang Vận Chuyển", color: "info" };
       case 5:
-        return paymentStatus
-          ? { text: "View", color: "primary" }
-          : { text: "Checkout Now", color: "error" };
+        return paymentStatus === 1
+          ? { text: "Xem Đơn Hàng", color: "primary" }
+          : { text: "Thanh Toán", color: "error" };
+      case 6:
+        return { text: "Đơn Hàng Cần Chú Ý", color: "error" };
       default:
-        return { text: "Unknown", color: "default" };
+        return { text: "Không Xác Định", color: "default" };
     }
   };
 
@@ -142,6 +145,8 @@ const OrderReport = () => {
                       } kể từ ngày duyệt đơn`
                     : order.status === 5
                     ? "Đơn hàng đã được giao đến"
+                    : order.status === 6
+                    ? "Đơn hàng cần được chú ý"
                     : "Trạng thái không xác định"}
                 </Typography>
                 <Typography variant="body1">
