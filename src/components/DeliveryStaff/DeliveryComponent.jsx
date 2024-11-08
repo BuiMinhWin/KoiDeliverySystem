@@ -328,7 +328,7 @@ const toggleDropdown = () => {
         <header className="d-flex justify-content-between align-items-center mb-4 border-bottom ">
             <h4 className="title">Báo cáo vận chuyển</h4> 
          
-            <header className="d-flex justify-content-between align-items-center mb-4 ">
+            <header className="d-flex justify-content-between align-items-center mb-4" style={{ marginRight: '50px' }}>
             <div className="header-content" style={{ width: '%' }}> 
             <div className="d-flex align-items-center justify-content-center search-container">
             <input
