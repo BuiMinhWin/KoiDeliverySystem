@@ -18,10 +18,10 @@ const LoginComponent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    if (!recaptchaValidated) {
-      enqueueSnackbar('Vui lòng xác nhận reCAPTCHA.', { variant: 'error' });
-      return;
-    }
+    // if (!recaptchaValidated) {
+    //   enqueueSnackbar('Vui lòng xác nhận reCAPTCHA.', { variant: 'error' });
+    //   return;
+    // }
   
     const loginData = { userName, password };
   
