@@ -58,9 +58,9 @@ body, html {
 
 
 .reset-logo-title {
-  position: absolute; /* Cố định vị trí */
-  top: 120px; /* Khoảng cách từ đỉnh trang đến phần tử */
-  left: 580px; /* Khoảng cách từ lề trái của trang */
+  position: absolute; 
+  top: 100px; 
+  left: 580px; 
   display: flex;
   align-items: center;
 }

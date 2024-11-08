@@ -188,23 +188,14 @@ const ServiceComponent = () => {
               </ul>
             )}
 
-            <h6>General</h6>
-            <li>
-              <a href="#"><i className="bi bi-chat-dots me-2"><FaRegCalendarAlt /></i> Calendar</a>
-            </li>
-            <li>
-              <a href="#"><i className="bi bi-chat-dots me-2"><FaRegMessage /></i> Messages</a>
-            </li>
-            <li>
-              <a href="#"><i className="bi bi-gear me-2"><IoSettingsOutline /></i> Settings</a>
-            </li>
+    
           </ul>
             </nav>
           </div>
         </aside>
         <main className="dashboard col-10">
           <header className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-            <h4 className="title">Service</h4>
+            <h4 className="title">Dịch vụ</h4>
             <header className="d-flex justify-content-between align-items-center mb-4 ">
               <div className="header-content" style={{ width: '%' }}> 
                 <div className="d-flex align-items-center justify-content-center search-container">
@@ -219,8 +210,8 @@ const ServiceComponent = () => {
                     <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
                     {isDropdownOpen && ( 
                       <div className="dropdown-content">
-                        <a href="user-page"><CgProfile /> View Profile</a>
-                        <a onClick={handleLogout}><CiLogout /> Logout</a>
+                        <a href="user-page"><CgProfile /> Thông tin tài khoản</a>
+                        <a onClick={handleLogout}><CiLogout /> Đăng xuất</a>
                       </div>
                     )}
                   </div>
@@ -237,8 +228,8 @@ const ServiceComponent = () => {
                 <thead>
                   <tr>
                     <th>ServiceId</th>
-                    <th>ServiceName</th>
-                    <th>Price</th>
+                    <th>Dịch vụ</th>
+                    <th>Giá</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -266,7 +257,7 @@ const ServiceComponent = () => {
               <div className="modal-dialog" role="document">
                 <div className="modal-content">
                   <div className="modal-header">
-                    <h5 className="modal-title">Update Price</h5>
+                    <h5 className="modal-title">Cập nhật giá dịch vụ</h5>
                     <button type="button" className="close" onClick={handleCloseModal} aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
@@ -280,8 +271,8 @@ const ServiceComponent = () => {
                     />
                   </div>
                   <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Close</button>
-                    <button type="button" className="btn btn-primary" onClick={handleUpdatePrice}>Save changes</button>
+                    
+                    <button type="button" className="btn btn-primary" onClick={handleUpdatePrice}>Lưu thay đổi</button>
                   </div>
                 </div>
               </div>
@@ -294,7 +285,7 @@ const ServiceComponent = () => {
               <div className="modal-dialog" role="document">
                 <div className="modal-content">
                   <div className="modal-header">
-                    <h5 className="modal-title">Create New Service</h5>
+                    <h5 className="modal-title">Tạo dịch vụ mới</h5>
                     <button 
                     type="button" 
                     className="close" 
@@ -320,8 +311,8 @@ const ServiceComponent = () => {
                     />
                   </div>
                   <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" onClick={handleCloseCreateModal}>Close</button>
-                    <button type="button" className="btn btn-primary" onClick={handleCreateService}>Create Service</button>
+                    
+                    <button type="button" className="btn btn-primary" onClick={handleCreateService}>Tạo</button>
                   </div>
                 </div>
               </div>
@@ -333,7 +324,7 @@ const ServiceComponent = () => {
             <div className="modal-dialog" role="document">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">Active Services</h5>
+                  <h5 className="modal-title">Quản lí dịch vụ</h5>
                   <button 
                     type="button" 
                     className="close" 
@@ -348,9 +339,9 @@ const ServiceComponent = () => {
                   <table className="table table-striped">
                     <thead>
                       <tr>
-                        <th>ServiceName</th>
-                        <th>Price</th>
-                        <th>Status</th>
+                        <th>Tên dịch vụ</th>
+                        <th>Giá</th>
+                        <th>Trạng thái</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -374,7 +365,7 @@ const ServiceComponent = () => {
                               className="btn btn-danger btn-sm"
                               onClick={() => handleDeactivateService(service.servicesId)}
                             >
-                              Deactivate
+                                
                             </button>
                           ) : (
                             <button
@@ -390,9 +381,7 @@ const ServiceComponent = () => {
                     </tbody>
                   </table>
                 </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" onClick={handleCloseActiveModal}>Close</button>
-                </div>
+             
               </div>
             </div>
           </div>

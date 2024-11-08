@@ -214,39 +214,23 @@ const ordersByStatusChartData = {
           <div>
             <h6>List</h6>
             <li>
-              <a  href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i> Customers</a>
+              <a  href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i> Danh sách khách hàng</a>
             </li>
 
             <li>
-              <a href="/accounts"><i className="bi bi-person-badge me-2"><FiUsers /></i> Employees</a>
+              <a href="/accounts"><i className="bi bi-person-badge me-2"><FiUsers /></i> Danh sách nhân viên</a>
             </li>
 
             <li>
-              <a href="/ordersM"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Orders</a>
+              <a href="/ordersM"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Lịch sử đơn hàng</a>
             </li>
 
             <li>
-              <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Services</a>
+              <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Dịch vụ</a>
             </li>
 
           </div>
-          <h6>General</h6>
-          <li>
-            <a href="#"><i className="bi bi-chat-dots me-2"><FaRegCalendarAlt /></i> Calendar</a>
-          </li>
-
-          <li>
-            <a href="#"><i className="bi bi-life-preserver me-2"><MdSupportAgent /></i> Help & Support</a>
-          </li>
-
-          <li>
-            <a href="#"><i className="bi bi-chat-dots me-2"> <FaRegMessage/> </i>  Messages</a>
-          </li>
-
-          <li>
-            <a href="#"><i className="bi bi-gear me-2"><IoSettingsOutline /></i> Settings</a>
-          </li>
-   
+      
 
         </ul>
       </nav>
@@ -272,8 +256,8 @@ const ordersByStatusChartData = {
                   <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
                     {isDropdownOpen && ( 
                       <div className="dropdown-content">
-                          <a  href="employee-page"><CgProfile /> View Profile</a>
-                        <a  onClick={handleLogout}><CiLogout /> Logout</a>
+                          <a  href="employee-page"><CgProfile /> Thông tin tài khoản</a>
+                        <a  onClick={handleLogout}><CiLogout /> Đăng xuất</a>
                       </div>
                     )}
                   </div>
@@ -289,24 +273,24 @@ const ordersByStatusChartData = {
 
           <section className="overview">
             <div className="card total-employee">
-              <h3>Total Employee</h3>
+              <h3>Tổng nhân viên</h3>
               <p>{stats.totalEmployees}</p>
               
             
             </div>
             <div className="card total-customers">
-              <h3>Total Customers</h3>
+              <h3>Tổng khách hàng</h3>
               <p>{stats.totalCustomers}</p>
               
             </div>
             <div className="card card total-orders">
-              <h3>Total Orders</h3>
+              <h3>Tổng đơn</h3>
               <p>{stats.totalOrders}</p>
               
             
             </div>
             <div className="card revenue">
-              <h3>Orders Issue</h3>
+              <h3>Đơn chờ duyệt</h3>
               <p>{stats.totalErrors}</p> 
             </div>
           </section>
@@ -327,7 +311,7 @@ const ordersByStatusChartData = {
           </ul>
         </div>
           <div className="sales-list col-6">
-            <h2>Top Sales Staff</h2>
+            <h2>TOP Sales</h2>
             <ul>
             {Object.entries(salesOrderCounts)
               .map(([accountId, count]) => ({ accountId, count }))
@@ -345,7 +329,7 @@ const ordersByStatusChartData = {
         <section className="statistics mt-4 justify-content-between border-top pt-3">
         <div className="row">
           <div className="chart col-6">
-            <h2>Orders by Status</h2>
+            <h2>Tổng đơn</h2>
             {orders.length > 0 ? (
               <Line data={ordersByStatusChartData} options={chartOptions} />
             ) : (
@@ -353,7 +337,7 @@ const ordersByStatusChartData = {
             )}
           </div>
           <div className="profits col-6">
-            <h3>Profits Earned</h3>
+            <h3>Lợi nhuận</h3>
             {orders.length > 0 ? (
               <Pie data={ordersByStatusPieData} />
             ) : (

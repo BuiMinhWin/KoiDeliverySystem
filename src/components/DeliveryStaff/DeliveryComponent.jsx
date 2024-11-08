@@ -314,29 +314,10 @@ const toggleDropdown = () => {
           <nav>
       <ul className="list-unstyled">
         
-          <li>
-            <a href="/"><i className="bi bi-speedometer2 me-2"> <FiHome /> </i>  Homepage</a>
-        </li>
-        
         <li>
-          <a href="/orders"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Ordered</a>
+          <a href="/orders"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Lịch sử đơn hàng</a>
         </li>
 
-        <li>
-          <a href="#"><i className="bi bi-chat-dots me-2"><FaRegCalendarAlt /></i> Calendar</a>
-         </li>
-
-        <li>
-          <a href="#"><i className="bi bi-life-preserver me-2"><MdSupportAgent /></i> Help & Support</a>
-        </li>
-
-        <li>
-          <a href="#"><i className="bi bi-chat-dots me-2"> <FaRegMessage/> </i>  Messages</a>
-        </li>
-
-        <li>
-          <a href="#"><i className="bi bi-gear me-2"><IoSettingsOutline /></i> Settings</a>
-         </li>
        
       </ul>
       </nav>
@@ -345,7 +326,7 @@ const toggleDropdown = () => {
 
         <main className="dashboard col-10">
         <header className="d-flex justify-content-between align-items-center mb-4 border-bottom ">
-            <h4 className="title">Delivery Orders</h4> 
+            <h4 className="title">Báo cáo vận chuyển</h4> 
          
             <header className="d-flex justify-content-between align-items-center mb-4 ">
             <div className="header-content" style={{ width: '%' }}> 
@@ -364,8 +345,8 @@ const toggleDropdown = () => {
                 <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
                   {isDropdownOpen && ( 
                     <div className="dropdown-content">
-                      <a  href="employee-page"><CgProfile /> View Profile</a>
-                      <a  onClick={handleLogout}><CiLogout /> Logout</a>
+                      <a  href="employee-page"><CgProfile /> Thông tin tài khoản</a>
+                      <a  onClick={handleLogout}><CiLogout /> Đăng xuất</a>
                     </div>
                   )}
                 </div>
@@ -384,25 +365,25 @@ const toggleDropdown = () => {
              
           <section className="delivery-overview">
             <div className="card delivery-total-orders">
-              <h3>Total Orders <FaBoxesStacked /></h3>
+              <h3>Tổng đơn <FaBoxesStacked /></h3>
               
               <p>{totalOrders}</p>
             </div>
 
             <div className="card delivery-delivering">
-              <h3>Delivering  <FaTruckFast /> </h3>
+              <h3>Đang giao  <FaTruckFast /> </h3>
               
               <p>{delivering}</p>
             </div>
 
             <div className="card delivery-approving">
-              <h3>Picking up <FaRegRectangleList /> </h3>
+              <h3>Đang duyệt <FaRegRectangleList /> </h3>
               
               <p>{approving}</p>
             </div>
               
             <div className="card delivery-fail">
-              <h3>Delivery Issue <FiAlertTriangle /></h3>
+              <h3>Đơn sự cố <FiAlertTriangle /></h3>
               <p>{fail}</p>
             </div>
           </section>
@@ -413,38 +394,38 @@ const toggleDropdown = () => {
 
               <div className="filter-bar d-flex mb-3">
                 <select className="form-select me-2" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)}>
-                  <option value="">All Months</option>
-                  <option value="1">January</option>
-                  <option value="2">February</option>
-                  <option value="3">March</option>
-                  <option value="4">April</option>
-                  <option value="5">May</option>
-                  <option value="6">June</option>
-                  <option value="7">July</option>
-                  <option value="8">August</option>
-                  <option value="9">September</option>
-                  <option value="10">October</option>
-                  <option value="11">November</option>
-                  <option value="12">December</option>
+                <option value="">All Months</option>
+                  <option value="1">Tháng 1</option>
+                  <option value="2">Tháng 2</option>
+                  <option value="3">Tháng 3</option>
+                  <option value="4">Tháng 4</option>
+                  <option value="5">Tháng 5</option>
+                  <option value="6">Tháng 6</option>
+                  <option value="7">Tháng 7</option>
+                  <option value="8">Tháng 8</option>
+                  <option value="9">Tháng 9</option>
+                  <option value="10">Tháng 10</option>
+                  <option value="11">Tháng 11</option>
+                  <option value="12">Tháng 12</option>
                 </select>
               
                 <select className="form-select me-2" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-                  <option value="">All Statuses</option>
-                  <option value="3">Waiting for get order</option>
-                  <option value="4">Deliverin</option>
-                  
+                <option value="">Trạng thái</option>
+                  <option value="3">Đang lấy hàng</option>
+                  <option value="4">Đang giao</option>
+                  <option value="5">Đã giao</option>
                  
                 </select>
                 <select className="form-select me-2" value={transportationFilter} onChange={(e) => setTransportationFilter(e.target.value)}>
             
-                  <option value= "">Method Transport</option>
-                  <option value= "Giao hàng khẩn cấp">Express Delivery</option>
-                  <option value= "Giao hàng tiêu chuẩn">Regular Delivery</option>
+                <option value= "">Phương thức vận chuyển</option>
+                  <option value= "Giao hàng khẩn cấp">Giao hàng khẩn cấp</option>
+                  <option value= "Giao hàng tiêu chuẩn">Giao hàng tiêu chuẩn</option>
                 </select>
 
                 
                 <select className="form-select me-2" value={provinceFilter} onChange={(e) => setProvinceFilter(e.target.value)}>
-                <option value="">All Provinces</option>
+                <option value="">Tỉnh thành</option>
                 {provinces?.map((province) => (
                   <option key={province.ProvinceID} value={province.ProvinceName}>
                     {province.ProvinceName}
@@ -458,12 +439,12 @@ const toggleDropdown = () => {
                 <tr>
                   <th>OrderId</th>
                   {/* <th>OrderDate</th> */}
-                  <th>Origin</th>
-                  <th>Destination</th>
-                  <th>Service</th>
+                  <th>Điểm đi</th>
+                  <th>Điểm đến</th>
+                  <th>Dịch vụ</th>
                   {/* <th>Status</th> */}
-                  <th>Tracking</th>
-                  <th>Details</th>
+                  <th>Cập nhật</th>
+                  <th>Chi tiết</th>
                   <th></th>
                   <th></th>
                 </tr>
@@ -499,7 +480,7 @@ const toggleDropdown = () => {
                           </button>
                         </td>
                         <td>
-                          <button onClick={() => handleViewOrder(order.orderId)}>View</button>
+                          <button onClick={() => handleViewOrder(order.orderId)}>Xem</button>
                         </td>
                         <td>
                           <button
