@@ -142,11 +142,11 @@ const ListEmployeeComponent = () => {
         </li>
 
         <li>
-          <a  href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i> Khách Hàng</a>
+          <a  href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i>Danh Sách Khách Hàng</a>
         </li>
 
         <li onClick={toggleAccountDropdown} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-             < a href="#"><i className="bi bi-person-badge me-2"><FiUsers /></i> Nhân Viên</a>
+             < a href="#"><i className="bi bi-person-badge me-2"><FiUsers /></i>Quản Lý Nhân Viên</a>
             </li>
             {isAccountDropdownOpen && (
               <ul className="list-unstyled ms-3">
@@ -158,7 +158,6 @@ const ListEmployeeComponent = () => {
                </li>
              
                <li>
-              
                  <a href="#" onClick={handleOpenActiveModal}>
                    <i className="bi bi-person-badge me-2"> <IoMdAddCircle  /> </i> Vô hiệu hóa
                  </a>
@@ -169,7 +168,7 @@ const ListEmployeeComponent = () => {
 
         
          <li>
-            <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Dịch vụ</a>
+            <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i>Danh Sách Dịch vụ</a>
           </li>
 
        
@@ -222,7 +221,7 @@ const ListEmployeeComponent = () => {
         <div className="delivery-list col-12">
           <div className="filter-bar d-flex mb-4 col-10 align-items-center">
             <select className="form-select me-2 col-4" value={roleIdFilter} onChange={(e) => setRoleIdFilter(e.target.value)}>
-              <option value="">All Employees</option>
+              <option value="">Nhân Viên</option>
               <option value="Sales">Sales</option>
               <option value="Delivery">Delivery</option>
             </select>

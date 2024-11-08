@@ -394,7 +394,7 @@ const toggleDropdown = () => {
 
               <div className="filter-bar d-flex mb-3">
                 <select className="form-select me-2" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)}>
-                <option value="">All Months</option>
+                <option value="">Tháng</option>
                   <option value="1">Tháng 1</option>
                   <option value="2">Tháng 2</option>
                   <option value="3">Tháng 3</option>
