@@ -206,7 +206,7 @@ const ordersByStatusChartData = {
          <div>
             <h6>Main</h6>
             <li>
-            <a href="/"><i className="bi bi-speedometer2 me-2"> <FiHome /> </i>  Homepage</a>
+            <a href="/"><i className="bi bi-speedometer2 me-2"> <FiHome /> </i>Trang chủ</a>
             </li>
 
           </div>
@@ -214,7 +214,7 @@ const ordersByStatusChartData = {
           <div>
             <h6>Quản lí</h6>
             <li>
-              <a  href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i> Danh sách nhân viên</a>
+              <a  href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i> Danh sách khách hàng</a>
             </li>
 
             <li>
@@ -224,11 +224,11 @@ const ordersByStatusChartData = {
           </li>
 
             <li>
-              <a href="/ordersM"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Orders</a>
+              <a href="/ordersM"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i>Lịch sử đơn hàng</a>
             </li>
 
             <li>
-              <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Services</a>
+              <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i>Quản lí dịch vụ</a>
             </li>
 
           </div>
@@ -331,7 +331,7 @@ const ordersByStatusChartData = {
         <section className="statistics mt-4 justify-content-between border-top pt-3">
         <div className="row">
           <div className="chart col-6">
-            <h2>Orders by Status</h2>
+            <h2>Thống kê đơn</h2>
             {orders.length > 0 ? (
               <Line data={ordersByStatusChartData} options={chartOptions} />
             ) : (

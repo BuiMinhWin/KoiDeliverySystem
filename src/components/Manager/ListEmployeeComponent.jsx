@@ -132,11 +132,11 @@ const ListEmployeeComponent = () => {
       <ul className="list-unstyled">
         <h6>Main</h6>
         <li>
-            <a href="/"><i className="bi bi-speedometer2 me-2"> <FiHome /> </i>  Homepage</a>
+            <a href="/"><i className="bi bi-speedometer2 me-2"> <FiHome /> </i>Trang chủ</a>
         </li>
 
         
-        <h6>List</h6>
+        <h6>Quản lí</h6>
         <li>
           <a href="/manager"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i>Dashboard</a> 
         </li>
@@ -168,7 +168,7 @@ const ListEmployeeComponent = () => {
 
         
          <li>
-            <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i>Danh Sách Dịch vụ</a>
+            <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i>Danh sách dịch vụ</a>
           </li>
 
        
