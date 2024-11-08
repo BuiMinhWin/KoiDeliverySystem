@@ -13,7 +13,7 @@ const LoginComponent = () => {
   const [recaptchaValidated, setRecaptchaValidated] = useState(false); 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+  // const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -126,13 +126,13 @@ const LoginComponent = () => {
     enqueueSnackbar('Đăng nhập thất bại, vui lòng thử lại', { variant: 'error', autoHideDuration: 1000 });
   };
 
-  const handleRecaptchaChange = (token) => {
-    if (token) {
-      setRecaptchaValidated(true); 
-    } else {
-      setRecaptchaValidated(false);
-    }
-  };
+  // const handleRecaptchaChange = (token) => {
+  //   if (token) {
+  //     setRecaptchaValidated(true); 
+  //   } else {
+  //     setRecaptchaValidated(false);
+  //   }
+  // };
 
   return (
     <div className="login-container">
@@ -169,10 +169,10 @@ const LoginComponent = () => {
                 />
               </div>
               <div className="recaptcha-container">
-              <ReCAPTCHA
+              {/* <ReCAPTCHA
                 sitekey={recaptchaSiteKey}
                 onChange={handleRecaptchaChange}
-              />
+              /> */}
             
             </div>
               <button type="submit">Đăng nhập</button>
