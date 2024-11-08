@@ -17,45 +17,46 @@ const RegisterComponent = () => {
   const navigate = useNavigate();
   
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  
-    if (password.length < 8 || !/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)/.test(password)) {
-      enqueueSnackbar('Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số.', { variant: 'error', autoHideDuration: 1000 });
-      return;
-    }
-  
-    if (!/^0\d{9}$/.test(phone)) {
-      enqueueSnackbar('Số điện thoại phải có 10 chữ số và bắt đầu bằng 0.', { variant: 'error', autoHideDuration: 1000 });
-      return;
-    }
-  
-    if (password !== confirmPassword) {
-      enqueueSnackbar('Mật khẩu không khớp', { variant: 'error', autoHideDuration: 1000 });
-      return;
-    }
-  
-    const account = { 
-      firstName, 
-      lastName, 
-      userName, 
-      password, 
-      email, 
-      phone, 
-      roleId: 'Customer', 
-      createAt: new Date().toISOString() 
-    };
-  
-    createAccount(account)
-      .then((response) => {
-        enqueueSnackbar(response.data.message, { variant: 'success', autoHideDuration: 1000 });
-        navigate('/login');
-      })
-      .catch((error) => {
-        const errorMessage = error.response?.data?.message ;
-        enqueueSnackbar(errorMessage, { variant: 'error', autoHideDuration: 1000 });
-      });
+const handleSubmit = (e) => {
+  e.preventDefault();
+
+  if (password.length < 8 || !/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)/.test(password)) {
+    enqueueSnackbar('Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số.', { variant: 'error', autoHideDuration: 1000 });
+    return;
+  }
+
+  if (!/^0\d{9}$/.test(phone)) {
+    enqueueSnackbar('Số điện thoại phải có 10 chữ số và bắt đầu bằng 0.', { variant: 'error', autoHideDuration: 1000 });
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    enqueueSnackbar('Mật khẩu không khớp', { variant: 'error', autoHideDuration: 1000 });
+    return;
+  }
+
+  const account = { 
+    firstName, 
+    lastName, 
+    userName, 
+    password, 
+    email, 
+    phone, 
+    roleId: 'Customer', 
+    createAt: new Date().toISOString() 
   };
+
+  createAccount(account)
+    .then((response) => {
+      const successMessage = response?.data?.message || 'Tạo tài khoản thành công!';
+      enqueueSnackbar(successMessage, { variant: 'success', autoHideDuration: 1000 });
+      navigate('/login');
+    })
+    .catch((error) => {
+      const errorMessage = error.response?.data?.message || 'Đã xảy ra lỗi. Vui lòng thử lại!';
+      enqueueSnackbar(errorMessage, { variant: 'error', autoHideDuration: 1000 });
+    });
+};
 
   return (
     <div className="background-section">
