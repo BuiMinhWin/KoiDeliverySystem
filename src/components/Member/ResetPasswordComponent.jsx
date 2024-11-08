@@ -12,38 +12,55 @@ const ResetPasswordComponent = () => {
   const [showPasswordFields, setShowPasswordFields] = useState(false); // Trạng thái để ẩn/hiện các trường nhập mật khẩu và code
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const [time, setTime] = useState(false);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (time) {
+      enqueueSnackbar('Vui lòng chờ 5 giây trước khi gửi lại email.', { variant: 'warning', autoHideDuration: 1000 });
+      return;
+    }
     try {
       // console.log(email);
       const response = await forgotPassword(email); 
       console.log(response.data);
-      const errorMessage = "Code for reset password had bean send to your mail" ;
+      const errorMessage = "Code để tạo lại mật khẩu đã được gửi đến email của bạn" ;
         enqueueSnackbar(errorMessage, { variant: 'success', autoHideDuration: 1000 });
       
 
       if (response.data) {
         setShowPasswordFields(true);
       }
+      setTime(true);
+      setTimeout(() => setTime(false), 5000); // Hết chờ sau 5 giây
 
     } catch (error) {
-      console.log('Fail', error);
-      alert('An error occurred during reset');
+    
+      alert(error);
     }
   };
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-    const response = await verifyPassword(email, code, newPassword, confirmPassword); 
-    console.log(response.data);
     
-    if (newPassword !== confirmPassword) {
-      enqueueSnackbar('Passwords do not match!', { variant: 'error', autoHideDuration: 1000 });
-    } else {
-      enqueueSnackbar('Passwords reset successful!', { variant: 'success', autoHideDuration: 1000 });
-      navigate('/login');
+    try {
+      const response = await verifyPassword(email, code, newPassword, confirmPassword);
+  
+      if (response?.data?.message) {
+        enqueueSnackbar(response.data.message, { variant: 'success', autoHideDuration: 1000 });
+      }
+  
+      if (newPassword !== confirmPassword) {
+        enqueueSnackbar('Mật khẩu không khớp!', { variant: 'error', autoHideDuration: 1000 });
+      } else {
+        enqueueSnackbar('Tạo mật khẩu mới thành công!', { variant: 'success', autoHideDuration: 1000 });
+        navigate('/login');
+      }
+    } catch (error) {
+
+      const errorMessage = error.response?.data?.message || 'Đã xảy ra lỗi. Vui lòng thử lại!';
+      enqueueSnackbar(errorMessage, { variant: 'error', autoHideDuration: 1000 });
     }
   };
 
@@ -61,7 +78,7 @@ const ResetPasswordComponent = () => {
               </div>
             </div>
 
-            {/* Form nhập email */}
+          
             {!showPasswordFields && (
               <form onSubmit={handleSubmit}>
                 <div>
@@ -75,11 +92,13 @@ const ResetPasswordComponent = () => {
                   />
                 </div>
 
-                <button type="submit">Submit</button>
+                <button type="submit" disabled={time}>
+                  {time ? 'Chờ 5 giây...' : 'Gửi để nhận code'}
+                </button>
               </form>
             )}
 
-            {/* Các trường này sẽ chỉ hiển thị khi showPasswordFields = true */}
+           
             {showPasswordFields && (
               <form onSubmit={handlePasswordSubmit}>
 
@@ -124,7 +143,7 @@ const ResetPasswordComponent = () => {
                   />
                 </div>
 
-                <button type="submit">Reset Password</button>
+                <button type="submit">Tạo mật khẩu mới </button>
               </form>
             )}
           </div>

@@ -20,8 +20,18 @@ const RegisterComponent = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
   
+    if (password.length < 8 || !/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)/.test(password)) {
+      enqueueSnackbar('Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số.', { variant: 'error', autoHideDuration: 1000 });
+      return;
+    }
+  
+    if (!/^0\d{9}$/.test(phone)) {
+      enqueueSnackbar('Số điện thoại phải có 10 chữ số và bắt đầu bằng 0.', { variant: 'error', autoHideDuration: 1000 });
+      return;
+    }
+  
     if (password !== confirmPassword) {
-      enqueueSnackbar('Passwords do not match!', { variant: 'error', autoHideDuration: 1000 });
+      enqueueSnackbar('Mật khẩu không khớp', { variant: 'error', autoHideDuration: 1000 });
       return;
     }
   
@@ -38,8 +48,7 @@ const RegisterComponent = () => {
   
     createAccount(account)
       .then((response) => {
-        console.log('Account created:', response.data.message);
-        enqueueSnackbar('Register success.', { variant: 'success', autoHideDuration: 1000 });
+        enqueueSnackbar(response.data.message, { variant: 'success', autoHideDuration: 1000 });
         navigate('/login');
       })
       .catch((error) => {
@@ -54,7 +63,7 @@ const RegisterComponent = () => {
         <div className="background-giphy"></div>
         <div className="register-form-container">
           <div className="register-form-box">
-            <h2>Create Your Account</h2>
+            <h2>Tạo tài</h2>
             <form onSubmit={handleSubmit} className="form-grid">
               <div className="left-column">
                 <div className="input-group">
@@ -68,7 +77,7 @@ const RegisterComponent = () => {
                   />
                 </div>
                 <div className="input-group">
-                  <label>Password</label>
+                  <label>Mật khẩu</label>
                   <input 
                     type="password" 
                     value={password} 
@@ -78,7 +87,7 @@ const RegisterComponent = () => {
                   />
                 </div>
                 <div className="input-group">
-                  <label>Confirm Password</label>
+                  <label>Xác nhận mật khẩu</label>
                   <input 
                     type="password" 
                     value={confirmPassword} 
@@ -97,12 +106,12 @@ const RegisterComponent = () => {
                     placeholder="Email"
                   />
                 </div>
-                <button type="submit" className="submit-btn">Sign Up</button>
+                <button type="submit" className="submit-btn">Đăng Kí</button>
               </div>
 
               <div className="right-column">
                 <div className="input-group">
-                  <label>First Name</label>
+                  <label>Họ </label>
                   <input 
                     type="text" 
                     value={firstName} 
@@ -112,7 +121,7 @@ const RegisterComponent = () => {
                   />
                 </div>
                 <div className="input-group">
-                  <label>Last Name</label> 
+                  <label>Tên</label> 
                   <input 
                     type="text"  
                     value={lastName} 
@@ -122,7 +131,7 @@ const RegisterComponent = () => {
                   />
                 </div>
                 <div className="input-group">
-                  <label>Phone Number</label>
+                  <label>Số điện thoại</label>
                   <input 
                     type="tel" 
                     value={phone} 
