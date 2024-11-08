@@ -12,14 +12,31 @@ import {
 } from "@mui/material";
 import { useFormikContext, useField } from "formik";
 import { HelpOutline } from "@mui/icons-material";
+import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
 
-const CustomRadioGroup = ({ name, options }) => {
+const CustomRadioGroup = ({ name, options, selectedCountry }) => {
   const { setFieldValue } = useFormikContext();
   const [field, meta] = useField(name);
 
   const handleChange = (event) => {
     setFieldValue(name, event.target.value);
   };
+
+  // Check if "Nhật Bản" is selected
+  const isJapanSelected = selectedCountry === "Nhật Bản";
+
+  const filteredOptions = isJapanSelected
+    ? [
+        {
+          value: "Vận chuyển nước ngoài",
+          label: "Vận chuyển nước ngoài",
+          description: "Vận chuyển hàng hóa từ Nhật Bản",
+          icon: <AirplanemodeActiveIcon fontSize="large" />,
+          helpText:
+            "Phí vận chuyển ước tính sẽ bao gồm phụ phí và trừ đi các khoản chiến khấu/giảm giá bởi khuyến mãi.",
+        },
+      ]
+    : options;
 
   return (
     <FormControl component="fieldset" fullWidth>
@@ -30,7 +47,7 @@ const CustomRadioGroup = ({ name, options }) => {
         onChange={handleChange}
         sx={{ justifyContent: "space-between" }}
       >
-        {options.map((option) => (
+        {filteredOptions.map((option) => (
           <Grid
             key={option.value}
             item
@@ -62,8 +79,7 @@ const CustomRadioGroup = ({ name, options }) => {
                       variant="h6"
                       sx={{
                         fontWeight: "bold",
-                        color:
-                          field.value === option.value ? "#171B36" : "black", 
+                        color: field.value === option.value ? "#171B36" : "black",
                       }}
                     >
                       {option.label}

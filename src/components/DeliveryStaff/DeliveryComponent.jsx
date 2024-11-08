@@ -22,8 +22,10 @@ import Map from '../Map';
 
 const DeliveryComponent = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  
 
   const handleLogout = () => {
+
     logout(); 
     navigate('/'); 
   };
@@ -50,9 +52,6 @@ const toggleDropdown = () => {
   const [provinces, setProvinces] = useState([]);
   const [statusFilter, setStatusFilter] = useState('');
   const [transportationFilter, setTransportationFilter] = useState('');
-
-  const [currentPage, setCurrentPage] = useState(1);  // Trang hiện tại
-  const ordersPerPage = 10; 
 
   const [isDropdownOpen, setDropdownOpen] = useState(true); //drop down
 
@@ -107,50 +106,68 @@ const toggleDropdown = () => {
  
     if (accountId) fetchAccount();
 
+    const getAllOrders = () => {
+      listOrder()
+        .then((response) => {
+          if (Array.isArray(response.data)) {
+            setOrders(response.data);
+            const filteredOrders = response.data.filter(order => order.deliver === accountId);
+            localStorage.setItem("orders", JSON.stringify(filteredOrders));
+            console.log("Orders from localStorage:", JSON.parse(localStorage.getItem("orders")));
+          } else {
+            console.error("API response is not an array", response.data);
+            setOrders([]);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching : ", error);
+        });
+    };
     
 
     fetchProvinces();
     getAllOrders();
   }, []);
 
-  const getAllOrders = () => {
-    listOrder()
-      .then((response) => {
-        if (Array.isArray(response.data)) {
-          setOrders(response.data);
-        } else {
-          console.error("API response is not an array", response.data);
-          setOrders([]);
+  useEffect(() => {
+    const storedOrders1 = JSON.parse(localStorage.getItem("orders")) || [];
+    const accountId = localStorage.getItem("accountId");
+  
+    const checkForNewOrders = async () => {
+      try {
+        const response = await listOrder(); 
+        const newOrders = response.data || [];
+  
+ 
+        const filteredNewOrders = newOrders.filter(order => order.deliver === accountId);
+        
+     
+        const newOrderCount = filteredNewOrders.length;
+        const storedOrderCount = storedOrders1.length;
+  
+        if (newOrderCount > storedOrderCount) {
+          enqueueSnackbar(`Có ${newOrderCount - storedOrderCount} đơn hàng mới!`, { variant: "info" });
         }
-      })
-      .catch((error) => {
-        console.error("Error fetching : ", error);
-      });
-  };
+  
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+  
+    const intervalId = setInterval(checkForNewOrders, 5000);
+
+    
+    return () => clearInterval(intervalId);
+  }, []);
+
+
+ 
 
 
   const handleSearch = async (event) => {
-    const orderId = event.target.value;
-    setSearchQuery(orderId);
-  
-    if (orderId) {
-      try {
-        
-        const response = await getOrderDetail(orderId);
-        
-        if (response.data) {
-          setOrderDetail(response.data);  
-        } else {
-          setOrderDetail(null);  
-        }
-      } catch (error) {
-        console.error("Error fetching order details:", error);
-        setOrderDetail(null);  
-      }
-    } else {
-      setOrderDetail(null);  
-    }
+    setSearchQuery(event.target.value.toLowerCase());
   };
+
   const API_KEY =import.meta.env.VITE_GOONG_API_KEY; // Thay bằng API Key của bạn
 
   const reverseGeocodeAddress = async (lat, long) => {
@@ -177,22 +194,22 @@ const toggleDropdown = () => {
 
   const handleDirection = async ( destination) => {
     navigate('/map', { state: { destination } });
-    // console.log(destination);
-    // if (navigator.geolocation) {
-    //   navigator.geolocation.getCurrentPosition(async (position) => {
+    console.log(destination);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
        
-    //       const latitude = position.coords.latitude;
-    //       const longitude = position.coords.longitude;
-    //       const currentLocate = await reverseGeocodeAddress(latitude, longitude);
-    //       setSelectedOrigin(currentLocate);
-    //       setSelectedDestination(destination);
-    //       setShowMap(true);
-    //   }, () => {
-    //     enqueueSnackbar("Không thể lấy vị trí hiện tại.", { variant: "error", autoHideDuration: 1000 });
-    //   });
-    // } else {
-    //   enqueueSnackbar("Không thể lấy vị trí hiện tại.", { variant: "error", autoHideDuration: 1000 });
-    // }
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          const currentLocate = await reverseGeocodeAddress(latitude, longitude);
+          setSelectedOrigin(currentLocate);
+          setSelectedDestination(destination);
+          setShowMap(true);
+      }, () => {
+        enqueueSnackbar("Không thể lấy vị trí hiện tại.", { variant: "error", autoHideDuration: 1000 });
+      });
+    } else {
+      enqueueSnackbar("Không thể lấy vị trí hiện tại.", { variant: "error", autoHideDuration: 1000 });
+    }
   };
  
   const filteredOrders = orders.filter(order => {
@@ -203,15 +220,15 @@ const toggleDropdown = () => {
     const matchesTransportation = transportationFilter ? order.orderNote === transportationFilter : true;
 
     return matchesMonth && matchesProvince && matchesStatus && matchesTransportation;
-  });
+})
+.filter(order => 
+  (order.orderId && order.orderId.toString().toLowerCase().includes(searchQuery)) ||
+  (order.customerName && order.customerName.toLowerCase().includes(searchQuery)) ||
+  (order.destination && order.destination.toLowerCase().includes(searchQuery))
+);
 
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
 
-  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const updateOrderStatus = async (orderId) => {
   
@@ -314,10 +331,29 @@ const toggleDropdown = () => {
           <nav>
       <ul className="list-unstyled">
         
+          <li>
+            <a href="/"><i className="bi bi-speedometer2 me-2"> <FiHome /> </i>  Homepage</a>
+        </li>
+        
         <li>
-          <a href="/orders"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Lịch sử đơn hàng</a>
+          <a href="/orders"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Ordered</a>
         </li>
 
+        <li>
+          <a href="#"><i className="bi bi-chat-dots me-2"><FaRegCalendarAlt /></i> Calendar</a>
+         </li>
+
+        <li>
+          <a href="#"><i className="bi bi-life-preserver me-2"><MdSupportAgent /></i> Help & Support</a>
+        </li>
+
+        <li>
+          <a href="#"><i className="bi bi-chat-dots me-2"> <FaRegMessage/> </i>  Messages</a>
+        </li>
+
+        <li>
+          <a href="#"><i className="bi bi-gear me-2"><IoSettingsOutline /></i> Settings</a>
+         </li>
        
       </ul>
       </nav>
@@ -326,27 +362,28 @@ const toggleDropdown = () => {
 
         <main className="dashboard col-10">
         <header className="d-flex justify-content-between align-items-center mb-4 border-bottom ">
-            <h4 className="title">Báo cáo vận chuyển</h4> 
+            <h4 className="title">Delivery Orders</h4> 
          
-            <header className="d-flex justify-content-between align-items-center mb-4" style={{ marginRight: '50px' }}>
+            <header className="d-flex justify-content-between align-items-center mb-4 ">
             <div className="header-content" style={{ width: '%' }}> 
             <div className="d-flex align-items-center justify-content-center search-container">
             <input
-                className="search-bar"
-                type="text"
-                value={searchQuery}
-                onChange={handleSearch}
-                placeholder="Search Order"
-            />
-           </div>
+            className="search-bar"
+            type="text"
+            value={searchQuery}
+            onChange={handleSearch}
+            placeholder="Search Order"
+          />
+         </div>
+
 
               <div className="navbar-cus-right">
                 <div className="dropdown" onClick={toggleDropdown}>
                 <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
                   {isDropdownOpen && ( 
                     <div className="dropdown-content">
-                      <a  href="employee-page"><CgProfile /> Thông tin tài khoản</a>
-                      <a  onClick={handleLogout}><CiLogout /> Đăng xuất</a>
+                      <a  href="employee-page"><CgProfile /> View Profile</a>
+                      <a  onClick={handleLogout}><CiLogout /> Logout</a>
                     </div>
                   )}
                 </div>
@@ -365,25 +402,25 @@ const toggleDropdown = () => {
              
           <section className="delivery-overview">
             <div className="card delivery-total-orders">
-              <h3>Tổng đơn <FaBoxesStacked /></h3>
+              <h3>Total Orders <FaBoxesStacked /></h3>
               
               <p>{totalOrders}</p>
             </div>
 
             <div className="card delivery-delivering">
-              <h3>Đang giao  <FaTruckFast /> </h3>
+              <h3>Delivering  <FaTruckFast /> </h3>
               
               <p>{delivering}</p>
             </div>
 
             <div className="card delivery-approving">
-              <h3>Đang duyệt <FaRegRectangleList /> </h3>
+              <h3>Picking up <FaRegRectangleList /> </h3>
               
               <p>{approving}</p>
             </div>
               
             <div className="card delivery-fail">
-              <h3>Đơn sự cố <FiAlertTriangle /></h3>
+              <h3>Delivery Issue <FiAlertTriangle /></h3>
               <p>{fail}</p>
             </div>
           </section>
@@ -394,38 +431,38 @@ const toggleDropdown = () => {
 
               <div className="filter-bar d-flex mb-3">
                 <select className="form-select me-2" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)}>
-                <option value="">Tháng</option>
-                  <option value="1">Tháng 1</option>
-                  <option value="2">Tháng 2</option>
-                  <option value="3">Tháng 3</option>
-                  <option value="4">Tháng 4</option>
-                  <option value="5">Tháng 5</option>
-                  <option value="6">Tháng 6</option>
-                  <option value="7">Tháng 7</option>
-                  <option value="8">Tháng 8</option>
-                  <option value="9">Tháng 9</option>
-                  <option value="10">Tháng 10</option>
-                  <option value="11">Tháng 11</option>
-                  <option value="12">Tháng 12</option>
+                  <option value="">All Months</option>
+                  <option value="1">January</option>
+                  <option value="2">February</option>
+                  <option value="3">March</option>
+                  <option value="4">April</option>
+                  <option value="5">May</option>
+                  <option value="6">June</option>
+                  <option value="7">July</option>
+                  <option value="8">August</option>
+                  <option value="9">September</option>
+                  <option value="10">October</option>
+                  <option value="11">November</option>
+                  <option value="12">December</option>
                 </select>
               
                 <select className="form-select me-2" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-                <option value="">Trạng thái</option>
-                  <option value="3">Đang lấy hàng</option>
-                  <option value="4">Đang giao</option>
-                  <option value="5">Đã giao</option>
+                  <option value="">All Statuses</option>
+                  <option value="3">Waiting for get order</option>
+                  <option value="4">Deliverin</option>
+                  
                  
                 </select>
                 <select className="form-select me-2" value={transportationFilter} onChange={(e) => setTransportationFilter(e.target.value)}>
             
-                <option value= "">Phương thức vận chuyển</option>
-                  <option value= "Giao hàng khẩn cấp">Giao hàng khẩn cấp</option>
-                  <option value= "Giao hàng tiêu chuẩn">Giao hàng tiêu chuẩn</option>
+                  <option value= "">Method Transport</option>
+                  <option value= "Giao hàng khẩn cấp">Express Delivery</option>
+                  <option value= "Giao hàng tiêu chuẩn">Regular Delivery</option>
                 </select>
 
                 
                 <select className="form-select me-2" value={provinceFilter} onChange={(e) => setProvinceFilter(e.target.value)}>
-                <option value="">Tỉnh thành</option>
+                <option value="">All Provinces</option>
                 {provinces?.map((province) => (
                   <option key={province.ProvinceID} value={province.ProvinceName}>
                     {province.ProvinceName}
@@ -439,20 +476,21 @@ const toggleDropdown = () => {
                 <tr>
                   <th>OrderId</th>
                   {/* <th>OrderDate</th> */}
-                  <th>Điểm đi</th>
-                  <th>Điểm đến</th>
-                  <th>Dịch vụ</th>
+                  <th>Origin</th>
+                  <th>Destination</th>
+                  <th>Service</th>
                   {/* <th>Status</th> */}
-                  <th>Cập nhật</th>
-                  <th>Chi tiết</th>
+                  <th>Tracking</th>
+                  <th>Details</th>
                   <th></th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
-                {currentOrders.length > 0 ? (
-                  currentOrders
+                {filteredOrders.length > 0 ? (
+                  filteredOrders
                     .filter(order => order.deliver === accountId && order.status > 1 && order.status < 5)
+                    .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate))
                     .map((order) => (
                       <tr key={order.orderId}>
                         <td>{order.orderId}</td>
@@ -480,7 +518,7 @@ const toggleDropdown = () => {
                           </button>
                         </td>
                         <td>
-                          <button onClick={() => handleViewOrder(order.orderId)}>Xem</button>
+                          <button onClick={() => handleViewOrder(order.orderId)}>View</button>
                         </td>
                         <td>
                           <button
@@ -514,18 +552,7 @@ const toggleDropdown = () => {
             )}
 
 
-              <nav>
-              <ul className="pagination">
-              {Array.from({ length: totalPages }).map((_, index) => (
-                <li key={index} className="page-item">
-                  <button onClick={() => paginate(index + 1)} className="page-link">
-                    {index + 1}
-                  </button>
-                </li>
-              ))}
-            </ul>
-            </nav>
-
+         
             </div>
           
           </section>
