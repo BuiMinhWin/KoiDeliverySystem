@@ -14,6 +14,9 @@ import { useNavigate } from 'react-router-dom';
 import { listOrder } from '../../services/DeliveryService';
 import { listAccount } from '../../services/EmployeeService';
 import { CiLogout } from "react-icons/ci";
+import { IoIosNotificationsOutline } from "react-icons/io";
+import { FaRegMessage } from "react-icons/fa6";
+import { IoSettingsOutline } from "react-icons/io5";
 import {  getAvatar} from "../../services/CustomerService";  
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler );
@@ -201,33 +204,35 @@ const ordersByStatusChartData = {
           <nav>
       <ul className="list-unstyled">
          <div>
-           
+            <h6>Main</h6>
             <li>
-            <a href="/"><i className="bi bi-speedometer2 me-2"> <FiHome /> </i>Trang chủ </a>
+            <a href="/"><i className="bi bi-speedometer2 me-2"> <FiHome /> </i>  Homepage</a>
             </li>
 
           </div>
 
           <div>
-          
+            <h6>Quản lí</h6>
             <li>
-              <a  href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i> Danh sách khách hàng</a>
+              <a  href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i> Danh sách nhân viên</a>
             </li>
 
             <li>
-              <a href="/accounts"><i className="bi bi-person-badge me-2"><FiUsers /></i> Danh sách nhân viên</a>
+            <a href="/accounts">
+              <i className="bi bi-person-badge me-2"><FiUsers /></i>Danh sách nhân viên
+            </a>
+          </li>
+
+            <li>
+              <a href="/ordersM"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Orders</a>
             </li>
 
             <li>
-              <a href="/ordersM"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Lịch sử đơn hàng</a>
-            </li>
-
-            <li>
-              <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Dịch vụ</a>
+              <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Services</a>
             </li>
 
           </div>
-      
+     
 
         </ul>
       </nav>
@@ -235,11 +240,10 @@ const ordersByStatusChartData = {
         </aside>
 
         <main className="dashboard col-10 ">
-        <header className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2 ">
+        <header className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
             <h4 className="title">Dashboard</h4>
 
             <header className="d-flex justify-content-between align-items-center mb-4" style={{ marginRight: '50px' }}>
-
             <div className="d-flex align-items-center search-container">
               <input 
               className="form-control me-5"
@@ -254,16 +258,16 @@ const ordersByStatusChartData = {
                   <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
                     {isDropdownOpen && ( 
                       <div className="dropdown-content">
-                          <a  href="employee-page"><CgProfile /> Thông tin tài khoản</a>
-                        <a  onClick={handleLogout}><CiLogout /> Đăng xuất</a>
+                            <a  href="employee-page"><CgProfile /> Thông tin tài khoản</a>
+                          <a  onClick={handleLogout}><CiLogout /> Đăng xuất</a>
                       </div>
                     )}
                   </div>
                 </div>
-                {/* <div className="notification-icon m-4">
+                <div className="notification-icon m-4">
                   <IoIosNotificationsOutline />
-                
-                </div> */}
+                  {/* <span className="notification-text">somethinghere</span> */}
+                </div>
               
           </header>
           
@@ -288,7 +292,7 @@ const ordersByStatusChartData = {
             
             </div>
             <div className="card revenue">
-              <h3>Đơn chờ duyệt</h3>
+              <h3>Đơn sự cố</h3>
               <p>{stats.totalErrors}</p> 
             </div>
           </section>
@@ -299,8 +303,8 @@ const ordersByStatusChartData = {
           <ul>
             {Object.entries(deliveryOrderCounts)
               .map(([accountId, count]) => ({ accountId, count }))
-              .sort((a, b) => b.count - a.count) 
-              .slice(0, 10) 
+              .sort((a, b) => b.count - a.count) // Sắp xếp theo count giảm dần
+              .slice(0, 10) // Giới hạn 10 người
               .map(({ accountId, count }) => (
                 <li key={accountId}>
                   Staff ID: {accountId}, Orders Delivered: {count}
@@ -313,8 +317,8 @@ const ordersByStatusChartData = {
             <ul>
             {Object.entries(salesOrderCounts)
               .map(([accountId, count]) => ({ accountId, count }))
-              .sort((a, b) => b.count - a.count) 
-              .slice(0, 10) 
+              .sort((a, b) => b.count - a.count) // Sắp xếp theo count giảm dần
+              .slice(0, 10) // Giới hạn 10 người
               .map(({ accountId, count }) => (
                 <li key={accountId}>
                   Staff ID: {accountId}, Orders Delivered: {count}
@@ -327,11 +331,11 @@ const ordersByStatusChartData = {
         <section className="statistics mt-4 justify-content-between border-top pt-3">
         <div className="row">
           <div className="chart col-6">
-            <h2>Tổng đơn</h2>
+            <h2>Orders by Status</h2>
             {orders.length > 0 ? (
               <Line data={ordersByStatusChartData} options={chartOptions} />
             ) : (
-              <p>Đang tính toán</p>
+              <p>No orders</p>
             )}
           </div>
           <div className="profits col-6">

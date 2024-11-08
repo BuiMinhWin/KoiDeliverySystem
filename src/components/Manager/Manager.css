@@ -21,7 +21,6 @@
   flex-direction: column;
 }
 
-
 .manager-sidebar{
   width: 250px;
   display: flex;
@@ -30,7 +29,6 @@
   padding-left: 70px;
   
 }
-
 
 .sidebar .profile-img {
   width: 80px;
@@ -52,7 +50,6 @@
 ul.list-unstyled li a {
   color: #fff;
   padding: 10px;
-  white-space: nowrap;
   display: block;
   text-decoration: none;
 }
