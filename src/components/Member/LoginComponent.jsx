@@ -1,44 +1,45 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
-import ReCAPTCHA from 'react-google-recaptcha'; 
+import ReCAPTCHA from 'react-google-recaptcha';
 import './Login.css';
-import { loginAccount , googleLogin} from '../../services/EmployeeService';
-import { useSnackbar } from 'notistack';
+import { loginAccount, googleLogin } from '../../services/EmployeeService';
+import { useSnackbar } from 'notistack'; 
 import * as jwtJsDecode from 'jwt-js-decode';
 
 const LoginComponent = () => {
   const [userName, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [recaptchaValidated, setRecaptchaValidated] = useState(false); 
+  const [recaptchaValidated, setRecaptchaValidated] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+
   const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!recaptchaValidated) {
       enqueueSnackbar('Vui lòng xác nhận reCAPTCHA.', { variant: 'error' });
       return;
     }
-  
+
     const loginData = { userName, password };
-  
+
     try {
       const response = await loginAccount(loginData);
       const result = response?.data;
-  
+
       if (!result) {
         enqueueSnackbar('Đăng nhập thất bại. Không tìm thấy dữ liệu.', { variant: 'error' });
         return;
       }
-  
+
       localStorage.setItem('roleId', result.roleId);
       localStorage.setItem('accountId', result.accountId);
-  
+
       enqueueSnackbar('Đăng nhập thành công', { variant: 'success' });
-  
+
       switch (result.roleId) {
         case 'Manager':
           navigate('/manager');
@@ -57,7 +58,6 @@ const LoginComponent = () => {
       }
     } catch (error) {
       if (error.response && error.response.data) {
-       
         enqueueSnackbar(error.response.data.message || 'Đăng nhập thất bại. Vui lòng thử lại.', {
           variant: 'error',
         });
@@ -66,7 +66,7 @@ const LoginComponent = () => {
       }
     }
   };
-  
+
   const handleGoogleLoginSuccess = async (response) => {
     const credential = response.credential;
     if (!credential) {
@@ -77,29 +77,20 @@ const LoginComponent = () => {
     try {
       const decodedToken = jwtJsDecode.decode(credential);
       const { payload } = decodedToken;
-      
 
       const { given_name: firstName, family_name: lastName, email, picture: avatarUrl } = payload;
-      
 
       const account = {
         firstName,
-        lastName: lastName || 'Unknown',  
-        userName: userName || email,       
+        lastName: lastName || 'Unknown',
+        userName: email,
         password,
         email,
         roleId: "Customer",
-        createAt: localStorage.getItem('createAt') || new Date().toISOString(),
+        createAt: new Date().toISOString(),
       };
-      
-     
-      if (!account.lastName || !account.userName || !account.email) {
-        enqueueSnackbar('Thông tin không đầy đủ, vui lòng thử lại.', { variant: 'error' });
-        return;
-      }
 
       const response = await googleLogin(account);
-      console.log("Google login response:", response);
       const result = response?.data;
 
       if (!result) {
@@ -107,7 +98,6 @@ const LoginComponent = () => {
         return;
       }
 
-      localStorage.setItem('createAt', account.createAt);
       localStorage.setItem('roleId', result.roleId);
       localStorage.setItem('accountId', result.accountId);
 
@@ -118,17 +108,17 @@ const LoginComponent = () => {
         enqueueSnackbar('Vai trò không xác định. Please try again.', { variant: 'warning', autoHideDuration: 1000 });
       }
     } catch (error) {
-      
-      enqueueSnackbar('Có lỗi xảy ra trong quá trình đăn nhập', { variant: 'error', autoHideDuration: 1000 });
+      enqueueSnackbar('Có lỗi xảy ra trong quá trình đăng nhập', { variant: 'error', autoHideDuration: 1000 });
     }
   };
+
   const handleGoogleLoginFailure = () => {
     enqueueSnackbar('Đăng nhập thất bại, vui lòng thử lại', { variant: 'error', autoHideDuration: 1000 });
   };
 
-  const handleRecaptchaChange = () => {
+  const handleRecaptchaChange = (token) => {
     if (token) {
-      setRecaptchaValidated(true); 
+      setRecaptchaValidated(true);
     } else {
       setRecaptchaValidated(false);
     }
@@ -169,24 +159,20 @@ const LoginComponent = () => {
                 />
               </div>
               <div className="recaptcha-container">
-              <ReCAPTCHA
-                sitekey={recaptchaSiteKey}
-                onChange={handleRecaptchaChange}
-              />
-            
-            </div>
+                <ReCAPTCHA
+                  sitekey={recaptchaSiteKey}
+                  onChange={handleRecaptchaChange}
+                />
+              </div>
               <button type="submit">Đăng nhập</button>
-              
             </form>
-           
             <GoogleLogin
               clientId={import.meta.env.VITE_CLIENT_ID}
               onSuccess={handleGoogleLoginSuccess}
               onError={handleGoogleLoginFailure}
             />
-
             <div className="sign-up">
-               <a href="/reset">Forgot password?</a> <a href="/register">Đăng kí</a>
+              <a href="/reset">Forgot password?</a> <a href="/register">Đăng kí</a>
             </div>
           </div>
         </div>
