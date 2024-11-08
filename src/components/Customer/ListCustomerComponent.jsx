@@ -146,13 +146,6 @@ const ListEmployeeComponent = () => {
             </li>
             {isAccountDropdownOpen && (
               <ul className="list-unstyled ms-3">
-                 <li>
-                 
-                 <a href="#" onClick={addNewAccount}>
-                   <i className="bi bi-person-badge me-2"> <IoMdAddCircle  /> </i> Tạo mới
-                 </a>
-                </li>
-             
                <li>
               
                  <a href="#" onClick={handleOpenActiveModal}>
@@ -172,8 +165,6 @@ const ListEmployeeComponent = () => {
             <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Danh sách dịch vụ</a>
           </li>
 
-          
-       
       </ul>
       </nav>
       </div>
@@ -204,9 +195,6 @@ const ListEmployeeComponent = () => {
                   )}
                 </div>
               </div>
-            
-
-            
 
             <div className="notification-icon m-4">
                 <IoIosNotificationsOutline />
