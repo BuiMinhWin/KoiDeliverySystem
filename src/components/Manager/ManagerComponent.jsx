@@ -204,15 +204,15 @@ const ordersByStatusChartData = {
           <nav>
       <ul className="list-unstyled">
          <div>
-            <h6>Main</h6>
+           
             <li>
-            <a href="/"><i className="bi bi-speedometer2 me-2"> <FiHome /> </i>  Homepage</a>
+            <a href="/"><i className="bi bi-speedometer2 me-2"> <FiHome /> </i>Trang chủ </a>
             </li>
 
           </div>
 
           <div>
-            <h6>List</h6>
+          
             <li>
               <a  href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i> Danh sách khách hàng</a>
             </li>
@@ -311,7 +311,7 @@ const ordersByStatusChartData = {
           </ul>
         </div>
           <div className="sales-list col-6">
-            <h2>TOP Sales</h2>
+            <h2>Top Sales Staff</h2>
             <ul>
             {Object.entries(salesOrderCounts)
               .map(([accountId, count]) => ({ accountId, count }))
@@ -333,7 +333,7 @@ const ordersByStatusChartData = {
             {orders.length > 0 ? (
               <Line data={ordersByStatusChartData} options={chartOptions} />
             ) : (
-              <p>No orders</p>
+              <p>Đang tính toán</p>
             )}
           </div>
           <div className="profits col-6">
@@ -341,7 +341,7 @@ const ordersByStatusChartData = {
             {orders.length > 0 ? (
               <Pie data={ordersByStatusPieData} />
             ) : (
-              <p>Wait for calculation</p>
+              <p>Đang tính toán</p>
             )}
           </div>
         </div>

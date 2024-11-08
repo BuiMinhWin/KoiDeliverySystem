@@ -21,6 +21,10 @@
   flex-direction: column;
 }
 
+a {
+  white-space: nowrap; /* Giữ tất cả nội dung trên cùng một dòng */
+}
+
 .manager-sidebar{
   width: 250px;
   display: flex;
@@ -28,6 +32,9 @@
   position: fixed;
   padding-left: 70px;
   
+}
+.dropdown-content{
+  margin-right: 10px;
 }
 
 .sidebar .profile-img {
@@ -37,7 +44,11 @@
   margin-bottom: 10px;
 }
 
-
+.sidebar a {
+  display: flex; 
+  align-items: center; 
+  white-space: nowrap; 
+}
 
 .sidebar nav ul li {
   margin-bottom: 15px;
@@ -46,6 +57,7 @@
 ul.list-unstyled li a {
   color: #fff;
   padding: 10px;
+  white-space: nowrap;
   display: block;
   text-decoration: none;
 }
