@@ -32,7 +32,7 @@ const OrderReport = () => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get(
-          "http://koideliverysystem.id.vn:8080/api/orders"
+          "/api/orders"
         );
         const accountId = localStorage.getItem("accountId");
 
