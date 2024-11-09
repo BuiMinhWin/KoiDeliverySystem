@@ -10,6 +10,8 @@ import DeliveryStatus from '../../pages/DeliveryStatus/DeliveryStatus'; // Impor
 import { logout } from '../../components/Member/auth';
 import { getAvatar } from '../../services/CustomerService';
 import axios from "axios";
+
+
 const Homepage = () => {
 
   const [activeTab, setActiveTab] = useState('tracking'); // State để quản lý tab
@@ -17,6 +19,8 @@ const Homepage = () => {
   const [trackingResult, setTrackingResult] = useState(null); // State cho kết quả theo dõi
   const navigate = useNavigate();
   const [avatar, setAvatar] = useState(null); 
+  const [dialogOpen, setDialogOpen] = useState(false);
+
 
   //autocomplete
 
@@ -33,9 +37,27 @@ const Homepage = () => {
   const accountId = localStorage.getItem('accountId');
   // console.log("Stored Account ID:", accountId);
 
+   const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+
+  const handleCreateOrderClick = (event) => {
+    event.preventDefault();
+    if (roleId) {
+      navigate('/form'); 
+    } else {
+      navigate('/login'); 
+    }
+  };
+
 
   const handleLogout = () => {
     logout();
@@ -197,15 +219,31 @@ const Homepage = () => {
           <img src={logo} className="logo" alt="Logo" />
           <a className="nav-link" onClick={() => navigate('/')}>Trang Chủ</a>
           {/* Dropdown Dịch Vụ */}
-          <div className="dropdown">
+          {!roleId ? ( 
+            <>
+             <div className="dropdown">
             <a href="#" className="nav-link">Dịch Vụ</a>
             <div className="dropdown-content">
               <a href="/login">Tạo Đơn</a>
+              <a href="/Policy">Quy định vận chuyển</a>
+              <a href="/Promotion">Chương trình khuyến mãi</a>
+            </div>
+          </div>
+          <a href="/AboutUs" className="nav-link">Giới Thiệu</a> 
+            </>
+           ) : (
+            <>
+            <div className="dropdown">
+            <a href="#" className="nav-link">Dịch Vụ</a>
+            <div className="dropdown-content">
+              <a href="/form">Tạo Đơn</a>
               <a href="#">Quy định vận chuyển</a>
               <a href="#">Chương trình khuyến mãi</a>
             </div>
           </div>
-          <a href="/AboutUs" className="nav-link">Giới Thiệu</a>
+          <a href="/AboutUs" className="nav-link">Giới Thiệu</a> 
+            </>
+          )} 
         </div>
         
         <div className="navbar-right">
@@ -257,6 +295,10 @@ const Homepage = () => {
       >
         TẠO ĐƠN TẠI ĐÂY
       </button>  
+      {/* <Button onClick={handleOpenDialog}>
+        Tạo đơn
+      </Button>
+      <ShippingDialog open={dialogOpen} onClose={handleCloseDialog} /> */}
 
     </header>
 
@@ -444,7 +486,7 @@ const Homepage = () => {
     {/* The end section */}
     <header className="order-header">
         <h1>Bắt đầu tạo đơn với Koi Express</h1>
-        <button className="order-btn-end" onClick={() => navigate('/login')}>TẠO ĐƠN TẠI ĐÂY</button>  
+        <button className="order-btn-end" onClick={(handleCreateOrderClick)}>TẠO ĐƠN TẠI ĐÂY</button>  
       </header>
 
       {/* Footer */}
@@ -472,13 +514,12 @@ const Homepage = () => {
 
         {/* Cột 2: Dịch vụ */}
         <div className="footer-column">
-          <h4>Dịch Vụ</h4>
-          <a href="#">Theo Dõi Đơn Hàng</a><br />
-          {/* <a href="#">Ước Tính Chi Phí</a><br />
-          <a href="/login">Tạo đơn hàng</a><br /> */}
-          <a href="#">Quy định vận chuyển</a><br />
-          <a href="#">Chương trình khuyến mãi</a>
-        </div>
+        <h4>Dịch Vụ</h4>
+        <a href="#" onClick={handleCreateOrderClick}>Tạo Đơn</a><br />
+        <a href="/Policy">Quy định vận chuyển</a><br />
+        <a href="/Promotion">Chương trình khuyến mãi</a>
+      </div>
+
 
         {/* Cột 3: Giới Thiệu */}
         <div className="footer-column">
@@ -504,4 +545,4 @@ const Homepage = () => {
 }
 
 
-export default Homepage;  
+export default Homepage;

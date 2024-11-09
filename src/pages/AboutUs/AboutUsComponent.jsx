@@ -30,6 +30,15 @@ const Homepage = () => {
     navigate("/");
   };
 
+  const handleCreateOrderClick = (event) => {
+    event.preventDefault();
+    if (roleId) {
+      navigate('/form'); 
+    } else {
+      navigate('/login'); 
+    }
+  };
+
 
   const handleTrackingSubmit = () => {
     if (trackingCode) {
@@ -72,7 +81,21 @@ const Homepage = () => {
           <img src={logo} className="logo" alt="Logo" />
           <a className="nav-link" onClick={() => navigate('/')}>Trang Chủ</a>
           {/* Dropdown Dịch Vụ */}
-          <div className="dropdown">
+          {!roleId ? ( 
+            <>
+             <div className="dropdown">
+            <a href="#" className="nav-link">Dịch Vụ</a>
+            <div className="dropdown-content">
+              <a href="/login">Tạo Đơn</a>
+              <a href="/Policy">Quy định vận chuyển</a>
+              <a href="/Promotion">Chương trình khuyến mãi</a>
+            </div>
+          </div>
+          <a href="/AboutUs" className="nav-link">Giới Thiệu</a> 
+            </>
+           ) : (
+            <>
+            <div className="dropdown">
             <a href="#" className="nav-link">Dịch Vụ</a>
             <div className="dropdown-content">
               <a href="/form">Tạo Đơn</a>
@@ -80,7 +103,9 @@ const Homepage = () => {
               <a href="#">Chương trình khuyến mãi</a>
             </div>
           </div>
-          <a href="/AboutUs" className="nav-link">Giới Thiệu</a>
+          <a href="/AboutUs" className="nav-link">Giới Thiệu</a> 
+            </>
+          )} 
         </div>
         
         <div className="navbar-right">
@@ -106,12 +131,6 @@ const Homepage = () => {
         
       </div>
 
-        {/* <div className="navbar-right">
-          <a href="#" className="nav-link support-link"><i className="fas fa-question-circle"></i>Hỗ Trợ</a>
-          <button className="register-btn" onClick={() => navigate('/register')}>Đăng Ký</button>
-          <button className="login-btn" onClick={() => navigate('/login')}>Đăng Nhập</button>  
-        </div> */}
-              
         
       </nav>
 
@@ -119,7 +138,8 @@ const Homepage = () => {
       <header className="homepage-header">
         <h1 className='title-1'>VẬN CHUYỂN CÁ KOI</h1>
         <h1 className='title-2'>GẦN GŨI - TIN CẬY - HIỆU QUẢ</h1>
-        <button className="order-btn" onClick={() => navigate('/form')}>TẠO ĐƠN TẠI ĐÂY</button>  
+          
+          <button className="order-btn" onClick={(handleCreateOrderClick)}>TẠO ĐƠN TẠI ĐÂY</button>
       </header>
 
       {/* Main content */}
@@ -204,8 +224,9 @@ const Homepage = () => {
 
     {/* The end section */}
     <header className="order-header">
-        <h1>Bắt đầu tạo đơn với Koi Express</h1>
-        <button className="order-btn-end" onClick={() => navigate('/login')}>TẠO ĐƠN TẠI ĐÂY</button>  
+      <h1>Bắt đầu tạo đơn với Koi Express</h1>
+      <button className="order-btn-end" onClick={(handleCreateOrderClick)}>TẠO ĐƠN TẠI ĐÂY</button>  
+       
       </header>
 
       {/* Footer */}
@@ -233,13 +254,11 @@ const Homepage = () => {
 
         {/* Cột 2: Dịch vụ */}
         <div className="footer-column">
-          <h4>Dịch Vụ</h4>
-          <a href="#">Theo Dõi Đơn Hàng</a><br />
-          {/* <a href="#">Ước Tính Chi Phí</a><br />
-          <a href="/login">Tạo đơn hàng</a><br /> */}
-          <a href="#">Quy định vận chuyển</a><br />
-          <a href="#">Chương trình khuyến mãi</a>
-        </div>
+        <h4>Dịch Vụ</h4>
+        <a href="#" onClick={handleCreateOrderClick}>Tạo Đơn</a><br />
+        <a href="#">Quy định vận chuyển</a><br />
+        <a href="#">Chương trình khuyến mãi</a>
+      </div>
 
         {/* Cột 3: Giới Thiệu */}
         <div className="footer-column">
@@ -254,7 +273,6 @@ const Homepage = () => {
       
       <hr className="footer-divider" />
       
-      {/* Chính sách bảo mật, copyright và điều khoản sử dụng */}
       <div className="footer-bottom">
         <p>Chính Sách Bảo Mật | Điều Khoản Sử Dụng</p>
         <p>© 2024 Koi Express. All rights reserved.</p>

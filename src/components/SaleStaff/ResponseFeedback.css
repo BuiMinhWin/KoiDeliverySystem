@@ -1,21 +1,29 @@
 /* src/components/FeedbackResponse.css */
 .feedback-response-container {
-  max-width: 1000px;
-  margin: auto;
-  padding: 20px;
+  max-width: 1100px;
+  margin: 100px auto;
+  padding: 50px;
   border-radius: 8px;
   background-color: #f9f9f9;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.feedback-response-container h2{
+  font-size: 3rem;
+  font-weight: bold;
+}
+
 .feedback-item {
+  font: 1.5rem sans-serif;
   margin-bottom: 20px;
+  padding-bottom: 20px;
   padding: 15px;
   border-bottom: 1px solid #ddd;
 }
 
 .feedback-item p {
   margin: 5px 0;
+  padding-bottom: 20px;
 }
 
 .feedback-item button {

@@ -95,9 +95,8 @@ import './SaleStaff.css';
         const matchesMonth = monthFilter ? orderMonth === parseInt(monthFilter) : true;
         const matchesProvince = provinceFilter ? order.destination.includes(provinceFilter) : true;
         const matchesStatus = statusFilter ? order.status === parseInt(statusFilter) : true;
-        const matchesTransportation = transportationFilter ? order.freight === transportationFilter : true;
     
-        return matchesMonth && matchesProvince && matchesStatus && matchesTransportation;
+        return matchesMonth && matchesProvince && matchesStatus ;
       });
     
       const indexOfLastOrder = currentPage * ordersPerPage;
@@ -202,40 +201,24 @@ import './SaleStaff.css';
 
                   <div className="filter-bar d-flex mb-3">
                     <select className="form-select me-2" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)}>
-                      <option value="">All Months</option>
-                      <option value="1">January</option>
-                      <option value="2">February</option>
-                      <option value="3">March</option>
-                      <option value="4">April</option>
-                      <option value="5">May</option>
-                      <option value="6">June</option>
-                      <option value="7">July</option>
-                      <option value="8">August</option>
-                      <option value="9">September</option>
-                      <option value="10">October</option>
-                      <option value="11">November</option>
-                      <option value="12">December</option>
+                      <option value="">Cả năm</option>
+                      <option value="1">Tháng 1</option>
+                      <option value="2">Tháng 2</option>
+                      <option value="3">Tháng 3</option>
+                      <option value="4">Tháng 4</option>
+                      <option value="5">Tháng 5</option>
+                      <option value="6">Tháng 6</option>
+                      <option value="7">Tháng 7</option>
+                      <option value="8">Tháng 8</option>
+                      <option value="9">Tháng 9</option>
+                      <option value="10">Tháng 10</option>
+                      <option value="11">Tháng 11</option>
+                      <option value="12">Tháng 12</option>
                     </select>
                   
-                    <select className="form-select me-2" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-                      <option value="">All Statuses</option>
-                      <option value="0">Waiting for approval</option>
-                      <option value="1">In Progress</option>
-                      <option value="2">Delivering</option>
-                      <option value="3">Delivered</option>
-                    
-                    </select>
-                    <select className="form-select me-2" value={transportationFilter} onChange={(e) => setTransportationFilter(e.target.value)}>
-                      <option value="">All Transport</option>
-                      <option value="Truck">Truck</option>
-                      <option value="Van">Van</option>
-                      <option value="car">Car</option>
-                      
-                    </select>
-
-                  
+    
                   <select className="form-select me-2" value={provinceFilter} onChange={(e) => setProvinceFilter(e.target.value)}>
-                  <option value="">All Provinces</option>
+                  <option value="">Tất cả tỉnh thành</option>
                   {provinces?.map((province) => (
                     <option key={province.ProvinceID} value={province.ProvinceName}>
                       {province.ProvinceName}
@@ -266,8 +249,8 @@ import './SaleStaff.css';
                           <td>{order.origin}</td>
                           <td>{order.destination}</td>
                           <td>{order.freight}</td>
-                          <td>{order.orderDate}</td>
-                          <td>{order.shippedDate}</td>
+                          <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                          <td>{new Date (order.shippedDate).toLocaleDateString()}</td>
                           <td>{formatCurrency(order.totalPrice)}</td>   
                         <td>{statusLabels[order.status]}</td>
                         {/* <td>
@@ -305,40 +288,5 @@ import './SaleStaff.css';
       );
     };
 
-  {/* 
-  //     <div className="sale-staff-container">
-
-  //       <nav className="navbar-cus">
-  //         <div className="navbar-cus-left">
-  //           <img src={logo} className="logo" alt="Logo" />
-  //         </div>
-  //         <div className="navbar-cus-right">
-  //           <div className="dropdown" onClick={toggleDropdown}>
-  //             <img src={avatar} alt="Avatar" className="avatar" />
-  //             {isDropdownOpen && ( // Hiển thị dropdown nếu isDropdownOpen là true 
-  //               <div className="dropdown-content">
-  //                 <a href="#">Tài khoản của tôi</a>
-  //                 <a href="#">Đăng xuất</a>
-  //               </div>
-  //             )}
-  //           </div>
-  //         </div>
-  //       </nav>
-
-  //       <aside className="sidebar">
-  //         <nav className="nav flex-column">
-  //           <Link to="listsaleorder" className="nav-link">View Orders</Link>
-  //           <Link to="reports" className="nav-link">View Reports</Link>
-  //           <Link to="feedback" className="nav-link">View Feedback</Link>
-  //         </nav>
-  //       </aside>
-
-  //       <div className="content">
-  //         <Outlet /> {/* Nơi hiển thị các route con 
-  //       </div>
-
-  //     </div>*/}
-    {/* );
-  }; */}
 
   export default SaleStaffComponent;

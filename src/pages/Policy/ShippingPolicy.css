@@ -1,0 +1,756 @@
+/* src/components/Homepage.css */
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+
+.homepage-container {
+    text-align: left;
+    font-family: Arial, sans-serif;
+    margin: 0 auto;
+    width: 100%;
+    
+  }
+  
+ /* Adjust spacing for the "Hỗ Trợ" link */
+.navbar-right .nav-link.support-link {
+  margin-right: 30px; /* Add space between Hỗ Trợ and Đăng Ký */
+}
+
+/* Navbar styling */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #171B36;
+  padding: 10px 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 84px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 30px; /* Adjust this to control the spacing between items */
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 50px; /* Ensure width and height are equal */
+  height: 50px; /* Set the same value as width */
+  border-radius: 50%; /* Makes the logo circular */
+  object-fit: cover; /* Ensures the image fits inside the circle */
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  white-space: nowrap; /* Prevents breaking into a new line */
+}
+
+.nav-link:hover {
+  color: #4CAF50;
+}
+
+.navbar-right .login-btn, 
+.navbar-right .register-btn {
+  margin-left: 15px;
+}
+
+/* Buttons styling */
+.login-btn, .register-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.login-btn:hover, .register-btn:hover {
+  background-color: #45a049;
+}
+
+.register-btn {
+  background-color: #ffffff;
+  color: black;
+}
+
+.register-btn:hover {
+  background-color: #e53935;
+}
+
+  
+  /* Dropdown */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 220px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown-content a:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Show the dropdown on hover */
+  .dropdown:hover .dropdown-content {
+    display: block;
+    text-align: left;
+  }
+  
+ /* Header section */
+ .homepage-header {
+  background-image: url('../../assets/Home.png'); /* Replace with your image path */
+  background-size: cover; /* Ensures the image covers the entire header */
+  background-position: center; /* Centers the image */
+  color: white;
+  padding: 50px 0;
+  margin-top: 60px; /* To avoid the navbar overlapping */
+  height: 400px; /* Set a specific height for the header */
+}
+
+
+.homepage-header h1 {
+  /* font-size: 4rem; */
+  margin: 0;
+  /* padding-top: 20px;
+  padding-left: 150px; */
+}
+
+
+
+.title-1 {
+  display: flex;
+  justify-items: left;
+  font-family: 'Itim', cursive; /* Apply the Itim font only to this h1 */
+  font-size: 4rem; /* Keep the original size */
+  /* margin: 0; Keep the original margin */
+  padding-top: 20px;
+  padding-left: 50px;
+  color: white;
+  width: 100%;
+}
+
+.title-2 {
+  font-family: 'Itim', cursive; /* Apply the Itim font only to this h1 */
+  font-size: 4rem; /* Keep the original size */
+  padding-top: 20px;
+  padding-right: 200px;
+  margin-left: 10px;
+  color: white;
+}
+
+  .order-btn{
+    background-color: #F8A02F;
+    color: rgb(0, 0, 0);
+    border: none;
+    margin-top: 30px;
+    margin-left: 10px;
+    width: 350px;
+    font-family: Arial, sans-serif;
+    padding-top: 15px;
+    margin-left: 1000px;
+    cursor: pointer;
+    font-size: 2rem;
+    font-weight: bold;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+
+  .homepage-header p {
+    font-size: 1.2rem;
+    margin-top: 10px;
+  }
+  
+  /* Main content */
+  .homepage-content {
+    display: flex;
+    justify-content: space-around;
+    margin: 50px 0;
+  }
+  
+  .feature {
+    background-color: #f4f4f4;
+    padding: 20px;
+    width: 30%;
+    border-radius: 8px;
+  }
+  
+  .feature h2 {
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .feature p {
+    font-size: 1rem;
+    color: #777;
+  }
+  
+  /* Footer */
+  .homepage-footer-policy {
+    max-width: 2000px;
+    background-color: #f8f8f8;
+    color: white;
+    padding: 20px 0;
+  }
+  
+  .homepage-footer-policy p {
+    margin: 0;
+  }
+  
+
+/* Theo doi don, Uoc tinh chi phi */
+.homepage-main-content {
+  padding: 20px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  font-size: 25px;
+  font-weight: bold;
+  margin: 0 15px;
+  color: #000; /* Màu đen cho chữ */
+  cursor: pointer;
+  position: relative;
+}
+
+.tab-button.active {
+  color: #000;
+  border-bottom: 2px solid #F8A02F; /* Gạch chân khi được chọn */
+}
+
+.tab-button:hover {
+  color: #000; /* Đảm bảo vẫn giữ màu đen khi hover */
+}
+
+/* Section styles */
+.tab-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Đặt ô input và nút theo dõi trong cùng một hàng */
+.tracking-section {
+  display: flex;
+  flex-direction: column; /* Cột dọc mặc định */
+  align-items: center;
+  width: 100%;
+  max-width: 1200px; /* Tăng kích thước tối đa của section */
+  padding: 30px; /* Tăng padding để phần bên trong có nhiều không gian hơn */
+  border: 1px solid #ddd; /* Tăng độ dày của viền */
+  margin-top: 40px; /* Tăng khoảng cách giữa các phần */
+  margin-bottom: 40px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.tracking-input-container {
+  display: flex;
+  justify-content: space-between; /* Đặt khoảng cách giữa ô nhập và nút */
+  width: 100%;
+}
+
+.tracking-input {
+  flex-grow: 1; /* Cho phép ô nhập mã chiếm toàn bộ chiều rộng còn lại */
+  padding: 50px; /* Tăng padding để ô nhập lớn hơn */
+  height: 80px;
+  font-size: 3rem;
+  font-weight: bold;
+  border: 3px solid #ddd; /* Tăng độ dày viền của ô nhập */
+  border-radius: 6px;
+  margin-right: 25px; /* Tăng khoảng cách giữa ô nhập và nút */
+  background-color: #f0f0f0; /* Làm cho ô nhập sáng hơn để dễ nhìn */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tracking-btn {
+  background-color: #F8A02F;
+  color: rgb(0, 0, 0);
+  width: 150px; /* Tăng chiều rộng của nút */
+  padding: 10px 20px; /* Tăng kích thước padding cho nút */
+  font-size: 1.5rem; /* Tăng kích thước chữ */
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tracking-btn:hover {
+  background-color: #111111; /* Đổi màu khi hover */
+}
+
+
+/* Kết quả hiện phía dưới của ô nhập */
+.tracking-result {
+  margin-top: 10px; /* Khoảng cách phía trên */
+  width: 100%; /* Giữ kết quả nằm bên dưới ô nhập */
+  max-width: 1200px; /* Giới hạn kích thước kết quả */
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: none; /* Ẩn mặc định */
+}
+
+.tracking-result.active {
+  display: block; /* Hiện ra khi có kết quả */
+}
+
+.tracking-input:focus {
+  border-color: #000; /* Đổi màu viền thành đen khi ô nhập được chọn */
+  outline: none; /* Loại bỏ viền mặc định của trình duyệt */
+}
+
+.tracking-input-container:focus, .estimate-input:focus {
+  border-color: #c20000; /* Viền đổi màu khi được chọn */
+  outline: none;
+}
+
+/* Uoc tinh chi phi */
+
+.estimate-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  padding: 20px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.estimate-input-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px; /* Khoảng cách giữa các hàng */
+}
+
+.estimate-input-row-holder{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap:50px;
+  margin-bottom: 20px; /* Khoảng cách giữa các hàng */
+}
+
+.estimate-input {
+  width: 48%; /* Đảm bảo các ô input chiếm đều không gian */
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+
+.estimate-btn {
+  background-color: #F8A02F;
+  color: rgb(0, 0, 0);
+  width: 140px;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: flex-start; /* Canh nút tính tiền bên trái */
+}
+
+.estimate-btn:hover {
+  background-color: #000000;
+}
+
+/*Phần nội dung tại sao chọn*/
+/* Section for "Why choose Koi Express" */
+.why-choose-section {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  padding: 60px 40px;
+  background-color: #f0f0f0; /* Màu nền xám nhạt */
+  border-radius: 8px;
+}
+
+.why-choose-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 60px;
+  font-weight: bold;
+}
+
+.why-choose-content {
+  display: flex;
+  flex-wrap: wrap; /* Giúp chia các phần thành nhiều hàng nếu màn hình nhỏ */
+  justify-content: center; /* Canh giữa các phần tử */
+  gap: 15px; /* Khoảng cách nhỏ hơn giữa các phần tử */
+}
+
+
+.content-item {
+  background-color: #e0e0e0; /* Màu nền xám cho từng nội dung */
+  border-radius: 8px;
+  padding: 20px;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-bottom: 50px;
+  flex: 1 1 calc(50% - 20px); /* Chia đều 2 phần tử trên mỗi hàng và nhỏ hơn trước */
+  max-width: 600px; /* Giới hạn kích thước tối đa của mỗi content-item */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+}
+
+.content-item h3 {
+  font-size: 1.6rem;
+  margin-bottom: 15px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.content-item p {
+  font-size: 1.2rem;
+  color: #555;
+  text-align: left;
+}
+
+
+.blog-intro-section-Koi {
+  display: flex; /* Sử dụng flexbox để chia đôi */
+  justify-content: space-between; /* Căn giữa các phần */
+  align-items: stretch; /* Đảm bảo các phần tử có chiều cao bằng nhau */
+  background-color: white; /* Màu nền trắng */
+  padding: 40px; /* Padding cho phần giới thiệu */
+  border-radius: 8px; /* Bo góc */
+  margin-top: 30px; /* Khoảng cách với phần trên */
+  margin-bottom: 40px;
+}
+
+.blog-content {
+  flex: 1; /* Chiếm không gian còn lại */
+  padding-right: 40px; /* Khoảng cách giữa nội dung và hình ảnh */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Căn giữa nội dung theo chiều dọc */
+}
+
+.blog-title {
+  font-size: 2.2rem; /* Kích thước chữ tiêu đề */
+  margin-bottom: 50px; /* Khoảng cách dưới tiêu đề */
+  text-align: center;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.blog-description {
+  font-size: 1.2rem; /* Kích thước chữ mô tả */
+  color: #555; /* Màu chữ */
+  margin-bottom: 30px; /* Khoảng cách dưới mô tả */
+}
+
+.blog-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #133D7D; /* Màu nền nút */
+  width: 300px; /* Chiều rộng của nút */
+  font-size: 1.8rem;
+  color: white; /* Màu chữ nút */
+  padding: 10px 20px; /* Padding cho nút */
+  border: none; /* Bỏ viền */
+  cursor: pointer; /* Con trỏ chuột */
+  margin: 20px auto; /* Đẩy nút xuống phía dưới và căn giữa */
+}
+
+.blog-btn:hover {
+  background-color: #0056b3; /* Màu nền khi hover */
+}
+
+.blog-image-Koi {
+  flex: 1; /* Chiếm không gian còn lại */
+  text-align: right; /* Canh hình bên phải */
+  display: flex;
+  align-items: center; /* Căn giữa hình ảnh theo chiều dọc */
+}
+
+.blog-image-Koi img {
+  max-width: 100%; /* Đảm bảo hình ảnh không vượt quá chiều rộng của phần */
+  border-radius: 8px; /* Bo góc hình ảnh */
+}
+
+/* Phần Vận Chuyển Cá Koi An Toàn, Đến Đích Bình Yên */
+
+.transport-section {
+  margin-top: 70px; /* Khoảng cách với phần trên */
+  padding: 40px; /* Padding cho phần */
+  background-color: #133D7D; /* Màu nền xanh nhạt */
+  color: white;
+  border-radius: 8px; /* Bo góc */
+  text-align: center; /* Căn giữa nội dung */
+}
+
+.transport-title {
+  font-size: 2.2rem; /* Kích thước chữ tiêu đề */
+  font-weight: bold;
+  margin-bottom: 60px; /* Khoảng cách dưới tiêu đề */
+}
+
+.transport-description {
+  font-size: 1.6rem; /* Kích thước chữ mô tả */
+  color: white; /* Màu chữ */
+  margin-bottom: 60px; /* Khoảng cách dưới mô tả */
+}
+
+/* Các tùy chọn dịch vụ */
+.service-options {
+  font-family: 'Itim', cursive; 
+  display: flex; /* Sử dụng flexbox để chia đôi */
+  justify-content: center; /* Căn giữa các phần */
+  font-size: 2rem;
+  gap: 140px; /* Khoảng cách giữa các dịch vụ */
+}
+
+/* FAQs.css */
+.faqs-section {
+  margin-top: 40px;
+  padding: 20px;
+}
+
+.faqs-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.faq-item {
+  border-bottom: 1px solid #ddd; /* Gạch chân dưới mỗi câu hỏi */
+  padding: 15px 0;
+  cursor: pointer;
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.faq-arrow {
+  transition: transform 0.3s ease; /* Chuyển động xoay của mũi tên */
+}
+
+.faq-arrow.active {
+  transform: rotate(90deg); /* Xoay mũi tên khi mở */
+}
+
+.faq-answer {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+
+/*Order header*/
+.order-header{
+    background-image: url('../../assets/OrderHeader.png'); /* Replace with your image path */
+    background-size: cover; /* Ensures the image covers the entire header */
+    background-position: center; /* Centers the image */
+    color: white;
+    padding: 50px 0;
+    margin-top: 60px; /* To avoid the navbar overlapping */
+    height: 300px; /* Set a specific height for the header */
+}
+
+.order-header h1 {
+  display: flex;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: bolder;
+  color: white;
+}
+
+.order-btn-end{
+  background-color: #F8A02F;
+    color: rgb(0, 0, 0);
+    border: none;
+    margin-top: 60px;
+    margin-left: 10px;
+    width: 350px;
+    font-family: Arial, sans-serif;
+    padding-top: 15px;
+    margin-left: 600px;
+    cursor: pointer;
+    font-size: 2rem;
+    font-weight: bold;
+    border-radius: 5px;
+    white-space: nowrap;
+}
+
+/*Footer*/
+/* Footer Styles */
+.homepage-footer {
+  background-color: #f8f8f8;
+  padding: 20px;
+  text-align: center;
+}
+
+.footer-contact {
+  margin-left: 40px;
+  font-family: 'Itim', cursive;
+  color: #F8A02F;
+  font-style: italic;
+  font-size: 2.8rem;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.footer-number {
+  margin-left: 40px;
+  color:#000;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.footer-email {
+  margin-left: 40px;
+  color:#000;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.footer-divider {
+  border: 1px solid #ddd;
+  margin: 20px 0;
+}
+
+.footer-columns {
+  margin-left: 120px;
+  gap: 40px;
+  display: flex;
+  justify-content: space-around;
+  text-align: left;
+  margin-bottom: 20px;
+  color:rgb(0, 0, 0);
+  font-size: 1.2rem;
+}
+
+.footer-column {
+  width: 22%;
+}
+
+.footer-column h4 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.footer-link{
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.footer-column a {
+  color: #333;
+  text-decoration: none;
+}
+
+.footer-column a:hover {
+  text-decoration: underline;
+}
+
+.footer-logo {
+  width: 100px;
+  margin-bottom: 10px;
+  border-radius: 50%; /* Makes the logo circular */
+  object-fit: cover;
+}
+
+.footer-bottom {
+  font-size: 14px;
+  color: #666;
+}
+
+.footer-bottom p {
+  margin: 5px 0;
+}
+
+
+/* src/components/ShippingPolicy.css */
+
+.shipping-policy-container {
+    max-width: max-content;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .shipping-policy-header {
+    text-align: center;
+  }
+  
+  .logo {
+    max-width: 100px;
+  }
+  
+  .policy-section {
+    margin-top: 80px;
+  }
+  
+  .policy-section h2,
+  .policy-section h3 {
+    color: #333;
+  }
+  
+  .policy-section ul {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+  
+
+  
