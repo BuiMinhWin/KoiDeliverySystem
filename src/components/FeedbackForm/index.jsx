@@ -119,7 +119,7 @@ const FeedbackForm = ({ orderId }) => {
           backgroundColor: "#fff",
         }}
       >
-       <Typography
+        <Typography
           variant="h6"
           sx={{ textDecoration: "underline" }}
           gutterBottom
@@ -127,18 +127,19 @@ const FeedbackForm = ({ orderId }) => {
           Feedback của bạn:
         </Typography>
         <StyledRating value={existingFeedback.rating} readOnly />
-        <Typography>Bình luận: {existingFeedback.comment}</Typography>
+        <Typography>Comment: {existingFeedback.comment}</Typography>
         {/* Display responses if available */}
-
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="subtitle1">Phản hồi:</Typography>
-
-          <Paper sx={{ p: 2, mb: 1 }}>
-            <Typography>
-              {existingFeedback.responses.comment}
-            </Typography>
-          </Paper>
-        </Box>
+        {existingFeedback.responses &&
+          existingFeedback.responses.length > 0 && (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="subtitle1">Responses:</Typography>
+              {existingFeedback.responses.map((response) => (
+                <Paper key={response.feedbackId} sx={{ p: 2, mb: 1 }}>
+                  <Typography>Response: {response.comment}</Typography>
+                </Paper>
+              ))}
+            </Box>
+          )}
       </Box>
     );
   }
