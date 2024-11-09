@@ -66,7 +66,7 @@ const RedStepLabel = styled(StepLabel)(({ theme }) => ({
 }));
 
 const REST_API_BANK_URL =
-  "/api/v1/payment/vn-pay";
+ "/api/v1/payment/vn-pay";
 
 const formatCurrency = (value) => {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
