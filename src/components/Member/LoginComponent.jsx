@@ -178,7 +178,7 @@ const LoginComponent = () => {
               onError={handleGoogleLoginFailure}
             />
             <div className="sign-up">
-              <a href="/reset">Forgot password?</a> <a href="/register">Đăng kí</a>
+              <a href="/reset">Quên mật khẩu </a> <a href="/register">Đăng kí</a>
             </div>
           </div>
         </div>

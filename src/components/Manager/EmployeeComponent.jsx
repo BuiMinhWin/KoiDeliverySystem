@@ -166,7 +166,7 @@ const EmployeeComponent = () => {
   return (
     <div className='container1'>
       <div className='form-container col-md-4 offset-md-4'>
-        <h2 className='text-center'>{accountId ? 'Update Employee' : 'Add Employee'}</h2>
+        <h2 className='text-center'>{accountId ? 'Cập nhật tài khoản' : 'Tạo tài khoản'}</h2>
         <form onSubmit={saveOrUpdateAccount}>
           <div>
             <input

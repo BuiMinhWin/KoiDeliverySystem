@@ -167,7 +167,7 @@ const ServiceComponent = () => {
               <a href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i>Danh sách nhân viên</a>
             </li>
             <li>
-              <a href="/accounts"><i className="bi bi-person-badge me-2"><FiUsers /></i> Danh sách nhân viên</a>
+              <a href="/accounts"><i className="bi bi-person-badge me-2"><FiUsers /></i> Danh sách khách hàng</a>
             </li>
 
             <li onClick={toggleServiceDropdown} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
@@ -365,14 +365,14 @@ const ServiceComponent = () => {
                               className="btn btn-danger btn-sm"
                               onClick={() => handleDeactivateService(service.servicesId)}
                             >
-                                
+                              Vô hiệu hóa  
                             </button>
                           ) : (
                             <button
                               className="btn btn-success btn-sm"
                               onClick={() => handleActivateService(service.servicesId)}
                             >
-                              Activate
+                              Kích hoạt
                             </button>
                           )}
                         </td>

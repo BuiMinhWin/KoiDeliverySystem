@@ -152,7 +152,6 @@ const CheckoutPage = () => {
   const handleCancelOrder = async () => {
     try {
       await cancelOrder(orderId);
-      alert("Order canceled successfully.");
       navigate("/order-report");
     } catch (error) {
       console.error("Error canceling order:", error);

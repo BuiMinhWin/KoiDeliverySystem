@@ -64,7 +64,7 @@ const handleSubmit = (e) => {
         <div className="background-giphy"></div>
         <div className="register-form-container">
           <div className="register-form-box">
-            <h2>Tạo tài</h2>
+            <h2>Tạo tài khoản</h2>
             <form onSubmit={handleSubmit} className="form-grid">
               <div className="left-column">
                 <div className="input-group">
