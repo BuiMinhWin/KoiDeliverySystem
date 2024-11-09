@@ -36,6 +36,7 @@ import Support from "../pages/Support/SupportComponent";
 import PaymentOutcome from "../pages/CheckoutPage/PaymentOutcome";
 import Policy from "../pages/Policy/ShippingPolicy";
 import Promotion from "../pages/Promotion/Promotion";
+
 function index() {
   return (
       
@@ -51,6 +52,7 @@ function index() {
       <Route path="/Support" element={<Support />} />
       <Route path="/Policy" element={<Policy />} />
       <Route path="/Promotion" element={<Promotion />} />
+
       <Route path="/employee-page" element={<EmployeePage />} />
      
       <Route path="/reset" element={<ResetPasswordComponent />} />
