@@ -116,26 +116,6 @@ const toggleDropdown = () => {
     setSearchQuery(event.target.value.toLowerCase());
   };
 
-  const API_KEY =import.meta.env.VITE_GOONG_API_KEY; // Thay bằng API Key của bạn
-
-  const reverseGeocodeAddress = async (lat, long) => {
-    try {
-      const response = await axios.get(
-        `https://rsapi.goong.io/Geocode?latlng=${lat},${long}&api_key=${API_KEY}`
-      );
-      const data = response.data;
-      if (data.results && data.results.length > 0) {
-        const address = data.results[0].formatted_address; // Get the formatted address
-        return address; // Return the full address
-      } else {
-        throw new Error('No results found for the address.');
-      }
-    } catch (error) {
-      console.error('Error fetching geocode:', error);
-      throw new Error('Failed to fetch geocode.');
-    }
-  };
- 
   const filteredOrders = orders.filter(order => {
     const orderMonth = new Date(order.orderDate).getMonth() + 1;
     const matchesMonth = monthFilter ? orderMonth === parseInt(monthFilter) : true;
@@ -186,21 +166,7 @@ const toggleDropdown = () => {
           <a href="/delivery"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Ordering</a>
         </li>
 
-        <li>
-          <a href="#"><i className="bi bi-chat-dots me-2"><FaRegCalendarAlt /></i> Calendar</a>
-         </li>
-
-        <li>
-          <a href="#"><i className="bi bi-life-preserver me-2"><MdSupportAgent /></i> Help & Support</a>
-        </li>
-
-        <li>
-          <a href="#"><i className="bi bi-chat-dots me-2"> <FaRegMessage/> </i>  Messages</a>
-        </li>
-
-        <li>
-          <a href="#"><i className="bi bi-gear me-2"><IoSettingsOutline /></i> Settings</a>
-         </li>
+       
        
       </ul>
       </nav>
@@ -223,13 +189,13 @@ const toggleDropdown = () => {
            />
           </div>
 
-              <div className="navbar-cus-right">
+          <div className="navbar-cus-right">
                 <div className="dropdown" onClick={toggleDropdown}>
                 <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
                   {isDropdownOpen && ( 
                     <div className="dropdown-content">
-                      <a  href="user-page"><CgProfile /> View Profile</a>
-                      <a  onClick={handleLogout}><CiLogout /> Logout</a>
+                      <a  href="employee-page"><CgProfile /> Thông tin tài khoản</a>
+                      <a  onClick={handleLogout}><CiLogout /> Đăng xuất</a>
                     </div>
                   )}
                 </div>
@@ -296,13 +262,13 @@ const toggleDropdown = () => {
                 <thead>
                   <tr>
                   <th>OrderId</th>
-                  <th>Origin</th>
-                  <th>OrderDate</th>
-                  <th>Destination</th>
-                  <th>ShippedDate</th>
-                  <th>Freight</th>
-                  <th>Status</th>
-                  <th>Details</th>
+                  <th>Điểm đi</th>
+                  <th>Ngày tạo đơn</th>
+                  <th>Điểm đến</th>
+                  <th>Ngày giao</th>
+                  <th>Phương thức</th>
+                  <th>Trạng thái</th>
+                  <th>Xem</th>
                   </tr>
                 </thead>
                 <tbody>
