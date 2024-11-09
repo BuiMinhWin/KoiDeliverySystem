@@ -43,7 +43,6 @@ const buttonStyles = {
   justifyContent: "center",
 };
 
-
 const FeedbackForm = ({ orderId }) => {
   const [existingFeedback, setExistingFeedback] = useState(null);
   const [accountId, setAccountId] = useState("");
@@ -78,10 +77,12 @@ const FeedbackForm = ({ orderId }) => {
     },
     validationSchema: Yup.object({
       rating: Yup.number()
-        .required("Please provide a rating.")
-        .min(1, "Minimum rating is 1.")
+        .required("Vui lòng để lại đánh giá của bạn.")
+        .min(1, "Đánh giá thấp nhất là 1.")
         .max(5, "Maximum rating is 5."),
-      comment: Yup.string().required("Comment is required."),
+      comment: Yup.string()
+        .nullable()
+        .max(500, "Mỗi feedback chỉ được tối đa 500 kí tự"),
     }),
     onSubmit: async (values) => {
       try {
@@ -187,7 +188,7 @@ const FeedbackForm = ({ orderId }) => {
       {formik.touched.comment && formik.errors.comment && (
         <Typography color="error">{formik.errors.comment}</Typography>
       )}
-      <Button sx={{...buttonStyles}} variant="contained" type="submit">
+      <Button sx={{ ...buttonStyles }} variant="contained" type="submit">
         Gửi Feedback
       </Button>
     </Box>

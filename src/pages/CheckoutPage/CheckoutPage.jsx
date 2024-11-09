@@ -239,11 +239,11 @@ const CheckoutPage = () => {
   ];
 
   const getActiveStep = (status, paymentStatus) => {
-    if (status === 0) return 1; // "Đang xử lí"
-    if (status === 1) return 2; // "Đã duyệt"
-    if (status === 2) return 3; // "Tài xế nhận đơn"
-    if (status === 3) return 4; // "Đã lấy hàng"
-    if (status === 4) return 5; //"Đang giao"
+    if (status === 0) return 0; // "Đang xử lí"
+    if (status === 1) return 1; // "Đã duyệt"
+    if (status === 2) return 2; // "Tài xế nhận đơn"
+    if (status === 3) return 3; // "Đã lấy hàng"
+    if (status === 4) return 4; //"Đang giao"
     if (status === 5) return paymentStatus === 0 ? 5 : 6;
     return 0; // Default case
   };
