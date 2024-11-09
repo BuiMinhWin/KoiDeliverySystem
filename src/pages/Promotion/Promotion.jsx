@@ -113,8 +113,8 @@ const Promotion = () => {
           <div className="footer-column">
             <h4>Dịch Vụ</h4>
             <a href="#" onClick={handleCreateOrderClick}>Tạo Đơn</a><br />
-            <a href="/shipping-policy">Quy định vận chuyển</a><br />
-            <a href="/promotion">Chương trình khuyến mãi</a>
+            <a href="/Policy">Quy định vận chuyển</a><br />
+            <a href="/Promotion">Chương trình khuyến mãi</a>
           </div>
 
           {/* Cột 3: Giới Thiệu */}
