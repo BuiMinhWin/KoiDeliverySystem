@@ -47,8 +47,8 @@ const LoginComponent = () => {
         case 'Delivery':
           navigate('/delivery');
           break;
-        case 'Customer':
-          navigate('/customer');
+          case 'Customer':
+            navigate('/');
           break;
         case 'Sales':
           navigate('/salestaff');
@@ -89,6 +89,11 @@ const LoginComponent = () => {
         roleId: "Customer",
         createAt: new Date().toISOString(),
       };
+      if (!account.lastName || !account.userName || !account.email) {
+        enqueueSnackbar('Thông tin không đầy đủ, vui lòng thử lại.', { variant: 'error' });
+        return;
+      }
+
 
       const response = await googleLogin(account);
       const result = response?.data;
@@ -98,6 +103,7 @@ const LoginComponent = () => {
         return;
       }
 
+      localStorage.setItem('createAt', account.createAt);
       localStorage.setItem('roleId', result.roleId);
       localStorage.setItem('accountId', result.accountId);
 
