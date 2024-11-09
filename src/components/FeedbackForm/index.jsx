@@ -53,7 +53,7 @@ const FeedbackForm = ({ orderId }) => {
       try {
         const feedback = await getFeedbackByOrderId(orderId);
         if (feedback && feedback.length > 0) {
-          setExistingFeedback(feedback[0]);
+          setExistingFeedback(feedback);
         } else {
           setExistingFeedback(null);
         }
