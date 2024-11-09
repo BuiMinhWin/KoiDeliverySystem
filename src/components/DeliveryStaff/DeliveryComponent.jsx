@@ -106,28 +106,47 @@ const toggleDropdown = () => {
  
     if (accountId) fetchAccount();
 
-    const getAllOrders = () => {
-      listOrder()
-        .then((response) => {
-          if (Array.isArray(response.data)) {
-            setOrders(response.data);
-            const filteredOrders = response.data.filter(order => order.deliver === accountId);
-            localStorage.setItem("orders", JSON.stringify(filteredOrders));
-            console.log("Orders from localStorage:", JSON.parse(localStorage.getItem("orders")));
-          } else {
-            console.error("API response is not an array", response.data);
-            setOrders([]);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching : ", error);
-        });
-    };
+    // const getAllOrders = () => {
+    //   listOrder()
+    //     .then((response) => {
+    //       if (Array.isArray(response.data)) {
+    //         setOrders(response.data);
+    //         const filteredOrders = response.data.filter(order => order.deliver === accountId);
+    //         localStorage.setItem("orders", JSON.stringify(filteredOrders));
+    //         console.log("Orders from localStorage:", JSON.parse(localStorage.getItem("orders")));
+    //       } else {
+    //         console.error("API response is not an array", response.data);
+    //         setOrders([]);
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error fetching : ", error);
+    //     });
+    // };
     
 
     fetchProvinces();
     getAllOrders();
   }, []);
+
+  const getAllOrders = () => {
+    listOrder()
+      .then((response) => {
+        if (Array.isArray(response.data)) {
+          setOrders(response.data);
+          const filteredOrders = response.data.filter(order => order.deliver === accountId);
+          localStorage.setItem("orders", JSON.stringify(filteredOrders));
+          console.log("Orders from localStorage:", JSON.parse(localStorage.getItem("orders")));
+        } else {
+          console.error("API response is not an array", response.data);
+          setOrders([]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching : ", error);
+      });
+  };
+  
 
   useEffect(() => {
     const storedOrders1 = JSON.parse(localStorage.getItem("orders")) || [];
@@ -177,8 +196,8 @@ const toggleDropdown = () => {
       );
       const data = response.data;
       if (data.results && data.results.length > 0) {
-        const address = data.results[0].formatted_address; // Get the formatted address
-        return address; // Return the full address
+        const address = data.results[0].formatted_address; 
+        return address; 
       } else {
         throw new Error('No results found for the address.');
       }
@@ -197,7 +216,6 @@ const toggleDropdown = () => {
     console.log(destination);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
-       
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
           const currentLocate = await reverseGeocodeAddress(latitude, longitude);
@@ -236,7 +254,7 @@ const toggleDropdown = () => {
     let newStatus = currentOrder.status;
     console.log(newStatus);
 
-    if (newStatus < 7) {
+    if (newStatus < 5) {
       newStatus += 1;
     } else {
       enqueueSnackbar("Trạng thái không thể tăng thêm nữa!", { variant: "warning", autoHideDuration: 1000 });
@@ -264,7 +282,7 @@ const toggleDropdown = () => {
               getAllOrders();
             }
           } catch (error) {
-            enqueueSnackbar("Cập nhật thất bại. Vui lòng thử lại.", { variant: "error", autoHideDuration: 1000 });
+            enqueueSnackbar(error, { variant: "error", autoHideDuration: 1000 });
           }
         }, () => {
           enqueueSnackbar("Không thể lấy vị trí hiện tại.", { variant: "error", autoHideDuration: 1000 });
