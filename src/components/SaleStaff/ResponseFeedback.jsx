@@ -7,34 +7,19 @@ import { colors } from '@mui/material';
 const FeedbackResponse = () => {
     const { orderId } = useParams();
     const [feedbacks, setFeedbacks] = useState([]);
-    const [responses, setResponses] = useState({}); // Manage responses by feedbackId
+    const [responses, setResponses] = useState({}); 
 
     useEffect(() => {
         const fetchFeedbacks = async () => {
             try {
-                if (orderId) {
-                    const response = await getAllFeedbackByOrderId(orderId);
-                    if (Array.isArray(response)) {
-                        setFeedbacks(response);
-
-                        // Initialize responses for any feedback with existing responses
-                        const initialResponses = {};
-                        response.forEach((feedback) => {
-                            if (feedback.response) {
-                                initialResponses[feedback.feedbackId] = feedback.response;
-                            }
-                        });
-                        setResponses(initialResponses);
-                    } else {
-                        console.error("Unexpected response format:", response);
-                    }
-                } else {
-                    console.log("Order ID not found");
-                }
+                const data = await getAllFeedbackByOrderId(orderId);
+                console.log("Fetched Feedbacks:", data);
+                setFeedbacks(data); 
             } catch (error) {
-                console.error("Error fetching feedbacks:", error);
+                console.error("Error:", error);
             }
         };
+    
         fetchFeedbacks();
     }, [orderId]);
 
@@ -80,22 +65,22 @@ const FeedbackResponse = () => {
                         <p><strong>Bình luận:</strong> {feedback.comment}</p>
                         <div>
                         <p><strong>Phản hồi của Sale Staff: </strong></p>
-                            {feedback.response ? (
-                                <p>{feedback.response}</p>
-                            ) : (
-                                <>
-                                    <input
-                                        type="text"
-                                        value={responses[feedback.feedbackId] || ""}
-                                        onChange={(e) => handleInputChange(feedback.feedbackId, e.target.value)}
-                                        placeholder="Điền phản hồi của bạn..."
-                                    />
-                                    <button onClick={() => handleResponseSubmit(feedback.feedbackId)}>
-                                        Gửi Phản Hồi
-                                    </button>
-                                </>
-                            )}
-                        </div>
+                        {feedback.responses ? (
+                            <p>{feedback.responses.comment}</p>
+                        ) : (
+                            <>
+                                <input
+                                    type="text"
+                                    value={responses[feedback.feedbackId] || ""}
+                                    onChange={(e) => handleInputChange(feedback.feedbackId, e.target.value)}
+                                    placeholder="Điền phản hồi của bạn..."
+                                />
+                                <button onClick={() => handleResponseSubmit(feedback.feedbackId)}>
+                                    Gửi Phản Hồi
+                                </button>
+                            </>
+                        )}
+                    </div>
                     </div>
                 ))
             ) : (
