@@ -5,6 +5,8 @@ import {
   DialogContent,
   CircularProgress,
   Typography,
+  Button,
+  DialogActions,
 } from "@mui/material";
 import {
   Timeline,
@@ -17,9 +19,21 @@ import {
 } from "@mui/lab";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { getDeliveryStatusByOrderId } from "../../services/CustomerService";
+import { useNavigate } from "react-router-dom";
 
-const DeliveryStatusPopup = ({ open, onClose, orderId }) => {
+const buttonStyles = {
+  backgroundColor: "#3e404e",
+  color: "white",
+  "&:hover": { backgroundColor: "#727376" },
+  padding: "8px 16px",
+  borderRadius: "8px",
+  minWidth: "auto",
+  justifyContent: "center",
+};
+
+const DeliveryStatusPopup = ({ open, onClose, orderId, showButton }) => {
   const [deliveryStatus, setDeliveryStatus] = useState([]);
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,6 +50,11 @@ const DeliveryStatusPopup = ({ open, onClose, orderId }) => {
 
     if (orderId) fetchDeliveryStatus();
   }, [orderId]);
+
+  const handleCheckoutNavigation = () => {
+    navigate("/checkout", { state: { orderId } });
+    console.log("checkout with orderId:", orderId);
+  };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -65,7 +84,7 @@ const DeliveryStatusPopup = ({ open, onClose, orderId }) => {
                       bgcolor: "#171B36",
                       display: "flex",
                       alignItems: "center",
-                      justifyContent:"center"
+                      justifyContent: "center",
                     }}
                   >
                     <LocalShippingIcon sx={{ color: "#FFFFFF" }} />
@@ -86,6 +105,17 @@ const DeliveryStatusPopup = ({ open, onClose, orderId }) => {
           </Timeline>
         )}
       </DialogContent>
+      <DialogActions>
+        {showButton && (
+          <Button
+            variant="contained"
+            onClick={handleCheckoutNavigation}
+            sx={{...buttonStyles, mt: 2 }}
+          >
+            Xem chi tiết
+          </Button>
+        )}
+      </DialogActions>
     </Dialog>
   );
 };
