@@ -32,6 +32,7 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import DeliveryStatusPopup from "../../components/DeliveryTracking";
 import PDFPreview from "../../components/PDFPreview";
+import { getService } from '../../services/EmployeeService';
 
 const buttonStyles = {
   backgroundColor: "#3e404e",
@@ -81,7 +82,7 @@ const CheckoutPage = () => {
 
   const [orderData, setOrderData] = useState(null);
   const [orderDetailData, setOrderDetailData] = useState([]);
-  const servicesData = useState([]);
+  // const servicesData = useState([]);
   const [error, setError] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [selectedOrderDetailId, setSelectedOrderDetailId] = useState(null);
@@ -102,6 +103,7 @@ const CheckoutPage = () => {
       try {
         const fetchedOrder = await order(orderId);
         setOrderData(fetchedOrder);
+        console.log(fetchedOrder);
 
         const fetchedOrderDetails = await orderDetail(orderId);
         setOrderDetailData(
@@ -116,7 +118,31 @@ const CheckoutPage = () => {
     if (orderId) {
       fetchOrderData();
     }
+  getAllServices();
+    
+
   }, [orderId]);
+  const [serviceIdToName, setServiceIdToName] = useState({}); 
+  const [services, setServices] = useState([]); 
+  const getAllServices = () => {
+    getService()
+      .then((response) => {
+        const serviceList = Array.isArray(response.data) ? response.data : [];
+        console.log("Fetched services:", serviceList); 
+  
+        setServices(serviceList);
+  
+        const mapping = serviceList.reduce((acc, service) => {
+          acc[service.servicesId] = service.servicesName; 
+          return acc;
+        }, {});
+  
+        setServiceIdToName(mapping); 
+        console.log("Service ID to Name Mapping:", mapping); 
+      })
+      .catch((error) => console.error("Error fetching services: ", error));
+  };
+  
 
   const fetchPDF = async (orderDetailId) => {
     try {
@@ -225,10 +251,10 @@ const CheckoutPage = () => {
   const activeStep = getActiveStep(orderData?.status, orderData?.paymentStatus);
   const hasError = orderData?.status === 6;
 
-  const serviceIdToName = servicesData.reduce((acc, service) => {
-    acc[service.servicesId] = service.servicesName;
-    return acc;
-  }, {});
+  // const serviceIdToName = servicesData.reduce((acc, service) => {
+  //   acc[service.servicesId] = service.servicesName;
+  //   return acc;
+  // }, {});
 
   return (
     <Box
@@ -351,17 +377,18 @@ const CheckoutPage = () => {
               </Paper>
               <Typography>
                 Dịch vụ áp dụng:{" "}
-                {orderData.serviceIds && orderData.serviceIds.length > 0
-                  ? orderData.serviceIds
-                      .sort((a, b) => a - b) // Sort IDs in ascending order
-                      .map((id, index) => (
-                        <span key={index}>
-                          {serviceIdToName[id] ||
-                            `Dịch vụ không xác định (${id})`}
-                          {index < orderData.serviceIds.length - 1 && ", "}
-                        </span>
-                      ))
-                  : "Không có dịch vụ nào được áp dụng"}
+                {orderData.serviceIds && orderData.serviceIds.length > 0 ? (
+                orderData.serviceIds
+                  .sort((a, b) => a - b)
+                  .map((id, index) => (
+                    <span key={index}>
+                      {serviceIdToName[id] || `Dịch vụ không xác định (${id})`}
+                      {index < orderData.serviceIds.length - 1 && ", "}
+                    </span>
+                  ))
+              ) : (
+                <span>Không có dịch vụ</span>
+              )}
               </Typography>
               <Typography variant="h6">
                 Tổng giá:
