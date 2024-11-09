@@ -18,7 +18,7 @@ const FAQs = () => {
        answer: "Du lịch hàng không an toàn cho cá Koi cũng như an toàn cho con người. Đội ngũ nhân viên được đào tạo về vận chuyển cá Koi và sẽ chăm sóc, theo dõi cá Koi của bạn trong suốt hành trình. Và tất nhiên, chúng tôi sẽ lo liệu mọi thứ để đảm bảo chú cá của bạn có một chuyến đi vui vẻ và an toàn." },
     { question: "Cá Koi của tôi được vận chuyển ở đâu trên máy bay?",
        answer: "Cá Koi của bạn sẽ được vận chuyển trong một khoang hàng hóa đặc biệt bên trong máy bay. Khoang này vừa được kiểm soát khí hậu vừa được điều áp để đảm bảo sự an toàn và thoải mái cho cá của bạn, và nó nằm trên cùng một hệ thống lưu thông không khí như trong cabin." },
-    { question: "Câu hỏi 5Nếu cá Koi bị bệnh, tôi có thể vận chuyển không?",
+    { question: "Nếu cá Koi bị bệnh, tôi có thể vận chuyển không?",
        answer: "Không nên vận chuyển cá Koi bị bệnh. Hãy đảm bảo rằng cá của bạn hoàn toàn khỏe mạnh trước khi vận chuyển để tránh lây lan bệnh cho các cá khác." },
   ];
 
