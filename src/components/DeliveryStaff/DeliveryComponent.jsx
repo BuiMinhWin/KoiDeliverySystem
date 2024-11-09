@@ -56,11 +56,11 @@ const toggleDropdown = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(true); //drop down
   const [isDisabled, setIsDisabled] = useState(false);
 
-  const handleClick = (order) => {
+  const handleClick = () => {
     setIsDisabled(true);
     updateOrderStatus(order.orderId);
     
-    
+    // Đặt lại trạng thái sau 5 giây
     setTimeout(() => {
       setIsDisabled(false);
     }, 5000);
@@ -540,7 +540,7 @@ const toggleDropdown = () => {
                         <td>
                         <button
                           className="btn btn-info"
-                          onClick={handleClick(order.orderId)}
+                          onClick={handleClick(order.order)}
                           disabled={isDisabled}
                         >
                           {order.status === 2 && "Đang lấy hàng"}
