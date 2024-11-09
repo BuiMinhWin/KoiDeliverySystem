@@ -176,9 +176,9 @@ const toggleDropdown = () => {
         const newOrderCount = filteredNewOrders.length;
         const storedOrderCount = storedOrders1.length;
   
-        if (newOrderCount > storedOrderCount) {
-          enqueueSnackbar(`Có ${newOrderCount - storedOrderCount} đơn hàng mới!`, { variant: "info" });
-        }
+        // if (newOrderCount > storedOrderCount) {
+        //   enqueueSnackbar(`Có ${newOrderCount - storedOrderCount} đơn hàng mới!`, { variant: "info" });
+        // }
   
       } catch (error) {
         console.error("Error fetching orders:", error);
