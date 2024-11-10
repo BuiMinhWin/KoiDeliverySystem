@@ -370,7 +370,7 @@ const toggleDropdown = () => {
                   <th>Điểm đến</th>
                   <th>Ngày giao</th>
                   <th>Phương thức vận chuyển</th>
-                  <th>Trạng tháithái</th>
+                  <th>Trạng thái</th>
                   <th> </th>
                   </tr>
                 </thead>

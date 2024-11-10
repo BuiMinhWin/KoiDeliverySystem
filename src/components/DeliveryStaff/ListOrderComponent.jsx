@@ -291,6 +291,8 @@ const toggleDropdown = () => {
                         {order.status === 3 && "Đã lấy hàng"}
                         {order.status === 4 && "Đang giao"}
                         {order.status === 5 && "Đã hoàn thành"}  
+                        {order.status === 6 && "Đơn khẩn cấp"} 
+                        {order.status === 7 && "Đã hoàn thành"} 
                       </td>
                       <td>
                         <button onClick={() => handleViewOrder(order.orderId)}>Xem</button>
