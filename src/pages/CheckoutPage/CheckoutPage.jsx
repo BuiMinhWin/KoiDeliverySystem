@@ -198,7 +198,7 @@ const CheckoutPage = () => {
         navigate("/payment-outcome", {
           state: { orderId, paymentStatus: "pending" },
         });
-        // window.location.href = paymentUrl;
+        window.location.href = paymentUrl;
       } else {
         throw new Error("Payment URL not found.");
       }
@@ -218,7 +218,7 @@ const CheckoutPage = () => {
     }
   };
 
-  if (!orderId) return <Navigate to="/customer" />;
+  if (orderId) return <Navigate to="/customer" />;
   if (error) return <Typography color="error">Error: {error}</Typography>;
   if (!orderData) return <Typography>Đang tải...</Typography>;
 
