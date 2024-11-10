@@ -134,7 +134,7 @@ const handleCloseDialog = () => {
           </ListItem>
           <ListItem
             component={NavLink}
-            to="/customer"
+            to="/Support"
             sx={{ "&.active": { bgcolor: "#2f386a" } }}
           >
             <HelpIcon sx={{ mr: 1, color: "#FFFFFF" }} />
@@ -168,13 +168,13 @@ const handleCloseDialog = () => {
               KoiFish Delivery
             </Typography>
             <Stack direction="row" spacing={2} alignItems="center">
-              <Button component={Link} to="/customer" color="inherit">
+              <Button component={Link} to="/" color="inherit">
                 Trang chủ
               </Button>
-              <Button component={Link} to="/order-report" color="inherit">
-                Dịch vụ
+              <Button component={Link} to="/Policy" color="inherit">
+                Quy định vận chuyển
               </Button>
-              <Button component={Link} to="/order-report" color="inherit">
+              <Button component={Link} to="/AboutUs" color="inherit">
                 Giới thiệu
               </Button>
               <Avatar

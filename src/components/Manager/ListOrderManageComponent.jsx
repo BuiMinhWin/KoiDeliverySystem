@@ -396,7 +396,8 @@ const toggleDropdown = () => {
                         {order.status === 5 && "Đã hoàn thành"}  
                         {order.status === 6 ? (
                             <button onClick={() => updateOrderStatus(order.orderId)}>Xử lí</button>
-                          ) : null} 
+                          ) : null}
+                        {order.status === 7 && "Đã hoàn thành"} 
                       </td>
                       <td>
                         <button onClick={() => handleViewOrder(order.orderId)}>Xem</button>

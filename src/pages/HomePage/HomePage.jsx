@@ -216,62 +216,73 @@ const Homepage = () => {
 
 
   return (
-    <div className="homepage-container">
+     <div className="homepage-container">
       {/* Navbar */}
-      <nav className="navbar">
-        <div className="navbar-left">
-          <img src={logo} className="logo" alt="Logo" />
-          <a className="nav-link" onClick={() => navigate('/')}>Trang Chủ</a>
-          {/* Dropdown Dịch Vụ */}
-          {!roleId ? ( 
-            <>
-             <div className="dropdown">
-            <a href="#" className="nav-link">Dịch Vụ</a>
-            <div className="dropdown-content">
-              <a href="/login">Tạo Đơn</a>
-              <a href="/Policy">Quy định vận chuyển</a>
-              <a href="/Promotion">Chương trình khuyến mãi</a>
+        <nav className="navbar">
+          <div className="navbar-left">
+            <img src={logo} className="logo" alt="Logo" />
+            <a className="nav-link" onClick={() => navigate('/')}>Trang Chủ</a>
+            {/* Dropdown Dịch Vụ */}
+            {!roleId ? ( 
+              <>
+              <div className="dropdown">
+              <a href="#" className="nav-link">Dịch Vụ</a>
+              <div className="dropdown-content">
+                <a href="/login">Tạo Đơn</a>
+                <a href="/Policy">Quy định vận chuyển</a>
+                <a href="/Promotion">Chương trình khuyến mãi</a>
+              </div>
             </div>
-          </div>
-          <a href="/AboutUs" className="nav-link">Giới Thiệu</a> 
-            </>
-           ) : (
-            <>
-            <div className="dropdown">
-            <a href="#" className="nav-link">Dịch Vụ</a>
-            <div className="dropdown-content">
-              <a onClick={handleCreateOrderClick}>Tạo Đơn</a>
-              <a href="/Policy">Quy định vận chuyển</a>
-              <a href="/Promotion">Chương trình khuyến mãi</a>
-             
+            <a href="/AboutUs" className="nav-link">Giới Thiệu</a> 
+              </>
+            ) : (
+              <>
+              <div className="dropdown">
+              <a href="#" className="nav-link">Dịch Vụ</a>
+              <div className="dropdown-content">
+                <a onClick={handleCreateOrderClick}>Tạo Đơn</a>
+                <a href="/Policy">Quy định vận chuyển</a>
+                <a href="/Promotion">Chương trình khuyến mãi</a>
+              
+              </div>
             </div>
+            <a href="/AboutUs" className="nav-link">Giới Thiệu</a> 
+              </>
+            )} 
           </div>
-          <a href="/AboutUs" className="nav-link">Giới Thiệu</a> 
-            </>
-          )} 
-        </div>
-        
-        <div className="navbar-right">
+          
+          <div className="navbar-right">
         <a href="/Support" className="nav-link support-link">
-            <i className="fas fa-question-circle"></i>Hỗ Trợ
-          </a>
-           {!roleId ? ( 
-            <>
-              <button className="register-btn" onClick={() => navigate('/register')}>Đăng Ký</button>
-              <button className="login-btn" onClick={() => navigate('/login')}>Đăng Nhập</button>
-            </>
-           ) : (
-            <>
+          <i className="fas fa-question-circle"></i> Hỗ Trợ
+        </a>
+        {!roleId ? (
+          <>
+            <button className="register-btn" onClick={() => navigate('/register')}>Đăng Ký</button>
+            <button className="login-btn" onClick={() => navigate('/login')}>Đăng Nhập</button>
+          </>
+        ) : (
+          <>
             <div className="dropdown">
-            <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
-              <div className="dropdown-content-avatar ">
+              <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
+              <div className="dropdown-content-avatar">
                 <a href="user-page">Tài khoản của tôi</a>
-                <a  onClick={handleLogout}>Đăng xuất</a>
-              </div>  
+                {roleId === "Customer" && (
+                  <a href="/order-report">Lịch sử đơn hàng</a>
+                )}
+                {roleId === "Sales" && (
+                  <a href="/salestaff">Trang chính</a>
+                )}
+                {roleId === "Delivery" && (
+                  <a href="/delivery">Trang chính</a>
+                )}
+                {roleId === "Manager" && (
+                  <a href="/manager">Trang chính</a>
+                )}
+                <a onClick={handleLogout}>Đăng xuất</a>
+              </div>
             </div>
-            </>
-          )} 
-
+          </>
+        )}
       </div>
 
         {/* <div className="navbar-right">
