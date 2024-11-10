@@ -6,8 +6,7 @@ import './Manager.css';
 import { FiHome, FiUsers } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
-import { FaRegCalendarAlt } from "react-icons/fa";
-import { MdOutlineMessage, MdSupportAgent } from "react-icons/md";
+
 import { logout } from '../Member/auth'; 
 import { useNavigate } from 'react-router-dom';
 // import ProfileComponent from '../Member/ProfileComponent';
@@ -15,8 +14,6 @@ import { listOrder } from '../../services/DeliveryService';
 import { listAccount } from '../../services/EmployeeService';
 import { CiLogout } from "react-icons/ci";
 import { IoIosNotificationsOutline } from "react-icons/io";
-import { FaRegMessage } from "react-icons/fa6";
-import { IoSettingsOutline } from "react-icons/io5";
 import {  getAvatar} from "../../services/CustomerService";  
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler );
