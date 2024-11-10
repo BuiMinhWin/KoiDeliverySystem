@@ -26,10 +26,61 @@ export const createOrder = async (orderData) => {
   }
 };
 
+
 export const uploadDocument = (orderDetailId, formData) => {
-  return axios.post(`/api/documents/${orderDetailId}`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  return axios.post(
+    `/api/documents/${orderDetailId}`,
+    formData,
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+  );
+};
+export const updateDocument = async (orderDetailId, formData) => {
+  const response = await fetch(
+    `/api/documents/update/${orderDetailId}`,
+    {
+      method: "PUT",
+      body: formData,
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to reupload document: ${errorText}`);
+  }
+
+  try {
+    return await response.json();
+  } catch (error) {
+    console.warn("Response is not in JSON format. Returning raw response.");
+    return response;
+  }
+};
+
+export const updateOrderDetailStatus = async (orderDetailId, newStatus) => {
+  const response = await fetch(
+    `${REST_API_ORDER_DETAIL_URL}/update/${orderDetailId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: newStatus }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to update order status: ${errorText}`);
+  }
+
+  try {
+    return await response.json();
+  } catch (error) {
+    console.warn("Response is not in JSON format. Returning raw response.");
+    return response;
+  }
 };
 
 export const createOrderDetail = async (orderDetailData) => {
@@ -81,7 +132,7 @@ export const cancelOrder = async (orderId) => {
     throw new Error("Failed to cancel order");
   }
 
-
+  // Only try to parse JSON if there is content
   const data = response.status !== 204 ? await response.json() : {};
   return data;
 };
@@ -235,6 +286,7 @@ export const updatePaymentStatus = async (orderId) => {
     throw error;
   }
 };
+
 export const getDeliveryStatusByOrderId = async (orderId) => {
   try {
     const response = await axios.get(

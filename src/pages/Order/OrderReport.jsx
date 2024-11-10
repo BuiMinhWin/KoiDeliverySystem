@@ -91,12 +91,14 @@ const OrderReport = () => {
           : { text: "Thanh Toán", color: "error" };
       case 6:
         return { text: "Đơn Hàng Cần Chú Ý", color: "error" };
+        case 9000:
+          return {text: "Lỗi tài liệu", color: "error"}
       default:
         return { text: "Không Xác Định", color: "default" };
     }
   };
 
-  return (
+   return (
     <Stack spacing={2} sx={{ margin: 2 }}>
       {orders.length > 0 ? (
         orders.map((order) => {
@@ -191,6 +193,7 @@ const OrderReport = () => {
         showButton={true}
       />
     </Stack>
+  
   );
 };
 

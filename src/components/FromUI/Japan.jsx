@@ -7,7 +7,6 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import FlightIcon from "@mui/icons-material/Flight";
 import { useNavigate } from "react-router-dom";
 
-// Define the common button style
 const buttonStyle = {
   display: "flex",
   alignItems: "center",
