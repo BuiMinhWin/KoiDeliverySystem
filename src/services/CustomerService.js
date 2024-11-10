@@ -85,13 +85,13 @@ export const updateOrderDetailStatus = async (orderDetailId, newStatus) => {
 
 export const updateOrderStatus = async (orderId, newStatus) => {
   const response = await fetch(
-    `${REST_API_ORDER_URL}/update/${orderId}`,
+    `${REST_API_ORDER_URL}/updateStatus/${orderId}`,
     {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ status: newStatus }),
+      body: JSON.stringify({ newStatus: newStatus }),
     }
   );
 
