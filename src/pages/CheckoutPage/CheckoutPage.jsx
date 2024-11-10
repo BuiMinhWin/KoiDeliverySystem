@@ -32,7 +32,7 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import DeliveryStatusPopup from "../../components/DeliveryTracking";
 import PDFPreview from "../../components/PDFPreview";
-import { getService } from '../../services/EmployeeService';
+import { getService } from "../../services/EmployeeService";
 
 const buttonStyles = {
   backgroundColor: "#3e404e",
@@ -65,8 +65,7 @@ const RedStepLabel = styled(StepLabel)(({ theme }) => ({
   },
 }));
 
-const REST_API_BANK_URL =
- "/api/v1/payment/vn-pay";
+const REST_API_BANK_URL = "/api/v1/payment/vn-pay";
 
 const formatCurrency = (value) => {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -86,7 +85,6 @@ const CheckoutPage = () => {
   const [error, setError] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [selectedOrderDetailId, setSelectedOrderDetailId] = useState(null);
-
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -118,31 +116,28 @@ const CheckoutPage = () => {
     if (orderId) {
       fetchOrderData();
     }
-  getAllServices();
-    
-
+    getAllServices();
   }, [orderId]);
-  const [serviceIdToName, setServiceIdToName] = useState({}); 
-  const [services, setServices] = useState([]); 
+  const [serviceIdToName, setServiceIdToName] = useState({});
+  const [services, setServices] = useState([]);
   const getAllServices = () => {
     getService()
       .then((response) => {
         const serviceList = Array.isArray(response.data) ? response.data : [];
-        console.log("Fetched services:", serviceList); 
-  
+        console.log("Fetched services:", serviceList);
+
         setServices(serviceList);
-  
+
         const mapping = serviceList.reduce((acc, service) => {
-          acc[service.servicesId] = service.servicesName; 
+          acc[service.servicesId] = service.servicesName;
           return acc;
         }, {});
-  
-        setServiceIdToName(mapping); 
-        console.log("Service ID to Name Mapping:", mapping); 
+
+        setServiceIdToName(mapping);
+        console.log("Service ID to Name Mapping:", mapping);
       })
       .catch((error) => console.error("Error fetching services: ", error));
   };
-  
 
   const fetchPDF = async (orderDetailId) => {
     try {
@@ -150,6 +145,7 @@ const CheckoutPage = () => {
       const blob = new Blob([response], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       setPdfUrl(url);
+      setOpenPDF(true); // Move this inside to only open when PDF is ready
     } catch (err) {
       console.error("Error fetching PDF:", err);
       setError("Unable to load PDF.");
@@ -158,10 +154,8 @@ const CheckoutPage = () => {
 
   const handlePDFClick = (orderDetailId) => {
     setSelectedOrderDetailId(orderDetailId);
-    fetchPDF(orderDetailId);
-    setOpenPDF(true);
+    fetchPDF(orderDetailId); // Only fetch when PDF button is clicked
   };
-
   const handleCancelOrder = async () => {
     try {
       await cancelOrder(orderId);
@@ -236,10 +230,8 @@ const CheckoutPage = () => {
     "Tài xế lấy hàng",
     "Đơn đang được vận chuyển",
     orderData.paymentStatus === 2 && "Vui lòng thanh toán",
-    orderData.paymentStatus === 1 && "Hoàn thành"
+    orderData.paymentStatus === 1 && "Hoàn thành",
   ].filter(Boolean);
-  
-
 
   const getActiveStep = (status, paymentStatus) => {
     if (status === 0) return 0; // "Đang xử lí"
@@ -400,17 +392,18 @@ const CheckoutPage = () => {
               <Typography>
                 Dịch vụ áp dụng:{" "}
                 {orderData.serviceIds && orderData.serviceIds.length > 0 ? (
-                orderData.serviceIds
-                  .sort((a, b) => a - b)
-                  .map((id, index) => (
-                    <span key={index}>
-                      {serviceIdToName[id] || `Dịch vụ không xác định (${id})`}
-                      {index < orderData.serviceIds.length - 1 && ", "}
-                    </span>
-                  ))
-              ) : (
-                <span>Không có dịch vụ</span>
-              )}
+                  orderData.serviceIds
+                    .sort((a, b) => a - b)
+                    .map((id, index) => (
+                      <span key={index}>
+                        {serviceIdToName[id] ||
+                          `Dịch vụ không xác định (${id})`}
+                        {index < orderData.serviceIds.length - 1 && ", "}
+                      </span>
+                    ))
+                ) : (
+                  <span>Không có dịch vụ</span>
+                )}
               </Typography>
               <Typography variant="h6">
                 Tổng giá:
@@ -485,9 +478,30 @@ const CheckoutPage = () => {
                       <PDFPreview
                         open={openPDF}
                         onClose={() => setOpenPDF(false)}
+                        pdfUrl={pdfUrl} // This will be the URL of the clicked PDF only
+                        orderDetailStatus={
+                          orderDetailData.find(
+                            (detail) =>
+                              detail.orderDetailId === selectedOrderDetailId
+                          )?.status
+                        }
+                        orderDetailId={selectedOrderDetailId}
+                      />
+                      <PDFPreview
+                        open={openPDF}
+                        onClose={() => {
+                          setOpenPDF(false);
+                          setPdfUrl(null);
+                          setSelectedOrderDetailId(null);
+                        }}
                         pdfUrl={pdfUrl}
-                        orderDetailStatus={detail.status}
-                        orderDetailId={detail.orderDetailId}
+                        orderDetailStatus={
+                          orderDetailData.find(
+                            (detail) =>
+                              detail.orderDetailId === selectedOrderDetailId
+                          )?.status
+                        }
+                        orderDetailId={selectedOrderDetailId}
                       />
                     </Grid>
                   ))}
@@ -526,17 +540,18 @@ const CheckoutPage = () => {
               </Button>
             )}
 
-          {[1, 2, 3, 4, 5].includes(orderData.status) && orderData.paymentStatus === 2 && (
-            <Button
-              startIcon={<PaymentIcon />}
-              sx={{ mt: 5, mx: 80 }}
-              variant="contained"
-              color="primary"
-              onClick={handleProceedToPayment}
-            >
-              Thanh toán
-            </Button>
-          )}
+          {[1, 2, 3, 4, 5].includes(orderData.status) &&
+            orderData.paymentStatus === 2 && (
+              <Button
+                startIcon={<PaymentIcon />}
+                sx={{ mt: 5, mx: 80 }}
+                variant="contained"
+                color="primary"
+                onClick={handleProceedToPayment}
+              >
+                Thanh toán
+              </Button>
+            )}
         </Grid>
         <DeliveryStatusPopup
           open={isPopupOpen}
