@@ -182,21 +182,23 @@ const CheckoutPage = () => {
   const handleProceedToPayment = async () => {
     try {
       console.log("Order ID:", orderId);
-  
+
       const response = await axios.post(REST_API_BANK_URL, {
         orderId,
         bankCode: "NCB",
         returnUrl: "https://koi-delivery-system.vercel.app/payment-outcome",
       });
-  
+
       console.log("Payment API Response:", response.data);
-  
+
       const paymentUrl = response.data.data?.paymentUrl;
       console.log("Payment URL:", paymentUrl);
-  
+
       if (paymentUrl) {
-        // Chuyển hướng trực tiếp tới URL thanh toán bên ngoài.
-        window.location.href = paymentUrl;
+        navigate("/payment-outcome", {
+          state: { orderId, paymentStatus: "pending" },
+        });
+        // window.location.href = paymentUrl;
       } else {
         throw new Error("Payment URL not found.");
       }
@@ -215,7 +217,7 @@ const CheckoutPage = () => {
       }
     }
   };
-  
+
   if (!orderId) return <Navigate to="/customer" />;
   if (error) return <Typography color="error">Error: {error}</Typography>;
   if (!orderData) return <Typography>Đang tải...</Typography>;
