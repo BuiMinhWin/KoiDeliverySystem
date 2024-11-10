@@ -3,7 +3,7 @@ import { listOrder, updateStatus } from '../../services/SaleStaffService';
 import { getOrderDetail } from '../../services/DeliveryService';
 import { getOrderPDF } from '../../services/CustomerService';
 import { useParams } from 'react-router-dom';
-import './OrderDetailDocumentComponent.css';
+
 
 const OrderDetailComponent = () => {
   const { orderId } = useParams();
