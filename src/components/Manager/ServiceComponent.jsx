@@ -170,6 +170,15 @@ const ServiceComponent = () => {
               <a href="/accounts"><i className="bi bi-person-badge me-2"><FiUsers /></i> Danh sách khách hàng</a>
             </li>
 
+            
+            <li>
+            <a href="employee-page"><i className="bi bi-person-badge me-2"><CgProfile /></i>Thông tin tài khoản</a>
+          </li>
+
+          <li>
+            <a onClick={handleLogout}><i className="bi bi-person-badge me-2"><CiLogout /></i>Đăng xuất</a>
+          </li>
+
             <li onClick={toggleServiceDropdown} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
              < a href="#"><i className="bi bi-person-badge me-2"><FiUsers /></i> Quản lí dịch vụ</a>
             </li>
