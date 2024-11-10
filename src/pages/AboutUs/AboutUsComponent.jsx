@@ -110,8 +110,8 @@ const Homepage = () => {
             <a href="#" className="nav-link">Dịch Vụ</a>
             <div className="dropdown-content">
             <a onClick={handleCreateOrderClick}>Tạo Đơn</a>
-              <a href="#">Quy định vận chuyển</a>
-              <a href="#">Chương trình khuyến mãi</a>
+            <a href="/Policy">Quy định vận chuyển</a>
+            <a href="/Promotion">Chương trình khuyến mãi</a>
             </div>
           </div>
           <a href="/AboutUs" className="nav-link">Giới Thiệu</a> 

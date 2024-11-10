@@ -118,53 +118,38 @@ import './SaleStaff.css';
     
     return (
 
-      <div className="container-fluid">
-        <div className="row">
-          {/*SideBar */}
-        <aside className="sidebar col-2 p-3 ">
-              <div className='manager-sidebar'>
-              <div className="profile-container text-center mb-4">
-                <div className="SideKoi d-flex ">
-                <img src="/Logo-Koi/Order.png" alt="Profile " className="profile-img rounded-circle me-3"/>
-                  <div className=" KoiLogo">
-                    <p className="KoiDeli ">KoiDeli</p>
+    <div className="container-fluid">
+            <div className="row">
+              {/*SideBar */}
+            <aside className="sidebar col-2 p-3 ">
+                  <div className='manager-sidebar'>
+                  <div className="profile-container text-center mb-4">
+                    <div className="SideKoi d-flex ">
+                    <img src="/Logo-Koi/Order.png" alt="Profile " className="profile-img rounded-circle me-3"/>
+                      <div className=" KoiLogo">
+                        <p className="KoiDeli ">KoiDeli</p>
+                      </div>
+                    </div>
+                    <hr className="logo-separator" /> 
+                    {/* border */}
+                    
                   </div>
-                </div>
-                <hr className="logo-separator" /> 
-                {/* border */}
+                  <nav>
+              <ul className="list-unstyled">
                 
-              </div>
-              <nav>
-          <ul className="list-unstyled">
-            
+                  <li>
+                    <a href="/confirm"><i className="bi bi-speedometer2 me-2"> <HiOutlineClipboardDocumentList /> </i>  Duyệt đơn</a>
+                </li>
+
+                <li>
+                  <a href="/salestaff/listsaleorder"><i className="bi bi-chat-dots me-2"> <HiOutlineClipboardDocumentList/> </i>  Xem đơn</a>
+                </li>
+
               <li>
-                <a href="/confirm"><i className="bi bi-speedometer2 me-2"> <HiOutlineClipboardDocumentList /> </i>  Order awaiting confirmation</a>
-            </li>
+                <a href="/salestaff/test"><i className="bi bi-chat-dots me-2"> <HiOutlineClipboardDocumentList/> </i> Chọn tài</a>
+              </li>
 
-            <li>
-              <a href="/salestaff/listsaleorder"><i className="bi bi-chat-dots me-2"> <HiOutlineClipboardDocumentList/> </i>  View Order</a>
-            </li>
-
-          <li>
-            <a href="/salestaff/test"><i className="bi bi-chat-dots me-2"> <HiOutlineClipboardDocumentList/> </i> Driver Booking</a>
-          </li>
-
-          {/* <li>
-            <a href="/salestaff/respondFeedback"><i className="bi bi-chat-dots me-2"> <HiOutlineClipboardDocumentList/> </i> Respond FeedBack</a>
-          </li>
-
-            <li>
-              <a href="/orders"><i className="bi bi-person-badge me-2"><MdSupportAgent /></i> View Report</a>
-            </li>
-
-            <li>
-              <a href="#"><i className="bi bi-life-preserver me-2"><MdSupportAgent /></i> View Feedback</a>
-            </li>
-
-          <li>
-            <a href="#"><i className="bi bi-gear me-2"><IoSettingsOutline /></i> Settings</a>
-           </li> */}
-         
+ 
         </ul>
         </nav>
         </div>

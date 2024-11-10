@@ -23,10 +23,6 @@ export const getOrderDetail =(orderId) => {
   return axios.get(`${REST_API_BASE_URL2}/${orderId}`);
 };
 
-export const updateStatus = (orderId, newStatus) => {
-  return axios.patch(`${REST_API_BASE_URL}/updateStatus/${orderId}`, { newStatus });
-};
-
 export const updateSale = (orderId, sale) => {
   return axios.patch(`${REST_API_BASE_URL}/update/${orderId}`, { sale });
 };
@@ -51,9 +47,35 @@ export const replyOrder = (orderId) => {
   return axios.patch(`${REST_API_BASE_URL}/cancel/${orderId}`);
 }
 
-export const updateOrderDetailStatus = (orderDetailId, newStatus) => {
-  return axios.patch(`${REST_API_BASE_URL6}/update/${orderDetailId}`, {newStatus} );
-}
+export const updateOrderDetailStatus = async (orderDetailId, newStatus) => {
+  const response = await fetch(
+    `${REST_API_BASE_URL6}/update/${orderDetailId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: newStatus }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to update order status: ${errorText}`);
+  }
+
+  try {
+    return await response.json();
+  } catch (error) {
+    console.warn("Response is not in JSON format. Returning raw response.");
+    return response;
+  }
+};
+
+export const updateStatus = (orderId, newStatus) => {
+  return axios.patch(`${REST_API_BASE_URL}/updateStatus/${orderId}`, { newStatus });
+};
+
 
 
 
