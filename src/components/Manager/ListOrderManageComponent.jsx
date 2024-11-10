@@ -241,37 +241,32 @@ const toggleDropdown = () => {
         
         <h6>List</h6>
         <li>
-          <a href="/manager"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i>Dashboard</a>
+          <a href="/manager"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i>Dashboard</a> 
         </li>
 
         <li>
-          <a  href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i> Customers</a>
+          <a  href="/listcustomers"><i className="bi bi-people me-2"><FiUsers /></i>Danh sách khách hàng</a>
         </li>
 
         <li>
-          <a href="/accounts"><i className="bi bi-person-badge me-2"><FiUsers /></i> Employees</a>
+          <a href="/accounts"><i className="bi bi-person-badge me-2"><FiUsers /></i>Dach sách nhân viên</a>
         </li>
 
-         <li>
-            <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Services</a>
-          </li>
+
         
-        <h6>General</h6>
-        <li>
-          <a href="#"><i className="bi bi-chat-dots me-2"><FaRegCalendarAlt /></i> Calendar</a>
-         </li>
+         <li>
+            <a href="/service"><i className="bi bi-person-badge me-2"><HiOutlineClipboardDocumentList /></i> Danh sách dịch vụ</a>
+          </li>
 
-        <li>
-          <a href="#"><i className="bi bi-life-preserver me-2"><MdSupportAgent /></i> Help & Support</a>
+          <li>
+          <a href="employee-page"><i className="bi bi-person-badge me-2"><CgProfile /></i>Thông tin tài khoản</a>
         </li>
 
         <li>
-          <a href="#"><i className="bi bi-chat-dots me-2"> <FaRegMessage/> </i>  Messages</a>
+          <a onClick={handleLogout}><i className="bi bi-person-badge me-2"><CiLogout /></i>Đăng xuất</a>
         </li>
 
-        <li>
-          <a href="#"><i className="bi bi-gear me-2"><IoSettingsOutline /></i> Settings</a>
-         </li>
+        
        
       </ul>
       </nav>
