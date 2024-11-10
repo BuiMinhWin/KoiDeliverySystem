@@ -541,7 +541,7 @@ const CheckoutPage = () => {
             )}
 
           {[1, 2, 3, 4, 5].includes(orderData.status) &&
-            orderData.paymentStatus === 2 && (
+            orderData.paymentStatus === 0 && (
               <Button
                 startIcon={<PaymentIcon />}
                 sx={{ mt: 5, mx: 80 }}
