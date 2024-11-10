@@ -138,7 +138,7 @@ const FeedbackForm = ({ orderId }) => {
 
           <Paper sx={{ p: 2, mb: 1 }}>
             <Typography>
-              {existingFeedback.responses.comment}
+              {existingFeedback.comment}
             </Typography>
           </Paper>
         </Box>
