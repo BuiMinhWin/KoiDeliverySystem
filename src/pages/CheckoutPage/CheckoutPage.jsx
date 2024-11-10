@@ -218,7 +218,7 @@ const CheckoutPage = () => {
     }
   };
 
-  if (!orderId) return <Navigate to="/customer" />;
+  // if (!orderId) return <Navigate to="/customer" />;
   if (error) return <Typography color="error">Error: {error}</Typography>;
   if (!orderData) return <Typography>Đang tải...</Typography>;
 
@@ -541,7 +541,7 @@ const CheckoutPage = () => {
             )}
 
           {[1, 2, 3, 4, 5].includes(orderData.status) &&
-            orderData.paymentStatus === 0 && (
+            (orderData.paymentStatus === 0 || orderData.paymentStatus === 2) && (
               <Button
                 startIcon={<PaymentIcon />}
                 sx={{ mt: 5, mx: 80 }}
