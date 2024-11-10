@@ -33,6 +33,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import DeliveryStatusPopup from "../../components/DeliveryTracking";
 import PDFPreview from "../../components/PDFPreview";
 import { getService } from "../../services/EmployeeService";
+import { updateOrderStatus } from "../../services/CustomerService";
 
 const buttonStyles = {
   backgroundColor: "#3e404e",

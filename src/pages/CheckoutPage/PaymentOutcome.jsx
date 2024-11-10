@@ -165,7 +165,7 @@ const PaymentOutcome = () => {
           color: "green",
         }}
       >
-        <CheckCircleIcon sx={{ fontSize: 60 }} />
+     
       </Box>
 
       <Box

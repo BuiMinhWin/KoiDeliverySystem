@@ -83,6 +83,31 @@ export const updateOrderDetailStatus = async (orderDetailId, newStatus) => {
   }
 };
 
+export const updateOrderStatus = async (orderId, newStatus) => {
+  const response = await fetch(
+    `${REST_API_ORDER_URL}/update/${orderId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: newStatus }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to update order status: ${errorText}`);
+  }
+
+  try {
+    return await response.json();
+  } catch (error) {
+    console.warn("Response is not in JSON format. Returning raw response.");
+    return response;
+  }
+};
+
 export const createOrderDetail = async (orderDetailData) => {
   try {
     const response = await axios.post(
