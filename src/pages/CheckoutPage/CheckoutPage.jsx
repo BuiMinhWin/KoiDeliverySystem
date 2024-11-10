@@ -413,7 +413,7 @@ const CheckoutPage = () => {
               </Typography>
               <Typography>
                 Tình trạng thanh toán:{" "}
-                {orderData.paymentStatus ? "Đã thanh toán" : "Chưa thanh toán"}
+                {orderData.paymentStatus ===2 ? "Trả sau" : orderData.paymentStatus ===0 ? "Chưa thanh toán" : orderData.paymentStatus ===1? "Đã thanh toán":undefined}
               </Typography>
               <Button
                 sx={{ ...buttonStyles }}
