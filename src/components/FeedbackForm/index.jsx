@@ -112,7 +112,6 @@ const FeedbackForm = ({ orderId }) => {
 
 
   if (existingFeedback) {
-   
     return (
       <Box
         sx={{
@@ -122,25 +121,26 @@ const FeedbackForm = ({ orderId }) => {
           backgroundColor: "#fff",
         }}
       >
-      <Typography
-          variant="h6"
-          sx={{ textDecoration: "underline" }}
-          gutterBottom
-        >
+        <Typography variant="h6" sx={{ textDecoration: "underline" }} gutterBottom>
           Feedback của bạn:
         </Typography>
         <StyledRating value={existingFeedback.rating} readOnly />
         <Typography>Bình luận: {existingFeedback.comment}</Typography>
+        
         {/* Display responses if available */}
-
         <Box sx={{ mt: 2 }}>
           <Typography variant="subtitle1">Phản hồi:</Typography>
-
-          <Paper sx={{ p: 2, mb: 1 }}>
-            <Typography>
-              {existingFeedback.comment}
+          
+          {/* Ensure that responses exists before accessing its comment */}
+          {existingFeedback.responses && existingFeedback.responses.comment ? (
+            <Paper sx={{ p: 2, mb: 1 }}>
+              <Typography>{existingFeedback.responses.comment}</Typography>
+            </Paper>
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              Chưa có phản hồi.
             </Typography>
-          </Paper>
+          )}
         </Box>
       </Box>
     );
