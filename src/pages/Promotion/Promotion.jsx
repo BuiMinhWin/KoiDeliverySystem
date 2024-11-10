@@ -1,21 +1,33 @@
 // src/components/Promotion.jsx
-import React from 'react';
+import React, {useState} from 'react';
 import './Promotion.css';
 import logo from '../../assets/Logo.png';
 import { useNavigate } from 'react-router-dom';
+import JapanDialog from '../../components/FromUI/Japan';
+
 
 const Promotion = () => {
   const navigate = useNavigate();
   const roleId = localStorage.getItem('roleId');
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
 
   const handleCreateOrderClick = (event) => {
     event.preventDefault();
     if (roleId) {
-      navigate('/form');
+      handleOpenDialog();
     } else {
-      navigate('/login');
+      navigate('/login'); 
     }
   };
+
 
   const handleLogout = () => {
     localStorage.removeItem('roleId');
@@ -136,6 +148,7 @@ const Promotion = () => {
           <p>© 2024 Koi Express. All rights reserved.</p>
         </div>
       </footer>
+      <JapanDialog open={dialogOpen} onClose={handleCloseDialog} />
     </div>
   );
 };

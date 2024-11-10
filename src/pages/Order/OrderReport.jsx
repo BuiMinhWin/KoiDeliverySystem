@@ -24,7 +24,7 @@ const OrderReport = () => {
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  const statusOrder = [1, 0, 2, 3, 4, 5];
+  const statusOrder = [1, 9000, 0, 2, 3, 4, 5, 7];
 
   // Lấy order rồi filter
   useEffect(() => {
@@ -91,14 +91,16 @@ const OrderReport = () => {
           : { text: "Thanh Toán", color: "error" };
       case 6:
         return { text: "Đơn Hàng Cần Chú Ý", color: "error" };
-        case 9000:
-          return {text: "Lỗi tài liệu", color: "error"}
+      case 7:
+        return { text: "Đã nhận hàng", color: "transparent" };
+      case 9000:
+        return { text: "Lỗi tài liệu", color: "error" };
       default:
         return { text: "Không Xác Định", color: "default" };
     }
   };
 
-   return (
+  return (
     <Stack spacing={2} sx={{ margin: 2 }}>
       {orders.length > 0 ? (
         orders.map((order) => {
@@ -131,27 +133,36 @@ const OrderReport = () => {
                 </Typography>
                 <Typography variant="body1">
                   Tình trạng đơn hàng:{" "}
-                  {order.status === 0
-                    ? "Đang chờ xét duyệt"
-                    : order.status === 1
-                    ? "Đã duyệt - Đơn hàng của bạn đang được chuẩn bị cho bắt đầu vận chuyển"
-                    : order.status === 2
-                    ? "Tài xế đã nhận đơn"
-                    : [3, 4].includes(order.status)
-                    ? `Đơn hàng đang được giao đến địa điểm chỉ định sau ${
-                        order.freight === "Dịch vụ tiêu chuẩn"
-                          ? "5-7 ngày"
-                          : order.freight === "Dịch vụ hỏa tốc"
-                          ? "3-4 ngày"
-                          : order.freight === "Vận chuyển nước ngoài"
-                          ? "7-14 ngày"
-                          : "Thời gian không xác định"
-                      } kể từ ngày duyệt đơn`
-                    : order.status === 5
-                    ? "Đơn hàng đã được giao đến"
-                    : order.status === 6
-                    ? "Đơn hàng cần được chú ý"
-                    : "Trạng thái không xác định"}
+                  {order.status === 0 ? (
+                    "Đang chờ xét duyệt"
+                  ) : order.status === 1 ? (
+                    "Đã duyệt - Đơn hàng của bạn đang được chuẩn bị cho bắt đầu vận chuyển"
+                  ) : order.status === 2 ? (
+                    "Tài xế đã nhận đơn"
+                  ) : [3, 4].includes(order.status) ? (
+                    `Đơn hàng đang được giao đến địa điểm chỉ định sau ${
+                      order.freight === "Dịch vụ tiêu chuẩn"
+                        ? "5-7 ngày"
+                        : order.freight === "Dịch vụ hỏa tốc"
+                        ? "3-4 ngày"
+                        : order.freight === "Vận chuyển nước ngoài"
+                        ? "7-14 ngày"
+                        : "Thời gian không xác định"
+                    } kể từ ngày duyệt đơn`
+                  ) : order.status === 5 ? (
+                    "Đơn hàng đã được giao đến"
+                  ) : order.status === 6 ? (
+                    "Đơn hàng cần được chú ý"
+                  ) : order.status === 7 ? (
+                    "Đã nhận hàng"
+                  ) : order.status === 9000 ? (
+                    <span style={{ color: "red", fontWeight: "bold" }}>
+                      {" "}
+                      PDF bị từ chối - Vui lòng cập nhật lại tài liệu
+                    </span>
+                  ) : (
+                    "Trạng thái không xác định"
+                  )}
                 </Typography>
                 <Typography variant="body1">
                   Tổng tiền: {`${formatCurrency(order.totalPrice)}`} VND -{" "}
@@ -167,6 +178,10 @@ const OrderReport = () => {
                   sx={{
                     ...(order.status === 3 && {
                       backgroundColor: "#171B36",
+                      color: "white",
+                    }),
+                    ...(order.status === 7 && {
+                      backgroundColor: "#CC00CC",
                       color: "white",
                     }),
                     padding: "4px 10px",
@@ -193,7 +208,6 @@ const OrderReport = () => {
         showButton={true}
       />
     </Stack>
-  
   );
 };
 

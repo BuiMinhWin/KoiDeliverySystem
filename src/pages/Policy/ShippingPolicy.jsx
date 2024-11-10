@@ -1,19 +1,29 @@
 // src/components/ShippingPolicy.jsx
-import React from 'react';
+import React, {useState} from 'react';
 import './ShippingPolicy.css';
 import logo from '../../assets/Logo.png';
 import { useNavigate } from 'react-router-dom';
+import JapanDialog from '../../components/FromUI/Japan';
 
 const ShippingPolicy = () => {
   const navigate = useNavigate();
   const roleId = localStorage.getItem('roleId');
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
 
   const handleCreateOrderClick = (event) => {
     event.preventDefault();
     if (roleId) {
-      navigate('/form');
+      handleOpenDialog();
     } else {
-      navigate('/login');
+      navigate('/login'); 
     }
   };
 
@@ -146,6 +156,7 @@ const ShippingPolicy = () => {
           <p>© 2024 Koi Express. All rights reserved.</p>
         </div>
       </footer>
+      <JapanDialog open={dialogOpen} onClose={handleCloseDialog} />
     </div>
   );
 };

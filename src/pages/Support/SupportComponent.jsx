@@ -7,6 +7,7 @@ import blog from '../../assets/Blog.jpg';
 import { useNavigate } from 'react-router-dom';
 import { getOrder,getAvatar } from '../../services/CustomerService';
 import { logout } from '../../components/Member/auth'; 
+import JapanDialog from '../../components/FromUI/Japan';
 
 const Homepage = () => {
 
@@ -15,6 +16,7 @@ const Homepage = () => {
   const [trackingResult, setTrackingResult] = useState(null); // State cho kết quả theo dõi
   const navigate = useNavigate();
   const [avatar, setAvatar] = useState(null); 
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const roleId = localStorage.getItem('roleId'); 
   console.log('Role ID:', roleId);
@@ -30,10 +32,18 @@ const Homepage = () => {
     navigate("/");
   };
 
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
   const handleCreateOrderClick = (event) => {
     event.preventDefault();
     if (roleId) {
-      navigate('/form'); 
+      handleOpenDialog();
     } else {
       navigate('/login'); 
     }
@@ -86,7 +96,7 @@ const Homepage = () => {
             <div className="dropdown">
             <a href="#" className="nav-link">Dịch Vụ</a>
             <div className="dropdown-content">
-              <a href="/form">Tạo Đơn</a>
+              <a onClick={handleOpenDialog}>Tạo Đơn</a>
               <a href="/Policy">Quy định vận chuyển</a>
               <a href="/Promotion">Chương trình khuyến mãi</a>
             </div>
@@ -214,6 +224,7 @@ const Homepage = () => {
         <p>© 2024 Koi Express. All rights reserved.</p>
       </div>
     </footer>
+    <JapanDialog open={dialogOpen} onClose={handleCloseDialog} />
     </div>
   );
 }
