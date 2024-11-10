@@ -66,7 +66,7 @@ const RedStepLabel = styled(StepLabel)(({ theme }) => ({
 }));
 
 const REST_API_BANK_URL =
- "/api/v1/payment/vn-pay";
+ "http://koideliverysystem.id.vn:8080/api/v1/payment/vn-pay";
 
 const formatCurrency = (value) => {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -192,7 +192,7 @@ const CheckoutPage = () => {
       const response = await axios.post(REST_API_BANK_URL, {
         orderId,
         bankCode: "NCB",
-        returnUrl: "https://koi-delivery-system.vercel.app/payment-outcome",
+        returnUrl: "http://localhost:3000/payment-outcome",
       });
 
       console.log("Payment API Response:", response.data);
@@ -235,8 +235,11 @@ const CheckoutPage = () => {
     "Tài xế nhận đơn",
     "Tài xế lấy hàng",
     "Đơn đang được vận chuyển",
-    orderData.paymentStatus === 1 ? "Hoàn thành" : "Vui Lòng Thanh Toán",
-  ];
+    orderData.paymentStatus === 2 && "Vui lòng thanh toán",
+    orderData.paymentStatus === 1 && "Hoàn thành"
+  ].filter(Boolean);
+  
+
 
   const getActiveStep = (status, paymentStatus) => {
     if (status === 0) return 0; // "Đang xử lí"
@@ -483,18 +486,17 @@ const CheckoutPage = () => {
               </Button>
             )}
 
-          {[1, 2, 3, 4, 5].includes(orderData.status) &&
-            !orderData.paymentStatus && (
-              <Button
-                startIcon={<PaymentIcon />}
-                sx={{ mt: 5, mx: 80 }}
-                variant="contained"
-                color="primary"
-                onClick={handleProceedToPayment}
-              >
-                Thanh toán
-              </Button>
-            )}
+          {[1, 2, 3, 4, 5].includes(orderData.status) && orderData.paymentStatus === 2 && (
+            <Button
+              startIcon={<PaymentIcon />}
+              sx={{ mt: 5, mx: 80 }}
+              variant="contained"
+              color="primary"
+              onClick={handleProceedToPayment}
+            >
+              Thanh toán
+            </Button>
+          )}
         </Grid>
         <DeliveryStatusPopup
           open={isPopupOpen}
