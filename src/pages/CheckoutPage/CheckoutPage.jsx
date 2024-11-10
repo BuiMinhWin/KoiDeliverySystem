@@ -218,7 +218,7 @@ const CheckoutPage = () => {
     }
   };
 
-  if (orderId) return <Navigate to="/customer" />;
+  if (!orderId) return <Navigate to="/customer" />;
   if (error) return <Typography color="error">Error: {error}</Typography>;
   if (!orderData) return <Typography>Đang tải...</Typography>;
 
