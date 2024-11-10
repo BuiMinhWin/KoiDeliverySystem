@@ -249,7 +249,7 @@ const CheckoutPage = () => {
       const newStatus = 7;
       const updatedOrder = await updateOrderStatus(orderData.orderId, newStatus);
       console.log("Order Id being updated to finish is:", orderData.orderId);
-      message;
+     
       console.log("Order status updated:", updatedOrder);
     } catch (error) {
       console.error("Error updating order status:", error);
