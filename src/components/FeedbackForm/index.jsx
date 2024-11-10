@@ -95,12 +95,12 @@ const FeedbackForm = ({ orderId }) => {
           accountId: accountId,
         });
         enqueueSnackbar("Feedback được gửi thành công", { variant: "success" });
-        // After submission, fetch existing feedback again to update state
+     
         const feedback = await getFeedbackByOrderId(orderId);
         if (feedback && feedback.length > 0) {
-          setExistingFeedback(feedback[0]); // Update with the new feedback
+          setExistingFeedback(feedback[0]); 
         } else {
-          setExistingFeedback(null); // No feedback available
+          setExistingFeedback(null); 
         }
         formik.resetForm();
       } catch (error) {
@@ -110,7 +110,7 @@ const FeedbackForm = ({ orderId }) => {
     },
   });
 
-  // Render existing feedback if available
+
   if (existingFeedback) {
    
     return (

@@ -1,14 +1,39 @@
-
-.KoiLogo{
-  position: absolute;     
-  left: 200px; 
-  top: 10px;        
-  font-size: 20px;    
-  color: #fff;   
-  padding-left: 50px;     
- 
+.KoiLogo {
+  position: absolute;
+  left: 200px;
+  top: 10px;
+  font-size: 20px;
+  color: #fff;
+  padding-left: 50px;
 }
-.title{
+
+
+.table td:last-child {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-primary {
+  background: transparent;
+  color: black;
+  border: none;
+  padding: 8px 12px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: rgba(0, 86, 179, 0.8); /* Màu đậm hơn khi hover */
+}
+
+.table td:last-child button {
+  flex: 1;
+  max-width: 100px;
+}
+
+.title {
   margin-top: 20px;
 }
 
@@ -24,6 +49,8 @@
   width: 23%;
   text-align: center;
   border-radius: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
 }
 
 .delivery-overview .card h3 {
@@ -35,46 +62,6 @@
   font-size: 16px;
 }
 
-.card.delivery-fail {
-  background-color: #f8f9fa;
-  padding: 20px;
-  flex: 1;
-  text-align: center;
-  margin-right: 10px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-}
-
-.card.delivery-total-orders{
-  background-color: #f8f9fa;
-  padding: 20px;
-  flex: 1;
-  text-align: center;
-  margin-right: 10px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-}
-
-.card.delivery-delivering {
-  background-color: #f8f9fa;
-  padding: 20px;
-  flex: 1;
-  text-align: center;
-  margin-right: 10px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-}
-
-.card.delivery-approving {
-  background-color: #f8f9fa;
-  padding: 20px;
-  flex: 1;
-  text-align: center;
-  margin-right: 10px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-}
-
 .delivery-ongoing-delivery {
   display: flex;
   gap: 20px;
@@ -83,13 +70,15 @@
 .delivery-ongoing-delivery h2 {
   font-size: 20px;
   margin-bottom: 20px;
-  margin-left:-910px;
+  margin-left: -910px;
 }
 
 .delivery-list {
   padding: 20px;
   background-color: #f8f9fa;
   border-radius: 10px;
+  overflow-x: auto; /* Hiển thị thanh cuộn ngang khi cần */
+  white-space: nowrap; /* Không cho phép xuống dòng */
 }
 
 .delivery-item {
@@ -104,39 +93,34 @@
   display: flex;
   align-items: center;
   justify-content: center; /* Căn giữa theo chiều ngang */
-  margin-top: 20px; /* Nếu cần */
- 
+  margin-top: 20px;
 }
 
 .search-bar {
-  flex-grow: 1; 
-  margin: 0 20px; 
-  min-width: 300px; 
-  max-width: 100%; 
- 
+  flex-grow: 1;
+  margin: 0 20px;
+  min-width: 300px;
+  max-width: 100%;
 }
 
 .notification-icon {
-    
-    position: relative;
-    cursor: pointer;
-    font-size: 1.9rem; 
+  position: relative;
+  cursor: pointer;
+  font-size: 1.9rem;
+}
 
-}
-  
 .notification-icon .notification-text {
-    display: none;
-    position: absolute;
-    top: 50%;
-    right: -80px;
-    transform: translateY(-50%);
-    background-color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: -80px;
+  transform: translateY(-50%);
+  background-color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
-  
+
 .notification-icon:hover .notification-text {
-    display: block; 
+  display: block;
 }
-  

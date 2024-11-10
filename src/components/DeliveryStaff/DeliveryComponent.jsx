@@ -506,76 +506,52 @@ const toggleDropdown = () => {
               <table className="table table-striped table-bordered">
               <thead>
                 <tr>
-                <th>OrderId</th>
-                  {/* <th>OrderDate</th> */}
+                  <th>OrderId</th>
                   <th>Điểm đi</th>
                   <th>Điểm đến</th>
                   <th>Dịch vụ</th>
-                  {/* <th>Status</th> */}
                   <th>Cập nhật</th>
-                  <th>Chi tiết</th>
-                  <th></th>
-                  <th></th>
+                  <th>Tác vụ</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredOrders.length > 0 ? (
                   filteredOrders
-                    .filter(order => order.deliver === accountId && order.status > 1 && order.status < 5)
+                    .filter((order) => order.deliver === accountId && order.status > 1 && order.status < 5)
                     .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate))
                     .map((order) => (
                       <tr key={order.orderId}>
                         <td>{order.orderId}</td>
-                        {/* <td>{new Date(order.orderDate).toLocaleDateString()}</td> */}
                         <td>{order.origin}</td>
                         <td>{order.destination}</td>
                         <td>{order.freight}</td>
-                        {/* <td>
-                          {order.status === 2 && "Đang lấy hàng"}
-                          {order.status === 3 && "Đã lấy hàng"}
-                          {order.status === 4 && "Đang giao"}
-                          {order.status === 5 && "Đã hoàn thành"}  
-                          {order.status === 6 && "Đơn sự cố"}  
-                        </td> */}
                         <td>
-                        <button
-                          className="btn btn-info"
-                          onClick={() => handleClick(order.orderId)}
-                          disabled={isDisabled}
-                        >
-                          {order.status === 2 && "Đang lấy hàng"}
-                          {order.status === 3 && "Đã lấy hàng"}
-                          {order.status === 4 && "Đang giao"}
-                          {order.status === 5 && "Đã hoàn thành"}  
-                          {order.status === 6 && "Đơn sự cố"}  
-                        </button>
-                        </td>
-                        <td>
-                          <button onClick={() => handleViewOrder(order.orderId)}>Xem</button>
-                        </td>
-                        <td>
-                          <button
-                            className="btn btn-primary"
-                            onClick={() => handleDirection( order.destination)}
-                          >
-                           <FaDirections />
+                          <button className="btn btn-info" onClick={() => handleClick(order.orderId)} disabled={isDisabled}>
+                            {order.status === 2 && "Đang lấy hàng"}
+                            {order.status === 3 && "Đã lấy hàng"}
+                            {order.status === 4 && "Đang giao"}
+                            {order.status === 5 && "Đã hoàn thành"}
+                            {order.status === 6 && "Đơn sự cố"}
                           </button>
                         </td>
                         <td>
-                        <button
-                            className="btn btn-primary"
-                            onClick={() =>  updateOrderSpecial(order.orderId)}
-                          >
+                          <button className="btn btn-primary me-2" onClick={() => handleViewOrder(order.orderId)}>
+                            <MdRemoveRedEye />
+                          </button>
+
+                          <button className="btn btn-primary me-2" onClick={() => handleDirection(order.destination)}>
+                            <FaDirections />
+                          </button>
+
+                          <button className="btn btn-primary" onClick={() => updateOrderSpecial(order.orderId)}>
                             <MdOutlineReportProblem />
                           </button>
-                       
                         </td>
                       </tr>
-                      
                     ))
                 ) : (
                   <tr>
-                    <td colSpan="12" className="text-center">Chưa có đơn nào</td>
+                    <td colSpan="6" className="text-center">Chưa có đơn nào</td>
                   </tr>
                 )}
               </tbody>
