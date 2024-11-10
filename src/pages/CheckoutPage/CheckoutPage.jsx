@@ -247,7 +247,7 @@ const CheckoutPage = () => {
     if (status === 2) return 2; // "Tài xế nhận đơn"
     if (status === 3) return 3; // "Đã lấy hàng"
     if (status === 4) return 4; //"Đang giao"
-    if (status === 5) return paymentStatus === 0 ? 4 : 5;
+    if (status === 5) return paymentStatus === 2 ? 4 : 5;
     return 0; // Default case
   };
 
