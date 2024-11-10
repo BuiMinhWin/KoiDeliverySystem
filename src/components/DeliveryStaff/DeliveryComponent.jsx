@@ -450,8 +450,6 @@ const toggleDropdown = () => {
 
           <section className="delivery-ongoing-delivery mt-4 d-flex border-top pt-3">
           <div className="delivery-list col-12 " >
-              <h2>Báo cáo </h2>
-
               <div className="filter-bar d-flex mb-3">
                 <select className="form-select me-2" value={monthFilter} onChange={(e) => setMonthFilter(e.target.value)}>
                   <option value="">Tháng</option>

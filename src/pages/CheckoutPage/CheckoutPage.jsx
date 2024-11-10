@@ -516,7 +516,7 @@ const CheckoutPage = () => {
               {orderData.status === 7 && <FeedbackForm orderId={orderId} />}
             </Grid>
             <Grid item xs={12}>
-              {orderData.status === 5 && orderData.payment === 1 && (
+              {orderData.status === 5 && orderData.paymentStatus === 1 && (
                 <Button
                   variant="contained"
                   onClick={handleUpdateOrderStatus}
