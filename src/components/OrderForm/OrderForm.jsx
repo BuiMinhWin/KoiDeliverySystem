@@ -105,7 +105,7 @@ const FORM_VALIDATION = Yup.object().shape({
   senderNote: Yup.string()
     .nullable()
     .max(500, "Ghi chú cần phải dưới 500 kí tự"),
-  discount: Yup.string().nullable(),
+  discount: Yup.string().nullable().oneOf([null,"10PKL","Mã giảm giá không hợp lệ "]),
   // cityS: Yup.string().required("Vui lòng chọn thành phố"),
   // cityR: Yup.string().required("Vui lòng chọn thành phố"),
   freight: Yup.string().required("Vui lòng chọn phương thức vận chuyển"),
