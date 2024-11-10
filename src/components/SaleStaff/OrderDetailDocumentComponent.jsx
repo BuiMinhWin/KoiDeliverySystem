@@ -237,7 +237,7 @@ return (
                 <th>Loại cá</th>
                 <th>Số lượng</th>
                 <th>Cân nặng</th>
-                <th>Trạng thái</th>
+              
                 <th>PDF</th>
               </tr>
             </thead>
