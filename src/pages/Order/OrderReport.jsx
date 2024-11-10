@@ -141,6 +141,8 @@ const OrderReport = () => {
                           ? "5-7 ngày"
                           : order.freight === "Dịch vụ hỏa tốc"
                           ? "3-4 ngày"
+                          : order.freight === "Vận chuyển nước ngoài"
+                          ? "7-14 ngày"
                           : "Thời gian không xác định"
                       } kể từ ngày duyệt đơn`
                     : order.status === 5

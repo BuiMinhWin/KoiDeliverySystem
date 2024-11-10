@@ -9,6 +9,7 @@ import { getOrder } from '../../services/CustomerService';
 import DeliveryStatus from '../../pages/DeliveryStatus/DeliveryStatus'; // Import component hiển thị trạng thái đơn hàng
 import { logout } from '../../components/Member/auth';
 import { getAvatar } from '../../services/CustomerService';
+import JapanDialog from '../../components/FromUI/Japan';
 import axios from "axios";
 
 
@@ -45,18 +46,21 @@ const Homepage = () => {
     setDialogOpen(false);
   };
 
-  const handleTabClick = (tab) => {
-    setActiveTab(tab);
-  };
-
   const handleCreateOrderClick = (event) => {
     event.preventDefault();
     if (roleId) {
-      navigate('/form'); 
+      handleOpenDialog();
     } else {
       navigate('/login'); 
     }
   };
+  
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
+
+ 
 
 
   const handleLogout = () => {
@@ -236,9 +240,10 @@ const Homepage = () => {
             <div className="dropdown">
             <a href="#" className="nav-link">Dịch Vụ</a>
             <div className="dropdown-content">
-              <a href="/form">Tạo Đơn</a>
+              <a onClick={handleCreateOrderClick}>Tạo Đơn</a>
               <a href="/Policy">Quy định vận chuyển</a>
               <a href="/Promotion">Chương trình khuyến mãi</a>
+             
             </div>
           </div>
           <a href="/AboutUs" className="nav-link">Giới Thiệu</a> 
@@ -287,14 +292,15 @@ const Homepage = () => {
         className="order-btn" 
         onClick={() => {
           if (roleId) {
-            navigate('/form');  // Điều hướng đến trang /form nếu đã đăng nhập
+            handleOpenDialog();
           } else {
-            navigate('/login'); // Điều hướng đến trang /login nếu chưa đăng nhập
+            navigate('/login'); 
           }
         }}
       >
         TẠO ĐƠN TẠI ĐÂY
-      </button>  
+      </button> 
+     
       {/* <Button onClick={handleOpenDialog}>
         Tạo đơn
       </Button>
@@ -488,7 +494,7 @@ const Homepage = () => {
         <h1>Bắt đầu tạo đơn với Koi Express</h1>
         <button className="order-btn-end" onClick={(handleCreateOrderClick)}>TẠO ĐƠN TẠI ĐÂY</button>  
       </header>
-
+      
       {/* Footer */}
     <footer className="homepage-footer">
       <div className="footer-contact">
@@ -515,9 +521,10 @@ const Homepage = () => {
         {/* Cột 2: Dịch vụ */}
         <div className="footer-column">
         <h4>Dịch Vụ</h4>
-        <a href="#" onClick={handleCreateOrderClick}>Tạo Đơn</a><br />
+        <a  onClick={handleOpenDialog}>Tạo Đơn</a><br />
         <a href="/Policy">Quy định vận chuyển</a><br />
         <a href="/Promotion">Chương trình khuyến mãi</a>
+       
       </div>
 
 
@@ -540,6 +547,7 @@ const Homepage = () => {
         <p>© 2024 Koi Express. All rights reserved.</p>
       </div>
     </footer>
+    <JapanDialog open={dialogOpen} onClose={handleCloseDialog} />
     </div>
   );
 }

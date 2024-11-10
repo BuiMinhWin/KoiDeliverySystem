@@ -470,7 +470,7 @@ const CheckoutPage = () => {
           </Grid>
           <Grid item xs={12} md={6}>
             <Grid item xs={12}>
-              {orderData.status === 5 && <FeedbackForm orderId={orderId} />}
+              {orderData.status === 5 && orderData.paymentStatus === 1 && <FeedbackForm orderId={orderId} />}
             </Grid>
           </Grid>
           {(orderData.status === 0 || orderData.status === 1) &&

@@ -454,7 +454,7 @@
 }
 
 
-.blog-intro-section {
+.blog-intro-section-Koi {
   display: flex; /* Sử dụng flexbox để chia đôi */
   justify-content: space-between; /* Căn giữa các phần */
   align-items: stretch; /* Đảm bảo các phần tử có chiều cao bằng nhau */
@@ -505,14 +505,14 @@
   background-color: #0056b3; /* Màu nền khi hover */
 }
 
-.blog-image {
+.blog-image-Koi {
   flex: 1; /* Chiếm không gian còn lại */
   text-align: right; /* Canh hình bên phải */
   display: flex;
   align-items: center; /* Căn giữa hình ảnh theo chiều dọc */
 }
 
-.blog-image img {
+.blog-image-Koi img {
   max-width: 100%; /* Đảm bảo hình ảnh không vượt quá chiều rộng của phần */
   border-radius: 8px; /* Bo góc hình ảnh */
 }

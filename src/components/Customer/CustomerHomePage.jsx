@@ -16,8 +16,11 @@ const Homepage = () => {
   const [trackingResult, setTrackingResult] = useState(null); // State cho kết quả theo dõi
   const navigate = useNavigate();
   const [avatar, setAvatar] = useState(null); 
+
+
+  const roleId = localStorage.getItem('roleId'); 
+  console.log('Role ID:', roleId);
   const accountId = localStorage.getItem('accountId');
-  console.log("Stored Account ID:", accountId);
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
@@ -86,22 +89,33 @@ const Homepage = () => {
             </div>
           </div>
 
-          <a href="/AboutUsUser" className="nav-link">
+          <a href="/AboutUs" className="nav-link">
             Giới Thiệu
           </a>
         </div>
         <div className="navbar-right">
-          <a href="/SupportUser" className="nav-link support-link">
+          <a href="/Support" className="nav-link support-link">
             <i className="fas fa-question-circle"></i> Hỗ Trợ
           </a>
-          <div className="dropdown">
-          <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
-            <div className="dropdown-content-avatar ">
-              <a href="user-page">Tài khoản của tôi</a>
-              <a  onClick={handleLogout}>Đăng xuất</a>
-            </div>  
+          {!roleId ? ( 
+            <>
+              <button className="register-btn" onClick={() => navigate('/register')}>Đăng Ký</button>
+              <button className="login-btn" onClick={() => navigate('/login')}>Đăng Nhập</button>
+            </>
+           ) : (
+            <>
+            <div className="dropdown">
+            <img src={avatar || '/default-avatar.png'} alt="Avatar" className="avatar" />
+              <div className="dropdown-content-avatar ">
+                <a href="user-page">Tài khoản của tôi</a>
+                <a  onClick={handleLogout}>Đăng xuất</a>
+              </div>  
+            </div>
+            </>
+          )} 
+
       </div>
-    </div>
+                   
       </nav>
 
       {/* Welcome section */}
