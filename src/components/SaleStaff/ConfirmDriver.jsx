@@ -32,8 +32,9 @@ const Booking = () => {
   const getAllOrders = () => {
     listOrder()
       .then((response) => {
+        console.log(response.data); 
         if (Array.isArray(response.data)) {
-          const filteredOrders = response.data.filter(order => order.sale === accountId);
+          const filteredOrders = response.data.filter(order => order.sale === accountId && order.paymentStatus === 1);
           const sortedOrders = filteredOrders.sort((a, b) => {
             if (a.freight === "Dịch vụ hỏa tốc" && b.freight !== "Dịch vụ hỏa tốc") return -1;
             if (a.freight !== "Dịch vụ hỏa tốc" && b.freight === "Dịch vụ hỏa tốc") return 1;
