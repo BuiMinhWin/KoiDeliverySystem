@@ -103,7 +103,7 @@ const Booking = () => {
                 <td>{order.deliver}</td>
                 <td>{statusLabels[order.status]}</td>
                 <td>
-                  {order.status === 1 ? (
+                  {order.status === 1 && order.sale != accountId ? (
                     <button
                       className="btn btn-info"
                       onClick={() => openAssignDriverModal(order.orderId)}

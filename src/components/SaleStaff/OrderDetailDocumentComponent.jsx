@@ -130,19 +130,19 @@ console.log("orderDetail",orderDetail)
 
 return (
   <div className="order-detail-document">
-    <h2>Chi ti?t don hàng cho OrderID: {orderId}</h2>
+    <h2>Chi tiết don hàng cho OrderID: {orderId}</h2>
     {(orders.status === 0 || orders.status === 9000) ? (
       orderDetail.length > 0 ? (
         <>
           <table className="table-document table-striped-document">
             <thead>
               <tr>
-                <th>Ngày t?o</th>
+                <th>Ngày tạo</th>
                 <th>Tên cá</th>
-                <th>Lo?i cá</th>
-                <th>S? lu?ng</th>
-                <th>Cân n?ng</th>
-                <th>Tr?ng thái</th>
+                <th>Loài cá</th>
+                <th>Số lượng</th>
+                <th>Cân nặng</th>
+                <th>Trạng thái</th>
                 <th>PDF</th>
               </tr>
             </thead>
@@ -162,17 +162,17 @@ return (
                           className="btn btn-danger"
                           onClick={() => handleUpdateOrderIdDetailto9000(order.orderDetailId, 0, orderId)}
                         >
-                          Báo l?i
+                          Báo lỗi
                         </button>
                       ) : order.status === 2 ? (
                         <button
                           className="btn btn-warning"
                           onClick={() => handleUpdateForDetail(order.orderDetailId, 1)}
                         >
-                          Duy?t l?i
+                          Duyệt lại
                         </button>
                       ) : order.status === 0
-                      ? <p>Khách hàng duy?t don</p> : null}
+                      ? <p>Khách hàng duyệt đơn</p> : null}
                   
                   
                     </td>
@@ -189,7 +189,7 @@ return (
                     <tr>
                       <td colSpan="6">
                         <div className="pdf-viewer-document">
-                          <h3>Xem Tài li?u cho Order Detail ID: {order.orderDetailId}</h3>
+                          <h3>Xem Tài liệu cho Order Detail ID: {order.orderDetailId}</h3>
                           <iframe
                             src={pdfUrls[order.orderDetailId]}
                             width="100%"
@@ -210,14 +210,14 @@ return (
               className="btn btn-success"
               onClick={() => handleUpdateStatus9000(orderId)}
             >
-              Ðua v? tr?ng thái 0
+              Ðưa về trạng thái 0
             </button>
           ) : orderId && orders.status === 0 ? (
             <button
               className="btn btn-success"
               onClick={() => handleUpdateStatus(orderId)}
             >
-              C?p nh?t tr?ng thái don hàng
+              Cập nhật trạng thái đơn hàng
             </button>
           ) : null}
         </>
@@ -237,11 +237,12 @@ return (
           <table className="table-document table-striped-document">
             <thead>
               <tr>
-                <th>Ngày t?o</th>
+                <th>Ngày tạo</th>
                 <th>Tên cá</th>
-                <th>Lo?i cá</th>
-                <th>S? lu?ng</th>
-                <th>Cân n?ng</th>
+                <th>Loài cá</th>
+                <th>Số lượng</th>
+                <th>Cân nặng</th>
+                <th>Trạng thái</th>
                 <th>PDF</th>
               </tr>
             </thead>
@@ -268,7 +269,7 @@ return (
                     <tr>
                       <td colSpan="6">
                         <div className="pdf-viewer-document">
-                          <h3>Xem Tài li?u cho Order Detail ID: {order.orderDetailId}</h3>
+                          <h3>Xem Tài liệu cho Order Detail ID: {order.orderDetailId}</h3>
                           <iframe
                             src={pdfUrls[order.orderDetailId]}
                             width="100%"
@@ -289,14 +290,14 @@ return (
               className="btn btn-success"
               onClick={() => handleUpdateStatus9000(orderId)}
             >
-              Ðua v? tr?ng thái 0
+              Ðưa về trạng thái 0
             </button>
           ) : orderId && orders.status === 0 ? (
             <button
               className="btn btn-success"
               onClick={() => handleUpdateStatus(orderId)}
             >
-              C?p nh?t tr?ng thái don hàng
+              Cập nhật trạng thái đơn hàng
             </button>
           ) : null}
         </>
