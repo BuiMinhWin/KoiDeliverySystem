@@ -173,7 +173,7 @@ return (
                         className="btn-document btn-primary-document"
                         onClick={() => handleViewPDF(order.orderDetailId)}
                       >
-                        {pdfUrls[order.orderDetailId] ? "?n PDF" : "Hi?n th? PDF"}
+                        {pdfUrls[order.orderDetailId] ? "Ẩn PDF" : "Hiển thị PDF"}
                       </button>
                     </td>
                   </tr>
@@ -253,7 +253,7 @@ return (
                         className="btn-document btn-primary-document"
                         onClick={() => handleViewPDF(order.orderDetailId)}
                       >
-                        {pdfUrls[order.orderDetailId] ? "?n PDF" : "Hi?n th? PDF"}
+                        {pdfUrls[order.orderDetailId] ? "Ẩn PDF" : "Hiển thị PDF"}
                       </button>
                     </td>
                   </tr>
