@@ -90,7 +90,7 @@ const OrderDetailComponent = () => {
                       className="btn-document btn-primary-document"
                       onClick={() => handleViewPDF(order.orderDetailId)}
                     >
-                      {pdfUrls[order.orderDetailId] ? "Ẩn PDF" : "Hiển thị PDF"}
+                      {pdfUrls[order.orderDetailId] ? "Hide PDF" : "Show PDF"}
                     </button>
                   </td>
                 </tr>

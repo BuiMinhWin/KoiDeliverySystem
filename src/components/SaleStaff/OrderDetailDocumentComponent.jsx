@@ -34,14 +34,6 @@ const OrderDetailDocumentComponent = () => {
       });
   }, []);
 
-  const handleCancelOrder = (orderId) => {
-    replyOrder(orderId)
-      .then(() => {
-        console.log(orderId.status);
-      })
-      .catch((error) => console.error("Error updating order: ", error));
-  };
-
   const handleViewPDF = async (orderDetailId) => {
     if (pdfUrls[orderDetailId]) {
       setPdfUrls(prevUrls => {
@@ -130,7 +122,7 @@ console.log("orderDetail",orderDetail)
 
 return (
   <div className="order-detail-document">
-    <h2>Chi tiết don hàng cho OrderID: {orderId}</h2>
+    <h2>Chi tiết đơn hàng cho OrderID: {orderId}</h2>
     {(orders.status === 0 || orders.status === 9000) ? (
       orderDetail.length > 0 ? (
         <>
